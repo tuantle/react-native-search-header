@@ -1,5 +1,6 @@
 # react-native-seach-header
 Easy to use React Native search header component based on material design patterns.
+This react native component was built with [hyperflow](http://github.com/tuantle/hyperflow) (a state management and mutation tool).
 
 ![demo](/demo.gif)
 
