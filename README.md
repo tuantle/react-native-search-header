@@ -1,7 +1,7 @@
 # react-native-seach-header
 Easy to use React Native search header component based on material design patterns.
 
-![demo](https://github.com/tuantle/react-native-search-header/tree/master/demo.gif)
+![demo](/demo.gif)
 
 ## Installation
 
