@@ -1,0 +1,30 @@
+[ignore]
+
+# Ignore examples
+.*/examples
+
+# Ignore tests
+.*/tests
+
+# We fork some components by platform
+.*/*.android.js
+
+# Ignore templates with `@flow` in header
+.*/local-cli/generator.*
+
+# Ignore malformed json
+.*/node_modules/y18n/test/.*\.json
+
+[include]
+
+[libs]
+
+[options]
+module.system=haste
+
+esproposal.class_static_fields=enable
+esproposal.class_instance_fields=enable
+
+experimental.strict_type_args=true
+
+munge_underscores=true

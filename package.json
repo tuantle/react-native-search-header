@@ -1,0 +1,64 @@
+{
+    "name": "react-native-search-header",
+    "version": "0.1.0",
+    "registry": "github",
+    "description": "A react native search header component based on material design patterns.",
+    "authors": [
+        "Tuan Le <tuan.t.lei@gmail.com> (https://github.com/tuantle)"
+    ],
+    "license": "MIT",
+    "homepage": "https://github.com/tuantle/react-native-search-header",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/tuantle/react-native-search-header.git"
+    },
+    "bugs": {
+        "url": "https://github.com/tuantle/react-native-search-header/issues"
+    },
+    "engines": {
+        "node": ">=7.x",
+        "npm": ">=4.x"
+    },
+    "main": "index.js",
+    "directories": {
+        "lib": "src"
+    },
+    "jest": {
+        "preset": "react-native"
+    },
+    "peerDependencies": {
+        "react": "=15.4.1",
+		"react-native": "=0.40.0"
+    },
+    "dependencies": {
+        "hyperflow": "=0.1.0-beta21",
+
+        "moment": "^2.17.1",
+
+        "react-native-animatable": "^1.1.0"
+    },
+    "devDependencies": {
+        "babel-core": "^6.21.0",
+        "babel-preset-node7": "^1.4.0",
+        "babel-preset-react": "^6.16.0",
+        "babel-preset-react-native": "^1.9.1",
+        "babel-plugin-transform-strict-mode": "^6.18.0",
+
+        "babel-jest": "^18.0.0",
+        "jest": "^18.1.0",
+        "jest-react-native": "^18.0.0",
+        "react-test-renderer": "^15.4.1",
+
+        "eslint": "^3.13.0",
+        "babel-eslint": "^7.1.1",
+        "eslint-plugin-react": "^6.8.0",
+        "eslint-plugin-react-native": "^2.2.1"
+    },
+    "modulePathIgnorePatterns": [
+        "/node_modules/"
+    ],
+    "testPathIgnorePatterns": [
+        "/tests/",
+        "/examples/"
+    ]
+}
