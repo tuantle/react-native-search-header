@@ -31,7 +31,7 @@
 		"react-native": "=0.40.0"
     },
     "dependencies": {
-        "hyperflow": "=0.1.0-beta21",
+        "hyperflow": "=0.1.0-beta22",
 
         "moment": "^2.17.1",
 

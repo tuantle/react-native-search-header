@@ -84,7 +84,7 @@ const DEFAULT_SEARCH_HEADER_VIEW_STYLE = {
         backgroundColor: `transparent`,
         overflow: `hidden`
     },
-    searchBar: {
+    search: {
         flexDirection: `row`,
         alignItems: `center`,
         justifyContent: `space-between`,
@@ -102,7 +102,7 @@ const DEFAULT_SEARCH_HEADER_VIEW_STYLE = {
         marginBottom: 6,
         backgroundColor: `#fdfdfd`
     },
-    textInput: {
+    inputText: {
         flexGrow: 1,
         fontSize: PixelRatio.get() >= 3 ? 20 : 18,
         fontWeight: `400`,
@@ -132,7 +132,7 @@ const DEFAULT_SEARCH_HEADER_VIEW_STYLE = {
 };
 
 Animatable.initializeRegistryWithDefinitions({
-    searchBarFadeIn: {
+    searchFadeIn: {
         from: {
             opacity: 0,
             translateX: SEARCH_BAR_WIDTH
@@ -142,7 +142,7 @@ Animatable.initializeRegistryWithDefinitions({
             translateX: 0
         }
     },
-    searchBarFadeOut: {
+    searchFadeOut: {
         from: {
             opacity: 1,
             translateX: 0
@@ -159,11 +159,15 @@ const SearchHeaderInterface = Hf.Interface.augment({
         Hf.React.ComponentComposite
     ],
     state: {
-        textInputColor: {
+        inputTextColor: {
             value: ``,
             stronglyTyped: true
         },
-        textInputPlaceholderColor: {
+        placeholderTextColor: {
+            value: ``,
+            stronglyTyped: true
+        },
+        searchSuggestionItemTextColor: {
             value: ``,
             stronglyTyped: true
         },
@@ -276,11 +280,11 @@ const SearchHeaderInterface = Hf.Interface.augment({
     onDismissKeyboard: function onDismissKeyboard () {
         dismissKeyboard();
     },
-    renderSearchBar: function renderSearchBar (adjustedStyle) {
+    renderSearch: function renderSearch (adjustedStyle) {
         const component = this;
         const intf = component.getInterface();
         const {
-            textInputPlaceholderColor,
+            placeholderTextColor,
             autoCorrect,
             minimized,
             placeholder,
@@ -296,11 +300,11 @@ const SearchHeaderInterface = Hf.Interface.augment({
         const {
             searchItemTextChanged: showCloseButton
         } = component.state;
-        let animationType = minimized ? `searchBarFadeOut` : `searchBarFadeIn`;
+        let animationType = minimized ? `searchFadeOut` : `searchFadeIn`;
 
         return (
             <AnimatedView
-                style = { adjustedStyle.searchBar }
+                style = { adjustedStyle.search }
                 duration = { 300 }
                 animation = { animationType }
                 useNativeDriver = { false }
@@ -386,8 +390,8 @@ const SearchHeaderInterface = Hf.Interface.augment({
                             onSearch(event);
                         }}
                         placeholder = { placeholder }
-                        placeholderTextColor = { Hf.isEmpty(textInputPlaceholderColor) ? `#bdbdbd` : textInputPlaceholderColor }
-                        style = { adjustedStyle.textInput }
+                        placeholderTextColor = { Hf.isEmpty(placeholderTextColor) ? `#bdbdbd` : placeholderTextColor }
+                        style = { adjustedStyle.inputText }
                     />
                 </View>
                 {
@@ -489,7 +493,8 @@ const SearchHeaderInterface = Hf.Interface.augment({
         const component = this;
         const {
             iconColor,
-            textInputColor,
+            inputTextColor,
+            searchSuggestionItemTextColor,
             statusBarHeightOffet,
             enableSearchSuggestion,
             dropShadow,
@@ -505,14 +510,17 @@ const SearchHeaderInterface = Hf.Interface.augment({
             container: {
                 top: statusBarHeightOffet
             },
-            searchBar: dropShadow ? {
+            search: dropShadow ? {
                 ...DEFAULT_DROP_SHADOW_STYLE
             } : {},
             searchSuggestion: dropShadow ? {
                 ...DEFAULT_DROP_SHADOW_STYLE
             } : {},
-            textInput: Hf.merge(DEFAULT_SEARCH_HEADER_VIEW_STYLE.textInput).with({
-                color: Hf.isEmpty(textInputColor) ? DEFAULT_SEARCH_HEADER_VIEW_STYLE.textInput.color : textInputColor
+            inputText: Hf.merge(DEFAULT_SEARCH_HEADER_VIEW_STYLE.inputText).with({
+                color: Hf.isEmpty(inputTextColor) ? DEFAULT_SEARCH_HEADER_VIEW_STYLE.inputText.color : inputTextColor
+            }),
+            searchSuggestionItemText: Hf.merge(DEFAULT_SEARCH_HEADER_VIEW_STYLE.searchSuggestionItemText).with({
+                color: Hf.isEmpty(searchSuggestionItemTextColor) ? DEFAULT_SEARCH_HEADER_VIEW_STYLE.searchSuggestionItemText.color : searchSuggestionItemTextColor
             }),
             icon: Hf.merge(DEFAULT_SEARCH_HEADER_VIEW_STYLE.icon).with({
                 tintColor: Hf.isEmpty(iconColor) ? DEFAULT_SEARCH_HEADER_VIEW_STYLE.icon.tintColor : iconColor
@@ -527,7 +535,7 @@ const SearchHeaderInterface = Hf.Interface.augment({
                 onStartShouldSetResponder = { component.onDismissKeyboard }
             >
             {
-                component.renderSearchBar(adjustedStyle)
+                component.renderSearch(adjustedStyle)
             }
             {
                 !showSearchSuggestion ? null : component.renderSuggestions(adjustedStyle)
