@@ -30,16 +30,12 @@ import EVENT from '../events/search-header-event';
 
 const SearchHeaderStore = Hf.Store.augment({
     state: {
-        minimized: {
-            value: false,
-            stronglyTyped: true
-        },
-        searchItemText: {
-            value: ``,
-            stronglyTyped: true
-        },
-        searchItemTextChanged: {
-            value: false,
+        search: {
+            value: {
+                visible: false,
+                itemTextChanged: false,
+                itemText: ``
+            },
             stronglyTyped: true
         },
         searchSuggestion: {
@@ -54,19 +50,25 @@ const SearchHeaderStore = Hf.Store.augment({
     },
     setup: function setup (done) {
         const store = this;
-        store.incoming(EVENT.DO.MUTATE_MINIMIZATION).handle((minimized) => {
+        store.incoming(EVENT.DO.MUTATE_SEARCH_VISIBILITY).handle((visible) => {
             store.reduce({
-                minimized
+                search: {
+                    visible
+                }
             });
         });
-        store.incoming(EVENT.DO.MUTATE_SEARCH_ITEM_TEXT).handle((searchItemText) => {
+        store.incoming(EVENT.DO.MUTATE_SEARCH_ITEM_TEXT).handle((itemText) => {
             store.reduce({
-                searchItemText
+                search: {
+                    itemText
+                }
             });
         });
-        store.incoming(EVENT.DO.MUTATE_SEARCH_ITEM_TEXT_CHANGED).handle((searchItemTextChanged) => {
+        store.incoming(EVENT.DO.MUTATE_SEARCH_ITEM_TEXT_CHANGED).handle((itemTextChanged) => {
             store.reduce({
-                searchItemTextChanged
+                search: {
+                    itemTextChanged
+                }
             });
         });
         store.incoming(EVENT.DO.MUTATE_SEARCH_SUGGESTION_VISIBILITY).handle((visible) => {

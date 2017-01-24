@@ -32,7 +32,7 @@ import React from 'react';
 
 import ReactNative, { Dimensions, PixelRatio } from 'react-native';
 
-import * as Animatable from 'react-native-animatable';
+import { View as AnimatedView } from 'react-native-animatable';
 
 import dismissKeyboard from 'react-native/Libraries/Utilities/dismissKeyboard';
 
@@ -51,8 +51,6 @@ const {
     TextInput,
     TouchableOpacity
 } = ReactNative;
-
-const AnimatedView = Animatable.View;
 
 const DEVICE_WIDTH = Dimensions.get(`window`).width;
 
@@ -102,7 +100,7 @@ const DEFAULT_SEARCH_HEADER_VIEW_STYLE = {
         marginBottom: 6,
         backgroundColor: `#fdfdfd`
     },
-    inputText: {
+    searchText: {
         flexGrow: 1,
         fontSize: PixelRatio.get() >= 3 ? 20 : 18,
         fontWeight: `400`,
@@ -131,35 +129,12 @@ const DEFAULT_SEARCH_HEADER_VIEW_STYLE = {
     }
 };
 
-Animatable.initializeRegistryWithDefinitions({
-    searchFadeIn: {
-        from: {
-            opacity: 0,
-            translateX: SEARCH_BAR_WIDTH
-        },
-        to: {
-            opacity: 1,
-            translateX: 0
-        }
-    },
-    searchFadeOut: {
-        from: {
-            opacity: 1,
-            translateX: 0
-        },
-        to: {
-            opacity: 0,
-            translateX: SEARCH_BAR_WIDTH
-        }
-    }
-});
-
 const SearchHeaderInterface = Hf.Interface.augment({
     composites: [
         Hf.React.ComponentComposite
     ],
     state: {
-        inputTextColor: {
+        searchTextColor: {
             value: ``,
             stronglyTyped: true
         },
@@ -175,7 +150,7 @@ const SearchHeaderInterface = Hf.Interface.augment({
             value: ``,
             stronglyTyped: true
         },
-        statusBarHeightOffet: {
+        statusHeightOffet: {
             value: 21,
             stronglyTyped: true
         },
@@ -183,7 +158,7 @@ const SearchHeaderInterface = Hf.Interface.augment({
             value: true,
             stronglyTyped: true
         },
-        minimized: {
+        searchVisibleInitially: {
             value: false,
             stronglyTyped: true
         },
@@ -215,23 +190,19 @@ const SearchHeaderInterface = Hf.Interface.augment({
             value: () => {},
             stronglyTyped: true
         },
-        onClose: {
+        onSearchFocus: {
             value: () => {},
             stronglyTyped: true
         },
-        onFocus: {
+        onSearchBlur: {
             value: () => {},
             stronglyTyped: true
         },
-        onBlur: {
+        onSearchHidden: {
             value: () => {},
             stronglyTyped: true
         },
-        onMinimized: {
-            value: () => {},
-            stronglyTyped: true
-        },
-        onMaximized: {
+        onSearchVisible: {
             value: () => {},
             stronglyTyped: true
         }
@@ -239,28 +210,84 @@ const SearchHeaderInterface = Hf.Interface.augment({
     setup: function setup (done) {
         const intf = this;
 
+        intf.preMountStage((component) => {
+            const {
+                searchVisibleInitially
+            } = component.props;
+
+            intf.outgoing(EVENT.ON.UPDATE_SEARCH_VISIBILITY).emit(() => searchVisibleInitially);
+        });
+
+        intf.postMountStage((component) => {
+            const {
+                searchVisibleInitially
+            } = component.props;
+            const [
+                textInput,
+                animatedSearchView
+            ] = component.lookupComponentRefs(
+                `textInput`,
+                `animatedSearchView`
+            );
+
+            if (searchVisibleInitially) {
+                textInput.focus();
+                animatedSearchView.transitionTo({
+                    opacity: 1,
+                    width: SEARCH_BAR_WIDTH
+                });
+            } else {
+                textInput.blur();
+                animatedSearchView.transitionTo({
+                    opacity: 0,
+                    width: 0
+                });
+            }
+        });
+
         intf.preUpdateStage((component) => {
             const {
                 searchSuggestionRollOverCount
             } = component.props;
-
-            intf.outgoing(EVENT.ON.UPDATE_SEARCH_SUGGESTION_ROLLOVER_COUNT).emit(() => searchSuggestionRollOverCount);
-        });
-        intf.postUpdateStage((component) => {
             const {
-                minimized
-            } = component.props;
+                search,
+                searchSuggestion
+            } = component.state;
             const [
-                textInput
+                textInput,
+                animatedSearchView,
+                animatedSearchSuggestionView
             ] = component.lookupComponentRefs(
-                `textInput`
+                `textInput`,
+                `animatedSearchView`,
+                `animatedSearchSuggestionView`
             );
 
-            if (!minimized) {
+            if (search.visible) {
                 textInput.focus();
+                animatedSearchView.transitionTo({
+                    opacity: 1,
+                    width: SEARCH_BAR_WIDTH
+                });
             } else {
                 textInput.blur();
+                animatedSearchView.transitionTo({
+                    opacity: 0,
+                    width: 0
+                });
             }
+
+            if (searchSuggestion.visible) {
+                animatedSearchSuggestionView.transitionTo({
+                    opacity: 1
+                });
+            } else {
+                animatedSearchSuggestionView.transitionTo({
+                    opacity: 0
+                });
+            }
+
+            intf.outgoing(EVENT.ON.UPDATE_SEARCH_SUGGESTION_ROLLOVER_COUNT).emit(() => searchSuggestionRollOverCount);
         });
 
         done();
@@ -280,35 +307,62 @@ const SearchHeaderInterface = Hf.Interface.augment({
     onDismissKeyboard: function onDismissKeyboard () {
         dismissKeyboard();
     },
+    doHideSearch: function doHideSearch () {
+        const component = this;
+        const intf = component.getInterface();
+        const [
+            textInput
+        ] = component.lookupComponentRefs(
+            `textInput`
+        );
+
+        intf.outgoing(EVENT.ON.UPDATE_SEARCH_VISIBILITY).emit(() => false);
+        intf.outgoing(
+            EVENT.ON.UPDATE_SEARCH_ITEM_TEXT_CHANGED,
+            EVENT.ON.UPDATE_SEARCH_SUGGESTION_VISIBILITY
+        ).emit(() => false);
+        intf.outgoing(EVENT.ON.CLEAR_NON_HISTORY_ITEMS_FROM_SEARCH_SUGGESTION).emit();
+        component.onDismissKeyboard();
+        textInput.clear();
+    },
+    doShowSearch: function doShowSearch () {
+        const component = this;
+        const intf = component.getInterface();
+
+        intf.outgoing(EVENT.ON.UPDATE_SEARCH_VISIBILITY).emit(() => true);
+    },
+    doClearSearchSuggestion: function doClearSearchSuggestion () {
+        const component = this;
+        const intf = component.getInterface();
+
+        intf.outgoing(EVENT.ON.CLEAR_ALL_SEARCH_SUGGESTION).emit();
+    },
     renderSearch: function renderSearch (adjustedStyle) {
         const component = this;
         const intf = component.getInterface();
         const {
             placeholderTextColor,
             autoCorrect,
-            minimized,
             placeholder,
             onGetSearchSuggestions,
             onSearch,
             onSearchChange,
-            onClose,
-            onFocus,
-            onBlur,
-            onMinimized,
-            onMaximized
+            onSearchFocus,
+            onSearchBlur,
+            onSearchHidden,
+            onSearchVisible
         } = component.props;
         const {
-            searchItemTextChanged: showCloseButton
+            search
         } = component.state;
-        let animationType = minimized ? `searchFadeOut` : `searchFadeIn`;
 
         return (
             <AnimatedView
+                ref = { component.assignComponentRef(`animatedSearchView`) }
                 style = { adjustedStyle.search }
                 duration = { 300 }
-                animation = { animationType }
                 useNativeDriver = { false }
-                onAnimationEnd = { () => minimized ? onMinimized() : onMaximized() }
+                onAnimationEnd = { () => search.visible ? onSearchVisible() : onSearchHidden() }
             >
                 <View style = {{
                     flexDirection: `row`,
@@ -318,24 +372,7 @@ const SearchHeaderInterface = Hf.Interface.augment({
                     minHeight: SEARCH_BAR_CHILD_MIN_HEIGHT,
                     backgroundColor: `transparent`
                 }}>
-                    <TouchableOpacity
-                        onPress = {() => {
-                            const [
-                                textInput
-                            ] = component.lookupComponentRefs(
-                                `textInput`
-                            );
-
-                            intf.outgoing(
-                                EVENT.ON.UPDATE_SEARCH_ITEM_TEXT_CHANGED,
-                                EVENT.ON.UPDATE_SEARCH_SUGGESTION_VISIBILITY
-                            ).emit(() => false);
-                            intf.outgoing(EVENT.ON.CLEAR_NON_HISTORY_ITEMS_FROM_SEARCH_SUGGESTION).emit();
-                            component.onDismissKeyboard();
-                            textInput.clear();
-                            onClose();
-                        }}
-                    >
+                    <TouchableOpacity onPress = { component.doHideSearch }>
                         <Image
                             resizeMode = 'cover'
                             source = { goBackIcon }
@@ -356,8 +393,8 @@ const SearchHeaderInterface = Hf.Interface.augment({
                         ref = { component.assignComponentRef(`textInput`) }
                         autoCorrect = { autoCorrect }
                         returnKeyType = 'search'
-                        onFocus = { () => onFocus() }
-                        onBlur = { () => onBlur() }
+                        onFocus = { () => onSearchFocus() }
+                        onBlur = { () => onSearchBlur() }
                         onChange = {(event) => {
                             const searchSuggestions = onGetSearchSuggestions();
 
@@ -391,33 +428,33 @@ const SearchHeaderInterface = Hf.Interface.augment({
                         }}
                         placeholder = { placeholder }
                         placeholderTextColor = { Hf.isEmpty(placeholderTextColor) ? `#bdbdbd` : placeholderTextColor }
-                        style = { adjustedStyle.inputText }
+                        style = { adjustedStyle.searchText }
                     />
                 </View>
-                {
-                    !showCloseButton ?
-                    <View style = {{
-                        minWidth: SEARCH_BAR_CHILD_MIN_WIDTH,
-                        minHeight: SEARCH_BAR_CHILD_MIN_HEIGHT,
-                        backgroundColor: `transparent`
-                    }}/> :
-                    <View style = {{
-                        flexDirection: `row`,
-                        alignItems: `center`,
-                        justifyContent: `center`,
-                        minWidth: SEARCH_BAR_CHILD_MIN_WIDTH,
-                        minHeight: SEARCH_BAR_CHILD_MIN_HEIGHT,
-                        backgroundColor: `transparent`
-                    }}>
-                        <TouchableOpacity onPress = { component.onClear }>
-                            <Image
-                                resizeMode = 'cover'
-                                source = { closeIcon }
-                                style = { adjustedStyle.icon }
-                            />
-                        </TouchableOpacity>
-                    </View>
-                }
+            {
+                !search.itemTextChanged ?
+                <View style = {{
+                    minWidth: SEARCH_BAR_CHILD_MIN_WIDTH,
+                    minHeight: SEARCH_BAR_CHILD_MIN_HEIGHT,
+                    backgroundColor: `transparent`
+                }}/> :
+                <View style = {{
+                    flexDirection: `row`,
+                    alignItems: `center`,
+                    justifyContent: `center`,
+                    minWidth: SEARCH_BAR_CHILD_MIN_WIDTH,
+                    minHeight: SEARCH_BAR_CHILD_MIN_HEIGHT,
+                    backgroundColor: `transparent`
+                }}>
+                    <TouchableOpacity onPress = { component.onClear }>
+                        <Image
+                            resizeMode = 'cover'
+                            source = { closeIcon }
+                            style = { adjustedStyle.icon }
+                        />
+                    </TouchableOpacity>
+                </View>
+            }
             </AnimatedView>
         );
     },
@@ -425,13 +462,13 @@ const SearchHeaderInterface = Hf.Interface.augment({
         const component = this;
         const intf = component.getInterface();
         const {
-            searchItemText,
+            search,
             searchSuggestion
         } = component.state;
 
         return (
             <AnimatedView
-                animation = { searchSuggestion.visible ? `fadeIn` : `fadeOut` }
+                ref = { component.assignComponentRef(`animatedSearchSuggestionView`) }
                 duration = { 300 }
                 useNativeDriver = { false }
                 style = { adjustedStyle.searchSuggestion }
@@ -442,7 +479,7 @@ const SearchHeaderInterface = Hf.Interface.augment({
                 }}>
                 {
                     searchSuggestion.items.filter((item) => {
-                        return !Hf.isEmpty(item.text) && item.text.toLowerCase().includes(searchItemText.toLowerCase());
+                        return !Hf.isEmpty(item.text) && item.text.toLowerCase().includes(search.itemText.toLowerCase());
                     }).map((item, index) => {
                         return (
                             <TouchableOpacity
@@ -493,22 +530,17 @@ const SearchHeaderInterface = Hf.Interface.augment({
         const component = this;
         const {
             iconColor,
-            inputTextColor,
+            searchTextColor,
             searchSuggestionItemTextColor,
-            statusBarHeightOffet,
+            statusHeightOffet,
             enableSearchSuggestion,
             dropShadow,
-            minimized,
             style
         } = component.props;
-        const {
-            searchSuggestion
-        } = component.state;
-        const showSearchSuggestion = !minimized && enableSearchSuggestion && !Hf.isEmpty(searchSuggestion.items);
 
         let adjustedStyle = Hf.merge(DEFAULT_SEARCH_HEADER_VIEW_STYLE).with({
             container: {
-                top: statusBarHeightOffet
+                top: statusHeightOffet
             },
             search: dropShadow ? {
                 ...DEFAULT_DROP_SHADOW_STYLE
@@ -516,8 +548,8 @@ const SearchHeaderInterface = Hf.Interface.augment({
             searchSuggestion: dropShadow ? {
                 ...DEFAULT_DROP_SHADOW_STYLE
             } : {},
-            inputText: Hf.merge(DEFAULT_SEARCH_HEADER_VIEW_STYLE.inputText).with({
-                color: Hf.isEmpty(inputTextColor) ? DEFAULT_SEARCH_HEADER_VIEW_STYLE.inputText.color : inputTextColor
+            searchText: Hf.merge(DEFAULT_SEARCH_HEADER_VIEW_STYLE.searchText).with({
+                color: Hf.isEmpty(searchTextColor) ? DEFAULT_SEARCH_HEADER_VIEW_STYLE.searchText.color : searchTextColor
             }),
             searchSuggestionItemText: Hf.merge(DEFAULT_SEARCH_HEADER_VIEW_STYLE.searchSuggestionItemText).with({
                 color: Hf.isEmpty(searchSuggestionItemTextColor) ? DEFAULT_SEARCH_HEADER_VIEW_STYLE.searchSuggestionItemText.color : searchSuggestionItemTextColor
@@ -538,7 +570,7 @@ const SearchHeaderInterface = Hf.Interface.augment({
                 component.renderSearch(adjustedStyle)
             }
             {
-                !showSearchSuggestion ? null : component.renderSuggestions(adjustedStyle)
+                !enableSearchSuggestion ? null : component.renderSuggestions(adjustedStyle)
             }
             </View>
         );

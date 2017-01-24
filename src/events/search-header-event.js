@@ -27,17 +27,18 @@ import { Hf } from 'hyperflow';
 
 const searchHeaderEventMap = {
     onEvents: [
+        `clear-all-search-suggestion`,
         `clear-non-history-items-from-search-suggestion`,
         `add-items-to-search-suggestion`,
 
-        `update-minimization`,
+        `update-search-visibility`,
         `update-search-item-text`,
         `update-search-item-text-changed`,
         `update-search-suggestion-visibility`,
         `update-search-suggestion-rollover-count`
     ],
     doEvents: [
-        `mutate-minimization`,
+        `mutate-search-visibility`,
         `mutate-search-item-text`,
         `mutate-search-item-text-changed`,
         `mutate-search-suggestion`,

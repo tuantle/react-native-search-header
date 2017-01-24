@@ -49,12 +49,27 @@ const SearchHeaderDomain = Hf.Domain.augment({
     setup: function setup (done) {
         const domain = this;
 
-        domain.incoming(EVENT.ON.UPDATE_MINIMIZATION).forward(EVENT.DO.MUTATE_MINIMIZATION);
+        domain.incoming(EVENT.ON.UPDATE_SEARCH_VISIBILITY).forward(EVENT.DO.MUTATE_SEARCH_VISIBILITY);
         domain.incoming(EVENT.ON.UPDATE_SEARCH_ITEM_TEXT).forward(EVENT.DO.MUTATE_SEARCH_ITEM_TEXT);
         domain.incoming(EVENT.ON.UPDATE_SEARCH_ITEM_TEXT_CHANGED).forward(EVENT.DO.MUTATE_SEARCH_ITEM_TEXT_CHANGED);
         domain.incoming(EVENT.ON.UPDATE_SEARCH_SUGGESTION_VISIBILITY).forward(EVENT.DO.MUTATE_SEARCH_SUGGESTION_VISIBILITY);
         domain.incoming(EVENT.ON.UPDATE_SEARCH_SUGGESTION_ROLLOVER_COUNT).forward(EVENT.DO.MUTATE_SEARCH_SUGGESTION_ROLLOVER_COUNT);
 
+        domain.incoming(EVENT.ON.CLEAR_ALL_SEARCH_SUGGESTION).handle(() => {
+            return function mutateSearchSuggestion (state) {
+                let {
+                    items
+                } = state.searchSuggestion;
+                return {
+                    searchSuggestion: {
+                        items: items.map((item) => {
+                            item.text = ``;
+                            return item;
+                        })
+                    }
+                };
+            };
+        }).relay(EVENT.DO.MUTATE_SEARCH_SUGGESTION);
         domain.incoming(EVENT.ON.CLEAR_NON_HISTORY_ITEMS_FROM_SEARCH_SUGGESTION).handle(() => {
             return function mutateSearchSuggestion (state) {
                 let {
@@ -98,8 +113,8 @@ const SearchHeaderDomain = Hf.Domain.augment({
                     });
                     return {
                         searchSuggestion: {
-                            items,
-                            index
+                            index,
+                            items
                         }
                     };
                 } else { // eslint-disable-line

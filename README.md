@@ -89,9 +89,6 @@ export default class Demo extends Component {
         context : Object
     ) {
         super(props, context);
-        this.state = {
-            searchMode: false
-        };
     }
     render () {
         return (
@@ -102,19 +99,16 @@ export default class Demo extends Component {
                     <Text style = { styles.label }>Demo</Text>
                 </View>
                 <SearchHeader
-                    statusBarHeightOffet = { 21 }
-                    minimized = { !this.state.searchMode }
-                    onClose = {() => this.setState({
-                        searchMode: false
-                    })}
+                    ref = {(searchHeader) => {
+                        this.searchHeader = searchHeader;
+                    }}
+                    statusHeightOffet = { 21 }
                 />
                 <View style = { styles.button }>
                     <Button
                         title = 'Open Search'
                         color = '#f5fcff'
-                        onPress = {() => this.setState({
-                            searchMode: true
-                        })}
+                        onPress = {() => this.searchHeader.doShowSearch()}
                     />
                 </View>
             </View>
@@ -125,34 +119,43 @@ export default class Demo extends Component {
 AppRegistry.registerComponent('Demo', () => Demo);
 ```
 
+## Public Methods Access via Reference
+
+    These are methods that are accessible via "ref":
+
+Methods | description
+-----|------
+doShowSearch | Call to show the SearchHeader.
+doHideSearch | Call to hide the SearchHeader.
+doClearSearchSuggestion | Call to clear search suggestion list.
+
 ## Props
 
 Below are the props you can pass to the React Component to customize the SearchHeader.
 
 Prop | Type | Default | description
 -----|------|---------|------------
-textInputColor | string | #5d5d5d | Text input color.
-textInputPlaceholderColor | string | #bdbdbd | Text input placeholder color.
+searchTextColor | string | #5d5d5d | Search text input color.
+placeholderTextColor | string | #bdbdbd | Text input placeholder color.
 iconColor | string | #5d5d5d | SearchHeader component icon button color.
-statusBarHeightOffet | number | 21 | The offset above the SearchHeader component. Usually where the phone status is. 
-dropShadow | boolean | true | Enable dropshow styling.
-minimized | boolean | false | Set to false to minimize and to true to maximze the SearchHeader component.
+statusHeightOffet | number | 21 | The offset above the SearchHeader component. Usually where the phone status is.
+dropShadow | boolean | true | Enable drop shadow styling.
+searchVisibleInitially | boolean | false | Set to false to hide and to true to show the SearchHeader component.
 autoCorrect | boolean | true | Enable text input autocorrect.
 enableSearchSuggestion | boolean | true | When enabled, search suggestion list will be display accordingly.
 searchSuggestionRollOverCount | number | 16 | The max number of search suggestion items.
 placeholder | string | "Search..." | A string placeholder when there is no text in text input.
-onGetSearchSuggestions | function | None | This function is called during search change to get a string array of search suggestions.
+onGetSearchSuggestions | function | None | This function is called during search change (componenWillUpdate) to get a string array of search suggestions.
 onSearch | function | None | This function is called after return/done key is pressed. Return text input event.
 onSearchChange | function | None | This function is called after text is entered/changed in text input. Return text input event.
-onClose | function | None | This function is called when SearchHeader close button is pressed.
-onFocus | function | None | This function is called when text input in focused.
-onBlur | function | None | This function is called when text input in blurred.
-onMinimized | function | None | This function is called right after minimization animation is completed.
-onMaximized | function | None | This function is called right after maximization animation is completed.
+onSearchFocus | function | None | This function is called when text input in focused.
+onSearchBlur | function | None | This function is called when text input in blurred.
+onSearchHidden | function | None | This function is called right after hide animation is completed.
+onSearchVisible | function | None | This function is called right after show animation is completed.
 
 ### Style Overrides
 
-SearchHeader component default style can be overided. Below are examples of how to override each default style element.
+SearchHeader component default style can be override. Below are examples of how to override each default style element.
 
 ```js
 <SearchHeader
@@ -160,14 +163,14 @@ SearchHeader component default style can be overided. Below are examples of how 
 		container: {
 			...myContainerStyle
 		},
-		searchBar: {
-			...mySearchBarStyle
+		search: {
+			...mySearchStyle
 		},
 		searchSuggestion: {
 			...mySearchSuggestionStyle
 		},
-		textInput: {
-			...myTextInputStyle
+		searchText: {
+			...mySearchTextStyle
 		},
 		searchSuggestionItemText: {
 			...mySearchSuggestionItemTextStyle
@@ -180,9 +183,50 @@ SearchHeader component default style can be overided. Below are examples of how 
 ```
 
 ## Change Log
-- Link to [change log](https://github.com/tuantle/react-native-search-header/tree/master/CHANGELOG.md)
+
+**Release Version 0.1.0 (01/22/2017)**
+```
+Notes:
+    - Initial commit with features
+	    Search header component based on material design.
+	    Search suggestions and history with autocomplete. patterns
+New Features:
+Breaking Changes:
+Improvements:
+Bug fixes:
+```
+**Release Version 0.1.1 (01/23/2017)**
+```
+Notes:
+	- Update to latest hyperflow version.
+New Features:
+Breaking Changes:
+Improvements:
+Bug fixes:
+```
+**Release Version 0.1.2 (01/23/2017)**
+```
+Notes:
+	- Update to latest hyperflow version.
+New Features:
+Breaking Changes:
+    - Props renaming:
+        statusBarHeightOffet      -> statusHeightOffet
+        textInputPlaceholderColor -> placeholderTextColor
+        minimized                 -> searchVisibleInitially
+        onBlur                    -> onSearchBlur
+        onFocus                   -> onSearchFocus
+        onMinimized               -> onSearchHidden
+        onMaximized               -> onSearchVisible
+Improvements:
+    - Added public methods access via "ref"
+Bug fixes:
+```
 
 ## TODO
+
+-   Fix flashing animation issue.
+-   Fix react "refs" warning message.
 
 ## License
 
