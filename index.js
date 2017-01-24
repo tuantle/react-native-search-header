@@ -34,5 +34,7 @@ const { SearchHeaderApplet } = require('./src/search-header-applet');
 export default function SearchHeaderComponent () {
     return SearchHeaderApplet({
         name: `search-header-view`
-    }).toStandaloneComponent();
+    }).getTopComponent({
+        doConvertToStandaloneComponent: true
+    });
 }
