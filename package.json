@@ -1,6 +1,6 @@
 {
     "name": "react-native-search-header",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "registry": "github",
     "description": "A react native search header component based on material design patterns.",
     "authors": [
