@@ -1,4 +1,4 @@
-# react-native-seach-header
+# react-native-seach-header [![npm version](https://img.shields.io/npm/v/react-native-search-header.svg?style=flat)](https://www.npmjs.com/package/react-native-search-header)
 Easy to use React Native search header component based on material design patterns.
 This react native component was built with [hyperflow](http://github.com/tuantle/hyperflow) (a state management and mutation tool).
 
@@ -261,4 +261,4 @@ Bug fixes:
 
 ## License
 
-Hyperflow is [MIT licensed](./LICENSE).
+[MIT licensed](./LICENSE).
