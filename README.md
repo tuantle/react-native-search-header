@@ -245,6 +245,7 @@ Bug fixes:
 ## TODO
 
 -   Fix react "refs" warning message.
+-   Fix RCTView shadow warnining message.
 
 ## License
 
