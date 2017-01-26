@@ -1,6 +1,6 @@
 {
     "name": "react-native-search-header",
-    "version": "0.1.3",
+    "version": "0.1.4",
     "registry": "github",
     "description": "A react native search header component based on material design patterns.",
     "authors": [
@@ -28,10 +28,10 @@
     },
     "peerDependencies": {
         "react": "=15.4.1",
-		"react-native": "=0.40.0"
+        "react-native": "=0.40.0"
     },
     "dependencies": {
-        "hyperflow": "=0.1.0-beta24",
+        "hyperflow": "=0.1.0-beta25",
         "react-native-animatable": "^1.1.0"
     },
     "devDependencies": {
@@ -50,12 +50,5 @@
         "babel-eslint": "^7.1.1",
         "eslint-plugin-react": "^6.8.0",
         "eslint-plugin-react-native": "^2.2.1"
-    },
-    "modulePathIgnorePatterns": [
-        "/node_modules/"
-    ],
-    "testPathIgnorePatterns": [
-        "/tests/",
-        "/examples/"
-    ]
+    }
 }

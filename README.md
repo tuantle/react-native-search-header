@@ -146,6 +146,7 @@ autoCorrect | boolean | true | Enable text input autocorrect.
 enableSearchSuggestion | boolean | true | When enabled, search suggestion list will be display accordingly.
 searchSuggestionRollOverCount | number | 16 | The max number of search suggestion items.
 placeholder | string | "Search..." | A string placeholder when there is no text in text input.
+entryAnimation | string | "from-left-side" | Set the direction of SearchHeader entry animation. Possible values are [ "from-left-side", "from-right-side" ]
 onGetSearchSuggestions | function | None | This function is called during search change (componenWillUpdate) to get a string array of search suggestions.
 onSearch | function | None | This function is called after return/done key is pressed. Return text input event.
 onSearchChange | function | None | This function is called after text is entered/changed in text input. Return text input event.
@@ -223,7 +224,7 @@ Improvements:
     - Added public methods access via "ref"
 Bug fixes:
 ```
-**Release Version 0.1.3 (01/23/2017)**
+**Release Version 0.1.3 (01/25/2017)**
 ```
 Notes:
 	- Update to latest hyperflow version.
@@ -242,9 +243,21 @@ Improvements:
 Bug fixes:
     - Fixed issue with search container covering underlining components when hidden.
 ```
+**Release Version 0.1.4 (01/26/2017)**
+```
+Notes:
+	- Update to latest hyperflow version.
+New Features:
+    - New prop "entryAnimation" for setting SearchHeader entry animation direction.
+Breaking Changes:
+Improvements:
+    - Added public methods access via "ref"
+Bug fixes:
+    - Fixed react "refs" warning message.
+```
 ## TODO
 
--   Fix react "refs" warning message.
+-   Fix RCTView shadow warning message.
 
 ## License
 

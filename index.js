@@ -36,7 +36,7 @@ export default function SearchHeaderComponent () {
         name: `search-header-view`
     }).getTopComponent({
         doConvertToStandaloneComponent: true,
-        exceptionKeys: [
+        componentMethodAndPropertyInclusions: [
             `show`,
             `hide`,
             `clearSearchSuggestion`
