@@ -34,7 +34,7 @@ import { View as AnimatedView } from 'react-native-animatable';
 
 import dismissKeyboard from 'react-native/Libraries/Utilities/dismissKeyboard';
 
-import goBackIcon from '../../assets/icons/back-3x.png';
+import hideIcon from '../../assets/icons/hide-3x.png';
 import closeIcon from '../../assets/icons/close-3x.png';
 import restoreIcon from '../../assets/icons/restore-3x.png';
 import searchIcon from '../../assets/icons/search-3x.png';
@@ -68,11 +68,12 @@ const DEFAULT_DROP_SHADOW_STYLE = {
 const DEFAULT_SEARCH_HEADER_VIEW_STYLE = {
     container: {
         position: `absolute`,
+        alignItems: `stretch`,
+        justifyContent: `flex-start`,
         zIndex: 10,
         elevation: 2,
         top: 0,
-        alignItems: `stretch`,
-        justifyContent: `flex-start`,
+        width: DEVICE_WIDTH,
         marginBottom: 6,
         backgroundColor: `transparent`,
         overflow: `hidden`
@@ -172,6 +173,10 @@ const SearchHeaderInterface = Hf.Interface.augment({
             value: `Search...`,
             stronglyTyped: true
         },
+        entryAnimation: {
+            value: `from-left-side`,
+            oneOf: [ `from-left-side`, `from-right-side` ]
+        },
         onGetSearchSuggestions: {
             value: () => [],
             stronglyTyped: true
@@ -214,7 +219,8 @@ const SearchHeaderInterface = Hf.Interface.augment({
 
         intf.postUpdateStage((component) => {
             const {
-                searchSuggestionRollOverCount
+                searchSuggestionRollOverCount,
+                entryAnimation
             } = component.props;
             const {
                 visible,
@@ -234,25 +240,33 @@ const SearchHeaderInterface = Hf.Interface.augment({
                 searchTextInput.focus();
                 animatedSearchHeaderView.transitionTo({
                     opacity: 1,
-                    width: DEVICE_WIDTH
+                    translateX: 0
                 });
             } else {
                 searchTextInput.blur();
-                animatedSearchHeaderView.transitionTo({
-                    opacity: 0,
-                    width: 0
-                });
+                if (entryAnimation === `from-right-side`) {
+                    animatedSearchHeaderView.transitionTo({
+                        opacity: 0,
+                        translateX: DEVICE_WIDTH
+                    });
+                }
+                if (entryAnimation === `from-left-side`) {
+                    animatedSearchHeaderView.transitionTo({
+                        opacity: 0,
+                        translateX: -DEVICE_WIDTH
+                    });
+                }
             }
 
             if (searchSuggestion.visible) {
                 animatedSearchSuggestionView.transitionTo({
                     opacity: 1,
-                    maxHeight: DEVICE_HEIGHT
+                    translateY: 0
                 });
             } else {
                 animatedSearchSuggestionView.transitionTo({
                     opacity: 0,
-                    minHeight: 0
+                    translateY: DEVICE_HEIGHT
                 });
             }
 
@@ -348,7 +362,7 @@ const SearchHeaderInterface = Hf.Interface.augment({
                     <TouchableOpacity onPress = { component.onHideSearch }>
                         <Image
                             resizeMode = 'cover'
-                            source = { goBackIcon }
+                            source = { hideIcon }
                             style = { adjustedStyle.icon }
                         />
                     </TouchableOpacity>
@@ -445,7 +459,7 @@ const SearchHeaderInterface = Hf.Interface.augment({
             <AnimatedView
                 ref = { component.assignComponentRef(`animatedSearchSuggestionView`) }
                 duration = { 300 }
-                useNativeDriver = { false }
+                useNativeDriver = { true }
                 style = { adjustedStyle.searchSuggestion }
             >
                 <ScrollView style = {{
@@ -511,6 +525,7 @@ const SearchHeaderInterface = Hf.Interface.augment({
             enableSearchSuggestion,
             dropShadow,
             visibleInitially,
+            entryAnimation,
             style,
             onVisible,
             onHidden
@@ -523,10 +538,30 @@ const SearchHeaderInterface = Hf.Interface.augment({
             container: dropShadow ? {
                 ...DEFAULT_DROP_SHADOW_STYLE,
                 top: statusHeightOffet,
-                width: visibleInitially ? DEVICE_WIDTH : 0
+                transform: [{
+                    translateX: (() => {
+                        if (visibleInitially) {
+                            return 0;
+                        } else if (!visibleInitially && entryAnimation === `from-left-side`) {
+                            return -DEVICE_WIDTH;
+                        } else if (!visibleInitially && entryAnimation === `from-right-side`) {
+                            return DEVICE_WIDTH;
+                        }
+                    })()
+                }]
             } : {
                 top: statusHeightOffet,
-                width: visibleInitially ? DEVICE_WIDTH : 0
+                transform: [{
+                    translateX: (() => {
+                        if (visibleInitially) {
+                            return 0;
+                        } else if (!visibleInitially && entryAnimation === `from-left-side`) {
+                            return -DEVICE_WIDTH;
+                        } else if (!visibleInitially && entryAnimation === `from-right-side`) {
+                            return DEVICE_WIDTH;
+                        }
+                    })()
+                }]
             },
             searchSuggestion: dropShadow ? {
                 ...DEFAULT_DROP_SHADOW_STYLE
@@ -549,7 +584,7 @@ const SearchHeaderInterface = Hf.Interface.augment({
                 ref = { component.assignComponentRef(`animatedSearchHeaderView`) }
                 style = { adjustedStyle.container }
                 duration = { 300 }
-                useNativeDriver = { false }
+                useNativeDriver = { true }
                 onAnimationEnd = { () => visible ? onVisible() : onHidden() }
                 onStartShouldSetResponder = { component.onDismissKeyboard }
             >
