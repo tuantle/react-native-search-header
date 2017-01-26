@@ -108,7 +108,7 @@ export default class Demo extends Component {
                     <Button
                         title = 'Open Search'
                         color = '#f5fcff'
-                        onPress = {() => this.searchHeader.doShowSearch()}
+                        onPress = {() => this.searchHeader.show()}
                     />
                 </View>
             </View>
@@ -125,9 +125,9 @@ AppRegistry.registerComponent('Demo', () => Demo);
 
 Methods | description
 -----|------
-doShowSearch | Call to show the SearchHeader.
-doHideSearch | Call to hide the SearchHeader.
-doClearSearchSuggestion | Call to clear search suggestion list.
+show | Call to show the SearchHeader.
+hide | Call to hide the SearchHeader.
+clearSearchSuggestion | Call to clear search suggestion list.
 
 ## Props
 
@@ -135,12 +135,13 @@ Below are the props you can pass to the React Component to customize the SearchH
 
 Prop | Type | Default | description
 -----|------|---------|------------
-searchTextColor | string | #5d5d5d | Search text input color.
+searchInputTextColor | string | #5d5d5d | Search text input color.
 placeholderTextColor | string | #bdbdbd | Text input placeholder color.
+searchSuggestionTextColor | string | #bdbdbd | Search suggestion text color.
 iconColor | string | #5d5d5d | SearchHeader component icon button color.
 statusHeightOffet | number | 21 | The offset above the SearchHeader component. Usually where the phone status is.
 dropShadow | boolean | true | Enable drop shadow styling.
-searchVisibleInitially | boolean | false | Set to false to hide and to true to show the SearchHeader component.
+visibleInitially | boolean | false | Set to false to hide and to true to show the SearchHeader component.
 autoCorrect | boolean | true | Enable text input autocorrect.
 enableSearchSuggestion | boolean | true | When enabled, search suggestion list will be display accordingly.
 searchSuggestionRollOverCount | number | 16 | The max number of search suggestion items.
@@ -148,10 +149,10 @@ placeholder | string | "Search..." | A string placeholder when there is no text 
 onGetSearchSuggestions | function | None | This function is called during search change (componenWillUpdate) to get a string array of search suggestions.
 onSearch | function | None | This function is called after return/done key is pressed. Return text input event.
 onSearchChange | function | None | This function is called after text is entered/changed in text input. Return text input event.
-onSearchFocus | function | None | This function is called when text input in focused.
-onSearchBlur | function | None | This function is called when text input in blurred.
-onSearchHidden | function | None | This function is called right after hide animation is completed.
-onSearchVisible | function | None | This function is called right after show animation is completed.
+onFocus | function | None | This function is called when text input in focused.
+onBlur | function | None | This function is called when text input in blurred.
+onHidden | function | None | This function is called right after hide animation is completed.
+onVisible | function | None | This function is called right after show animation is completed.
 
 ### Style Overrides
 
@@ -163,17 +164,17 @@ SearchHeader component default style can be override. Below are examples of how 
 		container: {
 			...myContainerStyle
 		},
-		search: {
-			...mySearchStyle
+		searchInput: {
+			...mySearchInputStyle
 		},
 		searchSuggestion: {
 			...mySearchSuggestionStyle
 		},
-		searchText: {
+		searchInputText: {
 			...mySearchTextStyle
 		},
-		searchSuggestionItemText: {
-			...mySearchSuggestionItemTextStyle
+		searchSuggestionText: {
+			...mySearchSuggestionTextStyle
 		},
 		icon: {
 			...myIconStyle
@@ -222,10 +223,27 @@ Improvements:
     - Added public methods access via "ref"
 Bug fixes:
 ```
-
+**Release Version 0.1.3 (01/23/2017)**
+```
+Notes:
+	- Update to latest hyperflow version.
+New Features:
+Breaking Changes:
+    - Props renaming:
+        searchTextColor               -> searchInputTextColor
+        searchSuggestionItemTextColor -> searchSuggestionTextColor
+        searchVisibleInitially        -> visibleInitially
+        onSearchBlur                  -> onBlur
+        onSearchFocus                 -> onFocus
+        onMinimized                   -> onHidden
+        onMaximized                   -> onVisible
+Improvements:
+    - Added public methods access via "ref"
+Bug fixes:
+    - Fixed issue with search container covering underlining components when hidden.
+```
 ## TODO
 
--   Fix flashing animation issue.
 -   Fix react "refs" warning message.
 
 ## License

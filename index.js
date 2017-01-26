@@ -25,7 +25,7 @@
 /* load and initialize hyperflow */
 require('hyperflow').init({
     target: `client-native`,
-    enableProductionMode: `production`
+    enableProductionMode: true
 });
 
 /* load search header applet */
@@ -35,6 +35,11 @@ export default function SearchHeaderComponent () {
     return SearchHeaderApplet({
         name: `search-header-view`
     }).getTopComponent({
-        doConvertToStandaloneComponent: true
+        doConvertToStandaloneComponent: true,
+        exceptionKeys: [
+            `show`,
+            `hide`,
+            `clearSearchSuggestion`
+        ]
     });
 }
