@@ -25,27 +25,25 @@
 
 import { Hf } from 'hyperflow';
 
-const searchHeaderEventMap = {
+export default Hf.Event.create({
     onEvents: [
-        `clear-all-search-suggestion`,
+        `clear-all-items-from-search-suggestion`,
         `clear-non-history-items-from-search-suggestion`,
         `add-items-to-search-suggestion`,
 
-        `update-search-visibility`,
-        `update-search-item-text`,
-        `update-search-item-text-changed`,
+        `update-search-header-visibility`,
+        `update-search-input-item-text`,
+        `update-search-input-item-text-changed`,
         `update-search-suggestion-visibility`,
         `update-search-suggestion-rollover-count`
     ],
     doEvents: [
-        `mutate-search-visibility`,
-        `mutate-search-item-text`,
-        `mutate-search-item-text-changed`,
+        `mutate-search-header-visibility`,
+        `mutate-search-input-item-text`,
+        `mutate-search-input-item-text-changed`,
         `mutate-search-suggestion`,
         `mutate-search-suggestion-visibility`,
         `mutate-search-suggestion-rollover-count`
 
     ]
-};
-
-export default Hf.Event.create(searchHeaderEventMap);
+});
