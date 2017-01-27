@@ -32,6 +32,7 @@ export default Hf.Event.create({
         `add-items-to-search-suggestion`,
 
         `update-search-header-visibility`,
+        `update-search-input-focus`,
         `update-search-input-item-text`,
         `update-search-input-item-text-changed`,
         `update-search-suggestion-visibility`,
@@ -39,6 +40,7 @@ export default Hf.Event.create({
     ],
     doEvents: [
         `mutate-search-header-visibility`,
+        `mutate-search-input-focus`,
         `mutate-search-input-item-text`,
         `mutate-search-input-item-text-changed`,
         `mutate-search-suggestion`,
