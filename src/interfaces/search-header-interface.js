@@ -36,7 +36,8 @@ import dismissKeyboard from 'react-native/Libraries/Utilities/dismissKeyboard';
 
 import hideIcon from '../../assets/icons/hide-3x.png';
 import closeIcon from '../../assets/icons/close-3x.png';
-import restoreIcon from '../../assets/icons/restore-3x.png';
+import historyIcon from '../../assets/icons/history-3x.png';
+import recallIcon from '../../assets/icons/recall-3x.png';
 import searchIcon from '../../assets/icons/search-3x.png';
 
 import EVENT from '../events/search-header-event';
@@ -89,7 +90,7 @@ const DEFAULT_SEARCH_HEADER_VIEW_STYLE = {
     searchSuggestion: {
         flexGrow: 1,
         flexDirection: `column`,
-        alignItems: `flex-start`,
+        alignItems: `stretch`,
         justifyContent: `center`,
         paddingLeft: 12,
         marginVertical: 6,
@@ -214,7 +215,9 @@ const SearchHeaderInterface = Hf.Interface.augment({
                 visibleInitially
             } = component.props;
 
-            intf.outgoing(EVENT.ON.UPDATE_SEARCH_HEADER_VISIBILITY).emit(() => visibleInitially);
+            if (visibleInitially) {
+                intf.outgoing(EVENT.ON.UPDATE_SEARCH_HEADER_VISIBILITY).emit(() => true);
+            }
         });
 
         intf.postUpdateStage((component) => {
@@ -224,6 +227,7 @@ const SearchHeaderInterface = Hf.Interface.augment({
             } = component.props;
             const {
                 visible,
+                searchInput,
                 searchSuggestion
             } = component.state;
             const [
@@ -236,14 +240,18 @@ const SearchHeaderInterface = Hf.Interface.augment({
                 `animatedSearchSuggestionView`
             );
 
-            if (visible) {
+            if (searchInput.focus) {
                 searchTextInput.focus();
+            } else {
+                searchTextInput.blur();
+            }
+
+            if (visible) {
                 animatedSearchHeaderView.transitionTo({
                     opacity: 1,
                     translateX: 0
                 });
             } else {
-                searchTextInput.blur();
                 if (entryAnimation === `from-right-side`) {
                     animatedSearchHeaderView.transitionTo({
                         opacity: 0,
@@ -296,10 +304,11 @@ const SearchHeaderInterface = Hf.Interface.augment({
             `searchTextInput`
         );
 
-        intf.outgoing(EVENT.ON.UPDATE_SEARCH_HEADER_VISIBILITY).emit(() => false);
         intf.outgoing(
-            EVENT.ON.UPDATE_SEARCH_INPUT_ITEM_TEXT_CHANGED,
-            EVENT.ON.UPDATE_SEARCH_SUGGESTION_VISIBILITY
+            EVENT.ON.UPDATE_SEARCH_HEADER_VISIBILITY,
+            EVENT.ON.UPDATE_SEARCH_SUGGESTION_VISIBILITY,
+            EVENT.ON.UPDATE_SEARCH_INPUT_FOCUS,
+            EVENT.ON.UPDATE_SEARCH_INPUT_ITEM_TEXT_CHANGED
         ).emit(() => false);
         intf.outgoing(EVENT.ON.CLEAR_NON_HISTORY_ITEMS_FROM_SEARCH_SUGGESTION).emit();
         component.onDismissKeyboard();
@@ -309,7 +318,10 @@ const SearchHeaderInterface = Hf.Interface.augment({
         const component = this;
         const intf = component.getInterface();
 
-        intf.outgoing(EVENT.ON.UPDATE_SEARCH_HEADER_VISIBILITY).emit(() => true);
+        intf.outgoing(
+            EVENT.ON.UPDATE_SEARCH_HEADER_VISIBILITY,
+            EVENT.ON.UPDATE_SEARCH_INPUT_FOCUS
+        ).emit(() => true);
     },
     onClearSearchSuggestion: function onClearSearchSuggestion () {
         const component = this;
@@ -330,6 +342,10 @@ const SearchHeaderInterface = Hf.Interface.augment({
         intf.outgoing(EVENT.ON.UPDATE_SEARCH_INPUT_ITEM_TEXT_CHANGED).emit(() => false);
     },
     onDismissKeyboard: function onDismissKeyboard () {
+        const component = this;
+        const intf = component.getInterface();
+
+        intf.outgoing(EVENT.ON.UPDATE_SEARCH_INPUT_FOCUS).emit(() => false);
         dismissKeyboard();
     },
     renderSearchInput: function renderSearchInput (adjustedStyle) {
@@ -395,6 +411,7 @@ const SearchHeaderInterface = Hf.Interface.augment({
                                 });
                             }
                             intf.outgoing(EVENT.ON.UPDATE_SEARCH_INPUT_ITEM_TEXT).emit(() => event.nativeEvent.text);
+                            intf.outgoing(EVENT.ON.UPDATE_SEARCH_INPUT_FOCUS).emit(() => true);
                             intf.outgoing(
                                 EVENT.ON.UPDATE_SEARCH_INPUT_ITEM_TEXT_CHANGED,
                                 EVENT.ON.UPDATE_SEARCH_SUGGESTION_VISIBILITY
@@ -411,8 +428,11 @@ const SearchHeaderInterface = Hf.Interface.augment({
                                     }];
                                 });
                             }
+                            intf.outgoing(
+                                EVENT.ON.UPDATE_SEARCH_INPUT_FOCUS,
+                                EVENT.ON.UPDATE_SEARCH_SUGGESTION_VISIBILITY
+                            ).emit(() => false);
                             intf.outgoing(EVENT.ON.CLEAR_NON_HISTORY_ITEMS_FROM_SEARCH_SUGGESTION).emit();
-                            intf.outgoing(EVENT.ON.UPDATE_SEARCH_SUGGESTION_VISIBILITY).emit(() => false);
                             onSearch(event);
                         }}
                         placeholder = { placeholder }
@@ -451,6 +471,10 @@ const SearchHeaderInterface = Hf.Interface.augment({
         const component = this;
         const intf = component.getInterface();
         const {
+            onSearchChange,
+            onSearch
+        } = component.props;
+        const {
             searchInput,
             searchSuggestion
         } = component.state;
@@ -482,13 +506,27 @@ const SearchHeaderInterface = Hf.Interface.augment({
                                     searchTextInput.setNativeProps({
                                         text: item.text
                                     });
+                                    intf.outgoing(EVENT.ON.UPDATE_SEARCH_INPUT_ITEM_TEXT).emit(() => item.text);
                                     intf.outgoing(EVENT.ON.UPDATE_SEARCH_INPUT_ITEM_TEXT_CHANGED).emit(() => true);
-                                    intf.outgoing(EVENT.ON.UPDATE_SEARCH_SUGGESTION_VISIBILITY).emit(() => false);
+                                    intf.outgoing(
+                                        EVENT.ON.UPDATE_SEARCH_INPUT_FOCUS,
+                                        EVENT.ON.UPDATE_SEARCH_SUGGESTION_VISIBILITY
+                                    ).emit(() => false);
+                                    intf.outgoing(EVENT.ON.CLEAR_NON_HISTORY_ITEMS_FROM_SEARCH_SUGGESTION).emit();
+                                    onSearchChange({
+                                        nativeEvent: {
+                                            text: item.text
+                                        }
+                                    });
+                                    onSearch({
+                                        nativeEvent: {
+                                            text: item.text
+                                        }
+                                    });
                                 }}>
                                 <View style = {{
                                     flexDirection: `row`,
                                     justifyContent: `center`,
-                                    alignSelf: `flex-start`,
                                     alignItems: `center`,
                                     backgroundColor: `transparent`
                                 }}>
@@ -496,7 +534,7 @@ const SearchHeaderInterface = Hf.Interface.augment({
                                     item.historyType ?
                                     <Image
                                         resizeMode = 'cover'
-                                        source = { restoreIcon }
+                                        source = { historyIcon }
                                         style = { adjustedStyle.icon }
                                     /> :
                                     <Image
@@ -506,6 +544,34 @@ const SearchHeaderInterface = Hf.Interface.augment({
                                     />
                                 }
                                     <Text style = { adjustedStyle.searchSuggestionText }>{ item.text }</Text>
+                                    <View style = {{
+                                        flexDirection: `row`,
+                                        alignItems: `center`,
+                                        justifyContent: `center`,
+                                        minWidth: 46,
+                                        minHeight: 46,
+                                        backgroundColor: `transparent`
+                                    }}>
+                                        <TouchableOpacity onPress = {() => {
+                                            const [
+                                                searchTextInput
+                                            ] = component.lookupComponentRefs(
+                                                `searchTextInput`
+                                            );
+                                            searchTextInput.setNativeProps({
+                                                text: item.text
+                                            });
+                                            searchTextInput.focus();
+                                            intf.outgoing(EVENT.ON.UPDATE_SEARCH_INPUT_ITEM_TEXT).emit(() => item.text);
+                                            intf.outgoing(EVENT.ON.UPDATE_SEARCH_INPUT_ITEM_TEXT_CHANGED).emit(() => true);
+                                        }}>
+                                            <Image
+                                                resizeMode = 'cover'
+                                                source = { recallIcon }
+                                                style = { adjustedStyle.icon }
+                                            />
+                                        </TouchableOpacity>
+                                    </View>
                                 </View>
                             </TouchableOpacity>
                         );
