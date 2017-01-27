@@ -255,6 +255,15 @@ Improvements:
 Bug fixes:
     - Fixed react "refs" warning message.
 ```
+**Release Version 0.1.4 (01/26/2017)**
+```
+Notes:
+New Features:
+Breaking Changes:
+Improvements:
+    - Improved search suggestion implementation. Matching it closer to other material design search implementations.
+Bug fixes:
+```
 ## TODO
 
 -   Fix RCTView shadow warning message.
