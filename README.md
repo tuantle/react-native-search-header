@@ -255,7 +255,7 @@ Improvements:
 Bug fixes:
     - Fixed react "refs" warning message.
 ```
-**Release Version 0.1.4 (01/26/2017)**
+**Release Version 0.1.5 (01/27/2017)**
 ```
 Notes:
 New Features:
