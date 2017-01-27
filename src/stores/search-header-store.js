@@ -36,6 +36,7 @@ const SearchHeaderStore = Hf.Store.augment({
         },
         searchInput: {
             value: {
+                focus: false,
                 itemTextChanged: false,
                 itemText: ``
             },
@@ -56,6 +57,13 @@ const SearchHeaderStore = Hf.Store.augment({
         store.incoming(EVENT.DO.MUTATE_SEARCH_HEADER_VISIBILITY).handle((visible) => {
             store.reduce({
                 visible
+            });
+        });
+        store.incoming(EVENT.DO.MUTATE_SEARCH_INPUT_FOCUS).handle((focus) => {
+            store.reduce({
+                searchInput: {
+                    focus
+                }
             });
         });
         store.incoming(EVENT.DO.MUTATE_SEARCH_INPUT_ITEM_TEXT).handle((itemText) => {
