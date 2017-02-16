@@ -16,7 +16,7 @@
  *------------------------------------------------------------------------
  *
  * @module SearchHeaderApplet
- * @description - Search header applet.
+ * @description - Search header applet instantiation and component export.
  *
  * @author Tuan Le (tuan.t.lei@gmail.com)
  *
@@ -55,4 +55,4 @@ const SearchHeaderApplet = Hf.App.augment({
     }
 });
 
-export { SearchHeaderApplet };
+export default SearchHeaderApplet;
