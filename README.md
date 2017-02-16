@@ -1,4 +1,7 @@
-# react-native-seach-header [![npm version](https://img.shields.io/npm/v/react-native-search-header.svg?style=flat)](https://www.npmjs.com/package/react-native-search-header)
+# react-native-seach-header
+[![npm version](https://img.shields.io/npm/v/react-native-search-header.svg?style=flat)](https://www.npmjs.com/package/react-native-search-header)
+[![npm downloads](https://img.shields.io/npm/dm/react-native-search-header.svg?style=flat-square)](https://www.npmjs.com/package/react-native-search-header)
+
 Easy to use React Native search header component based on material design patterns.
 This react native component was built with [hyperflow](http://github.com/tuantle/hyperflow) (a state management and mutation tool).
 
@@ -33,7 +36,6 @@ import {
     Button,
     StatusBar
 } from 'react-native';
-
 import SearchHeaderComponent from 'react-native-search-header';
 
 const DEVICE_WIDTH = Dimensions.get(`window`).width;
@@ -185,44 +187,36 @@ SearchHeader component default style can be override. Below are examples of how 
 ```
 
 ## Change Log
-
-**Release Version 0.1.0 (01/22/2017)**
+**Release Version 0.1.6 (02/16/2017)**
 ```
 Notes:
-    - Initial commit with features
-	    Search header component based on material design.
-	    Search suggestions and history with autocomplete. patterns
 New Features:
+    - Added isHidden and clear methods, accessible via "ref"
 Breaking Changes:
 Improvements:
 Bug fixes:
+    - Fixed issues with onHidden and onVisible not firing.
 ```
-**Release Version 0.1.1 (01/23/2017)**
+**Release Version 0.1.5 (01/27/2017)**
+```
+Notes:
+New Features:
+Breaking Changes:
+Improvements:
+    - Improved search suggestion implementation. Matching it closer to other material design search implementations.
+Bug fixes:
+```
+**Release Version 0.1.4 (01/26/2017)**
 ```
 Notes:
 	- Update to latest hyperflow version.
 New Features:
+    - New prop "entryAnimation" for setting SearchHeader entry animation direction.
 Breaking Changes:
-Improvements:
-Bug fixes:
-```
-**Release Version 0.1.2 (01/23/2017)**
-```
-Notes:
-	- Update to latest hyperflow version.
-New Features:
-Breaking Changes:
-    - Props renaming:
-        statusBarHeightOffet      -> statusHeightOffet
-        textInputPlaceholderColor -> placeholderTextColor
-        minimized                 -> searchVisibleInitially
-        onBlur                    -> onSearchBlur
-        onFocus                   -> onSearchFocus
-        onMinimized               -> onSearchHidden
-        onMaximized               -> onSearchVisible
 Improvements:
     - Added public methods access via "ref"
 Bug fixes:
+    - Fixed react "refs" warning message.
 ```
 **Release Version 0.1.3 (01/25/2017)**
 ```
@@ -243,27 +237,45 @@ Improvements:
 Bug fixes:
     - Fixed issue with search container covering underlining components when hidden.
 ```
-**Release Version 0.1.4 (01/26/2017)**
+**Release Version 0.1.2 (01/23/2017)**
 ```
 Notes:
 	- Update to latest hyperflow version.
 New Features:
-    - New prop "entryAnimation" for setting SearchHeader entry animation direction.
 Breaking Changes:
+    - Props renaming:
+        statusBarHeightOffet      -> statusHeightOffet
+        textInputPlaceholderColor -> placeholderTextColor
+        minimized                 -> searchVisibleInitially
+        onBlur                    -> onSearchBlur
+        onFocus                   -> onSearchFocus
+        onMinimized               -> onSearchHidden
+        onMaximized               -> onSearchVisible
 Improvements:
     - Added public methods access via "ref"
 Bug fixes:
-    - Fixed react "refs" warning message.
 ```
-**Release Version 0.1.5 (01/27/2017)**
+**Release Version 0.1.1 (01/23/2017)**
 ```
 Notes:
+	- Update to latest hyperflow version.
 New Features:
 Breaking Changes:
 Improvements:
-    - Improved search suggestion implementation. Matching it closer to other material design search implementations.
 Bug fixes:
 ```
+**Release Version 0.1.0 (01/22/2017)**
+```
+Notes:
+    - Initial commit with features
+	    Search header component based on material design.
+	    Search suggestions and history with autocomplete. patterns
+New Features:
+Breaking Changes:
+Improvements:
+Bug fixes:
+```
+
 ## TODO
 
 -   Fix RCTView shadow warning message.

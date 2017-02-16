@@ -29,7 +29,7 @@ require('hyperflow').init({
 });
 
 /* load search header applet */
-const { SearchHeaderApplet } = require('./src/search-header-applet');
+const SearchHeaderApplet = require('./src/search-header-applet').default;
 
 export default function SearchHeaderComponent () {
     return SearchHeaderApplet({
@@ -37,8 +37,10 @@ export default function SearchHeaderComponent () {
     }).getTopComponent({
         doConvertToStandaloneComponent: true,
         componentMethodAndPropertyInclusions: [
+            `isHidden`,
             `show`,
             `hide`,
+            `clear`,
             `clearSearchSuggestion`
         ]
     });
