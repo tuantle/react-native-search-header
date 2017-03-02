@@ -127,8 +127,10 @@ AppRegistry.registerComponent('Demo', () => Demo);
 
 Methods | description
 -----|------
+isHidden | Call to check if the SearchHeader is visible.
 show | Call to show the SearchHeader.
 hide | Call to hide the SearchHeader.
+clear | Call to clear the SearchHeader text input.
 clearSearchSuggestion | Call to clear search suggestion list.
 
 ## Props
