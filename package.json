@@ -1,6 +1,6 @@
 {
     "name": "react-native-search-header",
-    "version": "0.1.6",
+    "version": "0.1.7",
     "registry": "github",
     "description": "A react native search header component based on material design patterns.",
     "authors": [
@@ -27,28 +27,28 @@
         "preset": "react-native"
     },
     "peerDependencies": {
-        "react": "=15.4.2",
-        "react-native": "=0.41.2"
+        "react": "^15.4.2",
+		"react-native": "^0.42.3"
     },
     "dependencies": {
-        "hyperflow": "=0.1.0-beta28",
-        "react-native-animatable": "^1.1.0"
+        "hyperflow": "=0.1.0-rc1",
+        "react-native-animatable": "^1.2.0"
     },
     "devDependencies": {
-        "babel-core": "^6.21.0",
-        "babel-preset-node7": "^1.4.0",
-        "babel-preset-react": "^6.16.0",
+        "babel-core": "^6.24.1",
+        "babel-preset-node7": "^1.5.0",
+        "babel-preset-react": "^6.24.1",
         "babel-preset-react-native": "^1.9.1",
-        "babel-plugin-transform-strict-mode": "^6.18.0",
+        "babel-plugin-transform-strict-mode": "^6.24.1",
 
-        "babel-jest": "^18.0.0",
-        "jest": "^18.1.0",
+        "babel-jest": "^20.0.0",
+        "jest": "^20.0.0",
         "jest-react-native": "^18.0.0",
         "react-test-renderer": "^15.4.1",
 
-        "eslint": "^3.13.0",
-        "babel-eslint": "^7.1.1",
-        "eslint-plugin-react": "^6.8.0",
-        "eslint-plugin-react-native": "^2.2.1"
+        "eslint": "^3.19.0",
+        "babel-eslint": "^7.2.3",
+        "eslint-plugin-react": "^7.0.0",
+        "eslint-plugin-react-native": "^2.3.2"
     }
 }
