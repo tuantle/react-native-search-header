@@ -105,6 +105,17 @@ export default class Demo extends Component {
                         this.searchHeader = searchHeader;
                     }}
                     statusHeightOffet = { 21 }
+                    onGetSearchAutocompletions = {async (text) => {
+                        if (text) {
+                            const response = await fetch(`http://suggestqueries.google.com/complete/search?client=firefox&q=${text}`, {
+                                method: `get`
+                            });
+                            const data = await response.json();
+                            return data[1];
+                        } else {
+                            return [];
+                        }
+                    }}
                 />
                 <View style = { styles.button }>
                     <Button
@@ -148,10 +159,10 @@ dropShadow | boolean | true | Enable drop shadow styling.
 visibleInitially | boolean | false | Set to false to hide and to true to show the SearchHeader component.
 autoCorrect | boolean | true | Enable text input autocorrect.
 enableSearchSuggestion | boolean | true | When enabled, search suggestion list will be display accordingly.
-searchSuggestionRollOverCount | number | 16 | The max number of search suggestion items.
+searchSuggestionHistoryItemRollOverCount | number | 16 | The max number of search suggestion history items.
 placeholder | string | "Search..." | A string placeholder when there is no text in text input.
 entryAnimation | string | "from-left-side" | Set the direction of SearchHeader entry animation. Possible values are [ "from-left-side", "from-right-side" ]
-onGetSearchSuggestions | function | None | This function is called during search change (componenWillUpdate) to get a string array of search suggestions.
+onGetSearchAutocompletions | function | None | This function is called during search change (componenWillUpdate) to get a string array of search autocompletions.
 onSearch | function | None | This function is called after return/done key is pressed. Return text input event.
 onSearchChange | function | None | This function is called after text is entered/changed in text input. Return text input event.
 onFocus | function | None | This function is called when text input in focused.
@@ -189,10 +200,22 @@ SearchHeader component default style can be override. Below are examples of how 
 ```
 
 ## Change Log
+**Release Version 0.1.8 (05/17/2017)**
+```
+Notes:
+New Features:
+Breaking Changes:
+    - Renamed property searchSuggestionItemRollOverCount to searchSuggestionHistoryItemRollOverCount
+    - Renamed property onGetSearchSuggestions to onGetSearchAutocompletions
+Improvements:
+    - Improved onGetSearchAutocompletions implementation
+    - Added onGetSearchAutocompletions to example
+Bug fixes:
+```
 **Release Version 0.1.7 (05/10/2017)**
 ```
 Notes:
-    - Updated package dependencies. 
+    - Updated package dependencies.
 New Features:
 Breaking Changes:
 Improvements:
