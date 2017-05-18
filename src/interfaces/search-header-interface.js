@@ -88,10 +88,11 @@ const DEFAULT_SEARCH_HEADER_VIEW_STYLE = {
         backgroundColor: `#fdfdfd`
     },
     searchSuggestion: {
-        flexGrow: 1,
+        flexShrink: 1,
         flexDirection: `column`,
         alignItems: `stretch`,
         justifyContent: `center`,
+        maxHeight: DEVICE_HEIGHT / 2,
         paddingLeft: 12,
         marginVertical: 6,
         backgroundColor: `#fdfdfd`
@@ -166,7 +167,7 @@ const SearchHeaderInterface = Hf.Interface.augment({
             value: true,
             stronglyTyped: true
         },
-        searchSuggestionRollOverCount: {
+        searchSuggestionHistoryItemRollOverCount: {
             value: 16,
             stronglyTyped: true
         },
@@ -179,7 +180,7 @@ const SearchHeaderInterface = Hf.Interface.augment({
             oneOf: [ `from-left-side`, `from-right-side` ],
             stronglyTyped: true
         },
-        onGetSearchSuggestions: {
+        onGetSearchAutocompletions: {
             value: () => [],
             stronglyTyped: true
         },
@@ -223,7 +224,7 @@ const SearchHeaderInterface = Hf.Interface.augment({
 
         intf.postUpdateStage((component) => {
             const {
-                searchSuggestionRollOverCount,
+                searchSuggestionHistoryItemRollOverCount,
                 entryAnimation
             } = component.props;
             const {
@@ -279,7 +280,7 @@ const SearchHeaderInterface = Hf.Interface.augment({
                 });
             }
 
-            intf.outgoing(EVENT.ON.UPDATE_SEARCH_SUGGESTION_ROLLOVER_COUNT).emit(() => searchSuggestionRollOverCount);
+            intf.outgoing(EVENT.ON.UPDATE_SEARCH_SUGGESTION_HISTORY_ITEM_ROLLOVER_COUNT).emit(() => searchSuggestionHistoryItemRollOverCount);
         });
 
         done();
@@ -325,7 +326,7 @@ const SearchHeaderInterface = Hf.Interface.augment({
             EVENT.ON.UPDATE_SEARCH_INPUT_FOCUS,
             EVENT.ON.UPDATE_SEARCH_INPUT_ITEM_TEXT_CHANGED
         ).emit(() => false);
-        component.outgoing(EVENT.ON.CLEAR_NON_HISTORY_ITEMS_FROM_SEARCH_SUGGESTION).emit();
+        component.outgoing(EVENT.ON.CLEAR_AUTOCOMPLETE_ITEMS_FROM_SEARCH_SUGGESTION).emit();
         component.onDismissKeyboard();
         searchTextInput.clear();
         onHidden();
@@ -345,7 +346,7 @@ const SearchHeaderInterface = Hf.Interface.augment({
     onClearSearchSuggestion: function onClearSearchSuggestion () {
         const component = this;
 
-        component.outgoing(EVENT.ON.CLEAR_ALL_ITEMS_FROM_SEARCH_SUGGESTION).emit();
+        component.outgoing(EVENT.ON.CLEAR_AUTOCOMPLETE_ITEMS_FROM_SEARCH_SUGGESTION).emit();
     },
     onClearSearchInput: function onClearSearchInput () {
         const component = this;
@@ -371,7 +372,7 @@ const SearchHeaderInterface = Hf.Interface.augment({
             placeholderTextColor,
             autoCorrect,
             placeholder,
-            onGetSearchSuggestions,
+            onGetSearchAutocompletions,
             onSearch,
             onSearchChange,
             onFocus,
@@ -415,17 +416,19 @@ const SearchHeaderInterface = Hf.Interface.augment({
                         onFocus = { onFocus }
                         onBlur = { onBlur }
                         onChange = {(event) => {
-                            const searchSuggestions = onGetSearchSuggestions();
-                            if (Hf.isNonEmptyArray(searchSuggestions)) {
-                                component.outgoing(EVENT.ON.ADD_ITEMS_TO_SEARCH_SUGGESTION).emit(() => {
-                                    return searchSuggestions.filter((text) => Hf.isString(text)).map((text) => {
-                                        return {
-                                            historyType: false,
-                                            text
-                                        };
+                            const fetchSearchAutocompletions = async function () {
+                                const autocompleteTexts = await onGetSearchAutocompletions(event.nativeEvent.text);
+                                if (Hf.isNonEmptyArray(autocompleteTexts)) {
+                                    component.outgoing(EVENT.ON.ADD_ITEMS_TO_SEARCH_SUGGESTION).emit(() => {
+                                        return [ ...new Set(autocompleteTexts.filter((text) => Hf.isString(text))) ].map((text) => {
+                                            return {
+                                                historyType: false,
+                                                text
+                                            };
+                                        });
                                     });
-                                });
-                            }
+                                }
+                            };
                             component.outgoing(EVENT.ON.UPDATE_SEARCH_INPUT_ITEM_TEXT).emit(() => event.nativeEvent.text);
                             component.outgoing(EVENT.ON.UPDATE_SEARCH_INPUT_FOCUS).emit(() => true);
                             component.outgoing(
@@ -433,6 +436,7 @@ const SearchHeaderInterface = Hf.Interface.augment({
                                 EVENT.ON.UPDATE_SEARCH_SUGGESTION_VISIBILITY
                             ).emit(() => !Hf.isEmpty(event.nativeEvent.text));
                             onSearchChange(event);
+                            fetchSearchAutocompletions();
                         }}
                         onSubmitEditing = {(event) => {
                             if (!Hf.isEmpty(event.nativeEvent.text)) {
@@ -448,7 +452,7 @@ const SearchHeaderInterface = Hf.Interface.augment({
                                 EVENT.ON.UPDATE_SEARCH_INPUT_FOCUS,
                                 EVENT.ON.UPDATE_SEARCH_SUGGESTION_VISIBILITY
                             ).emit(() => false);
-                            component.outgoing(EVENT.ON.CLEAR_NON_HISTORY_ITEMS_FROM_SEARCH_SUGGESTION).emit();
+                            component.outgoing(EVENT.ON.CLEAR_AUTOCOMPLETE_ITEMS_FROM_SEARCH_SUGGESTION).emit();
                             onSearch(event);
                         }}
                         placeholder = { placeholder }
@@ -493,6 +497,7 @@ const SearchHeaderInterface = Hf.Interface.augment({
             searchInput,
             searchSuggestion
         } = component.state;
+        const searchSuggestionItems = searchSuggestion.historyItems.concat(searchSuggestion.autocompleteItems);
 
         return (
             <AnimatedView
@@ -506,7 +511,7 @@ const SearchHeaderInterface = Hf.Interface.augment({
                     backgroundColor: `transparent`
                 }}>
                 {
-                    searchSuggestion.items.filter((item) => {
+                    searchSuggestionItems.filter((item) => {
                         return !Hf.isEmpty(item.text) && !Hf.isEmpty(searchInput.itemText) && item.text.toLowerCase().includes(searchInput.itemText.toLowerCase());
                     }).map((item, index) => {
                         return (
@@ -527,7 +532,7 @@ const SearchHeaderInterface = Hf.Interface.augment({
                                         EVENT.ON.UPDATE_SEARCH_INPUT_FOCUS,
                                         EVENT.ON.UPDATE_SEARCH_SUGGESTION_VISIBILITY
                                     ).emit(() => false);
-                                    component.outgoing(EVENT.ON.CLEAR_NON_HISTORY_ITEMS_FROM_SEARCH_SUGGESTION).emit();
+                                    component.outgoing(EVENT.ON.CLEAR_AUTOCOMPLETE_ITEMS_FROM_SEARCH_SUGGESTION).emit();
                                     onSearchChange({
                                         nativeEvent: {
                                             text: item.text

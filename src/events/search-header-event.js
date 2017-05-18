@@ -28,7 +28,7 @@ import { Hf } from 'hyperflow';
 export default Hf.Event.create({
     onEvents: [
         `clear-all-items-from-search-suggestion`,
-        `clear-non-history-items-from-search-suggestion`,
+        `clear-autocomplete-items-from-search-suggestion`,
         `add-items-to-search-suggestion`,
 
         `update-search-header-visibility`,
@@ -36,7 +36,7 @@ export default Hf.Event.create({
         `update-search-input-item-text`,
         `update-search-input-item-text-changed`,
         `update-search-suggestion-visibility`,
-        `update-search-suggestion-rollover-count`
+        `update-search-suggestion-history-item-rollover-count`
     ],
     doEvents: [
         `mutate-search-header-visibility`,
@@ -45,7 +45,7 @@ export default Hf.Event.create({
         `mutate-search-input-item-text-changed`,
         `mutate-search-suggestion`,
         `mutate-search-suggestion-visibility`,
-        `mutate-search-suggestion-rollover-count`
+        `mutate-search-suggestion-history-item-rollover-count`
 
     ]
 });

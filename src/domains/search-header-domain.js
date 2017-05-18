@@ -52,38 +52,25 @@ const SearchHeaderDomain = Hf.Domain.augment({
         domain.incoming(EVENT.ON.UPDATE_SEARCH_INPUT_ITEM_TEXT).forward(EVENT.DO.MUTATE_SEARCH_INPUT_ITEM_TEXT);
         domain.incoming(EVENT.ON.UPDATE_SEARCH_INPUT_ITEM_TEXT_CHANGED).forward(EVENT.DO.MUTATE_SEARCH_INPUT_ITEM_TEXT_CHANGED);
         domain.incoming(EVENT.ON.UPDATE_SEARCH_SUGGESTION_VISIBILITY).forward(EVENT.DO.MUTATE_SEARCH_SUGGESTION_VISIBILITY);
-        domain.incoming(EVENT.ON.UPDATE_SEARCH_SUGGESTION_ROLLOVER_COUNT).forward(EVENT.DO.MUTATE_SEARCH_SUGGESTION_ROLLOVER_COUNT);
+        domain.incoming(EVENT.ON.UPDATE_SEARCH_SUGGESTION_HISTORY_ITEM_ROLLOVER_COUNT).forward(EVENT.DO.MUTATE_SEARCH_SUGGESTION_HISTORY_ITEM_ROLLOVER_COUNT);
 
         domain.incoming(EVENT.ON.CLEAR_ALL_ITEMS_FROM_SEARCH_SUGGESTION).handle(() => {
             return function mutateSearchSuggestion (state) {
-                let {
-                    items
-                } = state.searchSuggestion;
                 return {
                     searchSuggestion: {
                         ...state.searchSuggestion,
-                        items: items.map((item) => {
-                            item.text = ``;
-                            return item;
-                        })
+                        historyItems: [],
+                        autocompleteItems: []
                     }
                 };
             };
         }).relay(EVENT.DO.MUTATE_SEARCH_SUGGESTION);
-        domain.incoming(EVENT.ON.CLEAR_NON_HISTORY_ITEMS_FROM_SEARCH_SUGGESTION).handle(() => {
+        domain.incoming(EVENT.ON.CLEAR_AUTOCOMPLETE_ITEMS_FROM_SEARCH_SUGGESTION).handle(() => {
             return function mutateSearchSuggestion (state) {
-                let {
-                    items
-                } = state.searchSuggestion;
                 return {
                     searchSuggestion: {
                         ...state.searchSuggestion,
-                        items: items.map((item) => {
-                            if (!item.historyType) {
-                                item.text = ``;
-                            }
-                            return item;
-                        })
+                        autocompleteItems: []
                     }
                 };
             };
@@ -91,32 +78,38 @@ const SearchHeaderDomain = Hf.Domain.augment({
         domain.incoming(EVENT.ON.ADD_ITEMS_TO_SEARCH_SUGGESTION).handle((searchSuggestionItems) => {
             return function mutateSearchSuggestion (state) {
                 let {
-                    index,
-                    rollOverCount,
-                    items
+                    historyItemindex,
+                    historyItemRollOverCount,
+                    historyItems,
+                    autocompleteItems
                 } = state.searchSuggestion;
-                const filteredSearchSuggestionItems = searchSuggestionItems.filter((item) => !items.some((_item) => _item.text === item.text));
+                const filteredSearchSuggestionItems = searchSuggestionItems.filter((item) => !historyItems.some((_item) => _item.text === item.text));
 
                 if (!Hf.isEmpty(filteredSearchSuggestionItems)) {
                     filteredSearchSuggestionItems.forEach((item) => {
-                        if (index === rollOverCount) {
-                            index = 0;
+                        if (item.historyType) {
+                            if (historyItemindex === historyItemRollOverCount) {
+                                historyItemindex = 0;
+                            }
+                            if (historyItemindex === historyItems.length) {
+                                historyItems.push(item);
+                            } else if (historyItemindex < historyItems.length) {
+                                historyItems[historyItemindex] = item;
+                            }
+                            historyItemindex++;
+                        } else {
+                            autocompleteItems.push(item);
                         }
-                        if (index === items.length) {
-                            items.push(item);
-                        } else if (index < items.length) {
-                            items[index] = item;
-                        }
-                        index++;
                     });
-                    items = items.sort((itemA, itemB) => {
+                    historyItems = historyItems.sort((itemA, itemB) => {
                         return itemB.timestamp - itemA.timestamp;
                     });
                     return {
                         searchSuggestion: {
                             ...state.searchSuggestion,
-                            index,
-                            items
+                            historyItemindex,
+                            historyItems,
+                            autocompleteItems
                         }
                     };
                 } else { // eslint-disable-line

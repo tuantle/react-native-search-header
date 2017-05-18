@@ -44,10 +44,11 @@ const SearchHeaderStore = Hf.Store.augment({
         },
         searchSuggestion: {
             value: {
-                index: 0,
-                rollOverCount: 0,
                 visible: false,
-                items: []
+                historyItemindex: 0,
+                historyItemRollOverCount: 0,
+                historyItems: [],
+                autocompleteItems: []
             },
             stronglyTyped: true
         }
@@ -87,10 +88,10 @@ const SearchHeaderStore = Hf.Store.augment({
                 }
             });
         });
-        store.incoming(EVENT.DO.MUTATE_SEARCH_SUGGESTION_ROLLOVER_COUNT).handle((rollOverCount) => {
+        store.incoming(EVENT.DO.MUTATE_SEARCH_SUGGESTION_HISTORY_ITEM_ROLLOVER_COUNT).handle((historyItemRollOverCount) => {
             store.reduce({
                 searchSuggestion: {
-                    rollOverCount
+                    historyItemRollOverCount
                 }
             }, {
                 suppressMutationEvent: true
