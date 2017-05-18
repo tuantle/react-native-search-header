@@ -110,7 +110,7 @@ export default class Demo extends Component {
                             const response = await fetch(`http://suggestqueries.google.com/complete/search?client=firefox&q=${text}`, {
                                 method: `get`
                             });
-                            const data = await response.json();
+                            const data = response.json();
                             return data[1];
                         } else {
                             return [];
