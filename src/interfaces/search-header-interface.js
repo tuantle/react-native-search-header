@@ -376,7 +376,8 @@ const SearchHeaderInterface = Hf.Interface.augment({
             onSearch,
             onSearchChange,
             onFocus,
-            onBlur
+            onBlur,
+            underlineColorAndroid
         } = component.props;
         const {
             searchInput
@@ -410,6 +411,7 @@ const SearchHeaderInterface = Hf.Interface.augment({
                     backgroundColor: `transparent`
                 }}>
                     <TextInput
+                        underlineColorAndroid={underlineColorAndroid}
                         ref = { component.assignComponentRef(`searchTextInput`) }
                         autoCorrect = { autoCorrect }
                         returnKeyType = 'search'
