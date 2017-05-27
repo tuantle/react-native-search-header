@@ -78,7 +78,7 @@ const SearchHeaderDomain = Hf.Domain.augment({
         domain.incoming(EVENT.ON.ADD_ITEMS_TO_SEARCH_SUGGESTION).handle((searchSuggestionItems) => {
             return function mutateSearchSuggestion (state) {
                 let {
-                    historyItemindex,
+                    historyItemIndex,
                     historyItemRollOverCount,
                     historyItems,
                     autocompleteItems
@@ -88,15 +88,15 @@ const SearchHeaderDomain = Hf.Domain.augment({
                 if (!Hf.isEmpty(filteredSearchSuggestionItems)) {
                     filteredSearchSuggestionItems.forEach((item) => {
                         if (item.historyType) {
-                            if (historyItemindex === historyItemRollOverCount) {
-                                historyItemindex = 0;
+                            if (historyItemIndex === historyItemRollOverCount) {
+                                historyItemIndex = 0;
                             }
-                            if (historyItemindex === historyItems.length) {
+                            if (historyItemIndex === historyItems.length) {
                                 historyItems.push(item);
-                            } else if (historyItemindex < historyItems.length) {
-                                historyItems[historyItemindex] = item;
+                            } else if (historyItemIndex < historyItems.length) {
+                                historyItems[historyItemIndex] = item;
                             }
-                            historyItemindex++;
+                            historyItemIndex++;
                         } else {
                             autocompleteItems.push(item);
                         }
@@ -107,7 +107,7 @@ const SearchHeaderDomain = Hf.Domain.augment({
                     return {
                         searchSuggestion: {
                             ...state.searchSuggestion,
-                            historyItemindex,
+                            historyItemIndex,
                             historyItems,
                             autocompleteItems
                         }

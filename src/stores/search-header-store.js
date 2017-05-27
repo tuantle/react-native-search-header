@@ -45,7 +45,7 @@ const SearchHeaderStore = Hf.Store.augment({
         searchSuggestion: {
             value: {
                 visible: false,
-                historyItemindex: 0,
+                historyItemIndex: 0,
                 historyItemRollOverCount: 0,
                 historyItems: [],
                 autocompleteItems: []
