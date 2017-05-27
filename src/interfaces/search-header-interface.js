@@ -28,7 +28,7 @@ import { Hf } from 'hyperflow';
 
 import React from 'react';
 
-import ReactNative, { Dimensions, PixelRatio } from 'react-native';
+import ReactNative from 'react-native';
 
 import { View as AnimatedView } from 'react-native-animatable';
 
@@ -46,9 +46,11 @@ const {
     Text,
     Image,
     View,
-    ScrollView,
+    FlatList,
     TextInput,
-    TouchableOpacity
+    TouchableOpacity,
+    Dimensions,
+    PixelRatio
 } = ReactNative;
 
 const DEVICE_WIDTH = Dimensions.get(`window`).width;
@@ -346,7 +348,7 @@ const SearchHeaderInterface = Hf.Interface.augment({
     onClearSearchSuggestion: function onClearSearchSuggestion () {
         const component = this;
 
-        component.outgoing(EVENT.ON.CLEAR_AUTOCOMPLETE_ITEMS_FROM_SEARCH_SUGGESTION).emit();
+        component.outgoing(EVENT.ON.CLEAR_ALL_ITEMS_FROM_SEARCH_SUGGESTION).emit();
     },
     onClearSearchInput: function onClearSearchInput () {
         const component = this;
@@ -376,8 +378,7 @@ const SearchHeaderInterface = Hf.Interface.augment({
             onSearch,
             onSearchChange,
             onFocus,
-            onBlur,
-            underlineColorAndroid
+            onBlur
         } = component.props;
         const {
             searchInput
@@ -411,10 +412,10 @@ const SearchHeaderInterface = Hf.Interface.augment({
                     backgroundColor: `transparent`
                 }}>
                     <TextInput
-                        underlineColorAndroid={underlineColorAndroid}
                         ref = { component.assignComponentRef(`searchTextInput`) }
                         autoCorrect = { autoCorrect }
                         returnKeyType = 'search'
+                        underlineColorAndroid = 'transparent'
                         onFocus = { onFocus }
                         onBlur = { onBlur }
                         onChange = {(event) => {
@@ -422,7 +423,9 @@ const SearchHeaderInterface = Hf.Interface.augment({
                                 const autocompleteTexts = await onGetSearchAutocompletions(event.nativeEvent.text);
                                 if (Hf.isNonEmptyArray(autocompleteTexts)) {
                                     component.outgoing(EVENT.ON.ADD_ITEMS_TO_SEARCH_SUGGESTION).emit(() => {
-                                        return [ ...new Set(autocompleteTexts.filter((text) => Hf.isString(text))) ].map((text) => {
+                                        return [
+                                            ...new Set(autocompleteTexts.filter((text) => Hf.isString(text)).map((text) => text.replace(/\s/g, ``)))
+                                        ].map((text) => {
                                             return {
                                                 historyType: false,
                                                 text
@@ -499,7 +502,11 @@ const SearchHeaderInterface = Hf.Interface.augment({
             searchInput,
             searchSuggestion
         } = component.state;
-        const searchSuggestionItems = searchSuggestion.historyItems.concat(searchSuggestion.autocompleteItems);
+        let searchSuggestionItems = searchSuggestion.historyItems.concat(searchSuggestion.autocompleteItems);
+
+        searchSuggestionItems = searchSuggestionItems.filter((item) => {
+            return !Hf.isEmpty(item.text) && !Hf.isEmpty(searchInput.itemText) && item.text.toLowerCase().includes(searchInput.itemText.toLowerCase());
+        });
 
         return (
             <AnimatedView
@@ -508,14 +515,13 @@ const SearchHeaderInterface = Hf.Interface.augment({
                 useNativeDriver = { true }
                 style = { adjustedStyle.searchSuggestion }
             >
-                <ScrollView style = {{
-                    flexDirection: `column`,
-                    backgroundColor: `transparent`
-                }}>
-                {
-                    searchSuggestionItems.filter((item) => {
-                        return !Hf.isEmpty(item.text) && !Hf.isEmpty(searchInput.itemText) && item.text.toLowerCase().includes(searchInput.itemText.toLowerCase());
-                    }).map((item, index) => {
+                <FlatList
+                    data = { searchSuggestionItems }
+                    renderItem = {(listItem) => {
+                        const {
+                            item,
+                            index
+                        } = listItem;
                         return (
                             <TouchableOpacity
                                 key = { index }
@@ -597,9 +603,12 @@ const SearchHeaderInterface = Hf.Interface.augment({
                                 </View>
                             </TouchableOpacity>
                         );
-                    })
-                }
-                </ScrollView>
+                    }}
+                    style = {{
+                        flexDirection: `column`,
+                        backgroundColor: `transparent`
+                    }}
+                />
             </AnimatedView>
         );
     },
