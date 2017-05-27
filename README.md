@@ -110,7 +110,7 @@ export default class Demo extends Component {
                             const response = await fetch(`http://suggestqueries.google.com/complete/search?client=firefox&q=${text}`, {
                                 method: `get`
                             });
-                            const data = response.json();
+                            const data = await response.json();
                             return data[1];
                         } else {
                             return [];
@@ -200,6 +200,17 @@ SearchHeader component default style can be override. Below are examples of how 
 ```
 
 ## Change Log
+**Release Version 0.1.9 (05/27/2017)**
+```
+Notes:
+    - Updated to latest React Native
+New Features:
+Breaking Changes:
+Improvements:
+    - Used FlatList instead of ScrollView to render search suggestion list
+Bug fixes:
+    - Fixed clearSearchSuggestion bug
+```
 **Release Version 0.1.8 (05/17/2017)**
 ```
 Notes:
