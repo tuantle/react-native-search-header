@@ -161,6 +161,10 @@ const SearchHeaderInterface = Hf.Interface.augment({
             value: false,
             stronglyTyped: true
         },
+        autoFocus: {
+            value: false,
+            stronglyTyped: true
+        },
         autoCorrect: {
             value: true,
             stronglyTyped: true
@@ -372,6 +376,7 @@ const SearchHeaderInterface = Hf.Interface.augment({
         const component = this;
         const {
             placeholderTextColor,
+            autoFocus,
             autoCorrect,
             placeholder,
             onGetSearchAutocompletions,
@@ -405,7 +410,7 @@ const SearchHeaderInterface = Hf.Interface.augment({
                 <View style = {{
                     flexDirection: `row`,
                     alignSelf: `center`,
-                    alignItems: `flex-start`,
+                    alignItems: `center`,
                     justifyContent: `center`,
                     maxWidth: DEVICE_WIDTH - 92,
                     minHeight: 46,
@@ -413,6 +418,7 @@ const SearchHeaderInterface = Hf.Interface.augment({
                 }}>
                     <TextInput
                         ref = { component.assignComponentRef(`searchTextInput`) }
+                        autoFocus = { autoFocus }
                         autoCorrect = { autoCorrect }
                         returnKeyType = 'search'
                         underlineColorAndroid = 'transparent'
@@ -506,6 +512,11 @@ const SearchHeaderInterface = Hf.Interface.augment({
 
         searchSuggestionItems = searchSuggestionItems.filter((item) => {
             return !Hf.isEmpty(item.text) && !Hf.isEmpty(searchInput.itemText) && item.text.toLowerCase().includes(searchInput.itemText.toLowerCase());
+        }).map((item, index) => {
+            return {
+                key: index,
+                ...item
+            };
         });
 
         return (
@@ -519,12 +530,10 @@ const SearchHeaderInterface = Hf.Interface.augment({
                     data = { searchSuggestionItems }
                     renderItem = {(listItem) => {
                         const {
-                            item,
-                            index
+                            item
                         } = listItem;
                         return (
                             <TouchableOpacity
-                                key = { index }
                                 onPress = {() => {
                                     const [
                                         searchTextInput
