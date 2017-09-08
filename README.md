@@ -157,6 +157,7 @@ iconColor | string | #5d5d5d | SearchHeader component icon button color.
 statusHeightOffet | number | 21 | The offset above the SearchHeader component. Usually where the phone status is.
 dropShadow | boolean | true | Enable drop shadow styling.
 visibleInitially | boolean | false | Set to false to hide and to true to show the SearchHeader component.
+autoFocus | boolean | true | Enable text input auto focus when open.
 autoCorrect | boolean | true | Enable text input autocorrect.
 enableSearchSuggestion | boolean | true | When enabled, search suggestion list will be display accordingly.
 searchSuggestionHistoryItemRollOverCount | number | 16 | The max number of search suggestion history items.
@@ -200,6 +201,18 @@ SearchHeader component default style can be override. Below are examples of how 
 ```
 
 ## Change Log
+**Release Version 0.2.0 (09/08/2017)**
+```
+Notes:
+    - Updated to latest React Native
+    - updated to latest Hyperflow
+New Features:
+Breaking Changes:
+Improvements:
+    - Added autoFocus prop
+Bug fixes:
+    - Fixed FlatList missing list item "key" warning
+```
 **Release Version 0.1.9 (05/27/2017)**
 ```
 Notes:
