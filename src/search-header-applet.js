@@ -32,6 +32,8 @@ import ReactNative from 'react-native';
 
 import PropTypes from 'prop-types';
 
+import CreateReactClass from 'create-react-class';
+
 /* load search header domain */
 import SearchHeaderDomain from './domains/search-header-domain';
 
@@ -50,7 +52,8 @@ const SearchHeaderApplet = Hf.App.augment({
                 library: {
                     React,
                     ReactNative,
-                    PropTypes
+                    PropTypes,
+                    CreateReactClass
                 },
                 renderer: ReactNative
             }
