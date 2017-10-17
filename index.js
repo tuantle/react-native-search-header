@@ -29,19 +29,6 @@ require('hyperflow').init({
 });
 
 /* load search header applet */
-const SearchHeaderApplet = require('./src/search-header-applet').default;
+const SearchHeader = require('./search-header').default;
 
-export default function SearchHeaderComponent () {
-    return SearchHeaderApplet({
-        name: `search-header-view`
-    }).getTopComponent({
-        doConvertToStandaloneComponent: true,
-        componentMethodAndPropertyInclusions: [
-            `isHidden`,
-            `show`,
-            `hide`,
-            `clear`,
-            `clearSearchSuggestion`
-        ]
-    });
-}
+export default SearchHeader;

@@ -17,8 +17,6 @@ To use search header you simply import the component factory function to create 
 
 ```js
 import SearchHeaderComponent from 'react-native-search-header';
-
-const SearchHeaderView = SearchHeaderComponent();
 ```
 
 ### Examples
@@ -36,11 +34,9 @@ import {
     Button,
     StatusBar
 } from 'react-native';
-import SearchHeaderComponent from 'react-native-search-header';
+import SearchHeader from 'react-native-search-header';
 
 const DEVICE_WIDTH = Dimensions.get(`window`).width;
-
-const SearchHeader = SearchHeaderComponent();
 
 const styles = StyleSheet.create({
     container: {
@@ -86,11 +82,8 @@ const styles = StyleSheet.create({
 });
 
 export default class Demo extends Component {
-    constructor (
-        props : Object,
-        context : Object
-    ) {
-        super(props, context);
+    constructor (props) {
+        super(props);
     }
     render () {
         return (
@@ -98,13 +91,17 @@ export default class Demo extends Component {
                 <StatusBar barStyle = 'light-content' />
                 <View style = { styles.status }/>
                 <View style = { styles.header }>
-                    <Text style = { styles.label }>Demo</Text>
+                    <Text style = { styles.label }> Demo </Text>
+                    <Button
+                        title = 'Search'
+                        color = '#f5fcff'
+                        onPress = {() => this.searchHeader.show()}
+                    />
                 </View>
                 <SearchHeader
                     ref = {(searchHeader) => {
                         this.searchHeader = searchHeader;
                     }}
-                    statusHeightOffet = { 21 }
                     onGetSearchAutocompletions = {async (text) => {
                         if (text) {
                             const response = await fetch(`http://suggestqueries.google.com/complete/search?client=firefox&q=${text}`, {
@@ -142,7 +139,7 @@ isHidden | Call to check if the SearchHeader is visible.
 show | Call to show the SearchHeader.
 hide | Call to hide the SearchHeader.
 clear | Call to clear the SearchHeader text input.
-clearSearchSuggestion | Call to clear search suggestion list.
+clearSuggestion | Call to clear search suggestion list.
 
 ## Props
 
@@ -150,22 +147,24 @@ Below are the props you can pass to the React Component to customize the SearchH
 
 Prop | Type | Default | description
 -----|------|---------|------------
-searchInputTextColor | string | #5d5d5d | Search text input color.
-placeholderTextColor | string | #bdbdbd | Text input placeholder color.
-searchSuggestionTextColor | string | #bdbdbd | Search suggestion text color.
+inputColor | string | #5d5d5d | Search text input color.
+placeholderColor | string | #bdbdbd | Text input placeholder color.
+suggestionEntryColor | string | #bdbdbd | Search suggestion text color.
 iconColor | string | #5d5d5d | SearchHeader component icon button color.
-statusHeightOffet | number | 21 | The offset above the SearchHeader component. Usually where the phone status is.
-dropShadow | boolean | true | Enable drop shadow styling.
+topOffet | number | 21 | The offset above the SearchHeader component. Usually where the phone status is.
+dropShadowed | boolean | true | Enable drop shadow styling.
 visibleInitially | boolean | false | Set to false to hide and to true to show the SearchHeader component.
 autoFocus | boolean | true | Enable text input auto focus when open.
 autoCorrect | boolean | true | Enable text input autocorrect.
-enableSearchSuggestion | boolean | true | When enabled, search suggestion list will be display accordingly.
-searchSuggestionHistoryItemRollOverCount | number | 16 | The max number of search suggestion history items.
+persistent | boolean | false | Enable persistent search.
+enableSuggestion | boolean | true | When enabled, search suggestion list will be display accordingly.
+suggestionHistoryEntryRollOverCount | number | 16 | The max number of search suggestion history items.
 placeholder | string | "Search..." | A string placeholder when there is no text in text input.
 entryAnimation | string | "from-left-side" | Set the direction of SearchHeader entry animation. Possible values are [ "from-left-side", "from-right-side" ]
-onGetSearchAutocompletions | function | None | This function is called during search change (componenWillUpdate) to get a string array of search autocompletions.
+iconImageComponents: | function | Internal | An array of custom icon image components for the buttons.
+onGetAutocompletions | function | None | This function is called during search change (componenWillUpdate) to get a string array of search autocompletions.
 onSearch | function | None | This function is called after return/done key is pressed. Return text input event.
-onSearchChange | function | None | This function is called after text is entered/changed in text input. Return text input event.
+onEnteringSearch | function | None | This function is called after text is entered/changed in text input. Return text input event.
 onFocus | function | None | This function is called when text input in focused.
 onBlur | function | None | This function is called when text input in blurred.
 onHidden | function | None | This function is called right after hide animation is completed.
@@ -181,17 +180,17 @@ SearchHeader component default style can be override. Below are examples of how 
 		container: {
 			...myContainerStyle
 		},
-		searchInput: {
-			...mySearchInputStyle
+		header: {
+			...mySearchHeaderStyle
 		},
-		searchSuggestion: {
+		suggestion: {
 			...mySearchSuggestionStyle
 		},
-		searchInputText: {
-			...mySearchTextStyle
+		input: {
+			...mySearchInputTextStyle
 		},
-		searchSuggestionText: {
-			...mySearchSuggestionTextStyle
+		suggestionEntry: {
+			...mySearchSuggestionEntryTextStyle
 		},
 		icon: {
 			...myIconStyle
@@ -201,6 +200,31 @@ SearchHeader component default style can be override. Below are examples of how 
 ```
 
 ## Change Log
+**Release Version 0.2.1 (10/17/2017)**
+```
+Notes:
+    - Updated to latest React Native version
+New Features:
+    - Added persistent search bar
+    - iconImageComponents prop for easy custom button styling
+Breaking Changes:
+    - No longer needed to do this const SearchHeaderView = SearchHeaderComponent()
+      Just import and use as any react native component.
+    - Renaming properties:
+        searchInputTextColor -> inputColor
+        placeholderTextColor -> placeholderColor
+        searchSuggestionTextColor -> suggestionEntryColor
+        statusHeightOffet -> topOffset
+        searchSuggestionHistoryItemRollOverCount ->suggestionHistoryEntryRollOverCount
+        dropShadow -> dropShadowed
+        enableSearchSuggestion -> enableSuggestion
+        onGetSearchAutocompletions -> onGetAutocompletions
+        onSearchChange -> onEnteringSearch
+        onHidden -> onHid
+        onVisible -> onShow
+Improvements:
+Bug fixes:
+```
 **Release Version 0.2.0 (09/08/2017)**
 ```
 Notes:

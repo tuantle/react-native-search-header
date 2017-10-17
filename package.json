@@ -1,6 +1,6 @@
 {
     "name": "react-native-search-header",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "registry": "github",
     "description": "A react native search header component based on material design patterns.",
     "authors": [
@@ -27,24 +27,23 @@
         "preset": "react-native"
     },
     "dependencies": {
-        "hyperflow": "^0.1.0",
-        "react-native-animatable": "^1.2.3",
-        "react": "=16.0.0-alpha.12",
-        "react-native": "=0.48.1",
+        "hyperflow": "https://github.com/tuantle/hyperflow.git#develop",
+        "create-react-class": "^15.6.0",
         "prop-types": "^15.5.10",
-        "create-react-class": "^15.6.0"
+        "react": "16.0.0",
+        "react-native": "0.49.3",
+        "react-native-animatable": "^1.2.4"
     },
     "devDependencies": {
-        "babel-eslint": "^7.2.3",
-        "babel-jest": "^21.0.0",
-        "babel-plugin-module-resolver": "^2.7.0",
-        "babel-preset-react-native": "^3.0.2",
-        "eslint": "^4.6.1",
-        "eslint-plugin-react": "^7.3.0",
+        "babel-eslint": "^8.0.1",
+        "babel-jest": "21.2.0",
+        "babel-plugin-module-resolver": "^2.7.1",
+        "babel-preset-react": "^6.22.0",
+        "babel-preset-react-native": "4.0.0",
+        "eslint": "^4.9.0",
+        "eslint-plugin-react": "^7.4.0",
         "eslint-plugin-react-native": "^3.1.0",
-        "jest": "^21.0.1",
-        "jest-react-native": "^18.0.0",
-        "react-devtools": "^2.5.0",
-        "react-test-renderer": "^15.6.1"
+        "jest": "21.2.1",
+        "react-test-renderer": "16.0.0-beta.5"
     }
 }
