@@ -200,6 +200,17 @@ SearchHeader component default style can be override. Below are examples of how 
 ```
 
 ## Change Log
+**Release Version 0.2.2 (11/25/2017)**
+```
+Notes:
+    - Updated to latest React Native version 0.50.4
+    - Removed Hyperflow dependency as it is not needed.
+New Features:
+Breaking Changes:
+Improvements:
+Bug fixes:
+    - Resolving babel transform error. Hopefully...
+```
 **Release Version 0.2.1 (10/17/2017)**
 ```
 Notes:

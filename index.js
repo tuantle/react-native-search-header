@@ -22,12 +22,6 @@
 'use strict'; //eslint-disable-line
 /* eslint quotes: 0 */
 
-/* load and initialize hyperflow */
-require('hyperflow').init({
-    target: `client-native`,
-    enableProductionMode: true
-});
-
 /* load search header applet */
 const SearchHeader = require('./search-header').default;
 
