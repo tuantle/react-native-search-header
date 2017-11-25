@@ -24,8 +24,6 @@
  */
 'use strict'; // eslint-disable-line
 
-import { Hf } from 'hyperflow';
-
 import React from 'react';
 
 import ReactNative from 'react-native'; // eslint-disable-line
@@ -138,6 +136,46 @@ const DEFAULT_SEARCH_HEADER_VIEW_STYLE = {
         tintColor: `#5d5d5d`,
         backgroundColor: `transparent`
     }
+};
+
+const deepMerge = function deepMerge (source, target) {
+    let result;
+
+    if (!(typeof source === `object`) || (Array.isArray(source)) && !(typeof target === `object`) || (Array.isArray(target))) {
+        throw new Error(`ERROR: deepMerge - Input source or mutation is invalid.`);
+    }
+
+    if (Array.isArray(source) && (Array.isArray(target))) {
+        result = source.slice(0);
+        target.forEach((item, key) => {
+            if (result[key] !== undefined) {
+                result[key] = item;
+            } else if (typeof item === `object`) {
+                result[key] = deepMerge(source[key], item);
+            } else {
+                if (!source.includes(item)) {
+                    result.push(item);
+                }
+            }
+        });
+    } else {
+        if (typeof source === `object`) {
+            result = Object.assign({}, source);
+        }
+
+        Object.entries(target).forEach((key, targetValue) => {
+            if (typeof targetValue === `object` || Array.isArray(targetValue)) {
+                if (source[key] !== undefined) {
+                    result[key] = targetValue;
+                } else {
+                    result[key] = deepMerge(source[key], targetValue);
+                }
+            } else {
+                result[key] = targetValue;
+            }
+        });
+    }
+    return result;
 };
 
 export default class SearchHeader extends Component {
@@ -263,16 +301,6 @@ export default class SearchHeader extends Component {
                 autocompletes: []
             }
         };
-        this.isHidden = this.isHidden.bind(this);
-        this.hide = this.hide.bind(this);
-        this.show = this.show.bind(this);
-        this.clear = this.clear.bind(this);
-        this.clearSuggestion = this.clearSuggestion.bind(this);
-
-        this.onFocus = this.onFocus.bind(this);
-        this.onBlur = this.onBlur.bind(this);
-        this.onEditting = this.onEditting.bind(this);
-        this.onSubmitEditing = this.onSubmitEditing.bind(this);
     }
     /**
      * @description - Assign the registered component's reference object.
@@ -281,20 +309,18 @@ export default class SearchHeader extends Component {
      * @param {string} refName
      * @returns function
      */
-    assignComponentRef (refName) {
+    assignComponentRef = (refName) => {
         const component = this;
 
-        if (Hf.DEVELOPMENT) {
-            if (!Hf.isString(refName)) {
-                Hf.log(`error`, `SearchHeader.assignComponentRef - Input component reference name is invalid.`);
-            }
+        if (typeof refName !== `string`) {
+            throw new Error(`ERROR: SearchHeader.assignComponentRef - Input component reference name is invalid.`);
+        } else {
+            /* helper function to set component ref */
+            const setComponentRef = function setComponentRef (componentRef) {
+                component.refCache[refName] = typeof componentRef !== undefined ? componentRef : null;
+            };
+            return setComponentRef;
         }
-
-        /* helper function to set component ref */
-        const setComponentRef = function setComponentRef (componentRef) {
-            component.refCache[refName] = Hf.isDefined(componentRef) ? componentRef : null;
-        };
-        return setComponentRef;
     }
     /**
      * @description - Lookup the registered component's reference object.
@@ -303,27 +329,27 @@ export default class SearchHeader extends Component {
      * @param {array} refNames
      * @returns {array}
      */
-    lookupComponentRefs (...refNames) {
+    lookupComponentRefs = (...refNames) => {
         const component = this;
         let componentRefs = [];
 
-        if (!Hf.isEmpty(refNames)) {
-            if (Hf.DEVELOPMENT) {
-                if (!refNames.every((refName) => Hf.isString(refName))) {
-                    Hf.log(`error`, `SearchHeader.lookupComponentRefs - Input component reference name is invalid.`);
-                } else if (!refNames.every((refName) => component.refCache.hasOwnProperty(refName))) {
-                    Hf.log(`error`, `SearchHeader.lookupComponentRefs - Component reference is not found.`);
+        if (refNames) {
+            componentRefs = refNames.map((refName) => {
+                if (typeof refName !== `string`) {
+                    throw new Error(`ERROR: SearchHeader.lookupComponentRefs - Input component reference name is invalid.`);
+                } else if (!component.refCache.hasOwnProperty(refName)) {
+                    throw new Error(`ERROR: SearchHeader.lookupComponentRefs - Component reference ${refName} is not found.`);
+                } else {
+                    return component.refCache[refName];
                 }
-            }
-
-            componentRefs = Hf.collect(...refNames).from(component.refCache);
+            });
         } else {
-            Hf.log(`error`, `SearchHeader.lookupComponentRefs - Input component reference name array is empty.`);
+            throw new Error(`ERROR: SearchHeader.lookupComponentRefs - Input component reference name array is empty.`);
         }
 
         return componentRefs;
     }
-    readjustStyle () {
+    readjustStyle = () => {
         const component = this;
         const {
             iconColor,
@@ -339,7 +365,7 @@ export default class SearchHeader extends Component {
         const {
             adjustedStyle: prevAdjustedStyle
         } = component.state;
-        const adjustedStyle = Hf.merge(prevAdjustedStyle).with({
+        const adjustedStyle = deepMerge(prevAdjustedStyle, {
             container: {
                 top: topOffet,
                 shadowOpacity: dropShadowed ? DEFAULT_DROP_SHADOW_STYLE.shadowOpacity : 0,
@@ -359,19 +385,19 @@ export default class SearchHeader extends Component {
                 shadowOpacity: dropShadowed ? DEFAULT_DROP_SHADOW_STYLE.shadowOpacity : 0
             },
             input: {
-                color: Hf.isEmpty(inputColor) ? DEFAULT_SEARCH_HEADER_VIEW_STYLE.searchInputText.color : inputColor
+                color: inputColor === `` ? DEFAULT_SEARCH_HEADER_VIEW_STYLE.searchInputText.color : inputColor
             },
             suggestionEntry: {
-                color: Hf.isEmpty(suggestionEntryColor) ? DEFAULT_SEARCH_HEADER_VIEW_STYLE.searchSuggestionText.color : suggestionEntryColor
+                color: suggestionEntryColor === `` ? DEFAULT_SEARCH_HEADER_VIEW_STYLE.searchSuggestionText.color : suggestionEntryColor
             },
             icon: {
-                tintColor: Hf.isEmpty(iconColor) ? DEFAULT_SEARCH_HEADER_VIEW_STYLE.icon.tintColor : iconColor
+                tintColor: iconColor === `` ? DEFAULT_SEARCH_HEADER_VIEW_STYLE.icon.tintColor : iconColor
             }
         });
 
-        return Hf.isObject(style) ? Hf.merge(adjustedStyle).with(style) : adjustedStyle;
+        return typeof style === `object` ? deepMerge(adjustedStyle, style) : adjustedStyle;
     }
-    isHidden () {
+    isHidden = () => {
         const component = this;
         const {
             visible
@@ -379,7 +405,7 @@ export default class SearchHeader extends Component {
 
         return !visible;
     }
-    hide () {
+    hide = () => {
         const component = this;
         const {
             persistent,
@@ -412,7 +438,7 @@ export default class SearchHeader extends Component {
             onHide();
         }
     }
-    show () {
+    show = () => {
         const component = this;
         const {
             persistent,
@@ -433,7 +459,7 @@ export default class SearchHeader extends Component {
             onShow();
         }
     }
-    clear () {
+    clear = () => {
         const component = this;
         const [ textInput ] = component.lookupComponentRefs(`text-input`);
 
@@ -449,7 +475,7 @@ export default class SearchHeader extends Component {
 
         textInput.clear();
     }
-    clearSuggestion () {
+    clearSuggestion = () => {
         const component = this;
 
         component.setState(() => {
@@ -464,7 +490,7 @@ export default class SearchHeader extends Component {
             };
         });
     }
-    onFocus () {
+    onFocus = () => {
         const component = this;
         const {
             onFocus
@@ -480,7 +506,7 @@ export default class SearchHeader extends Component {
         });
         onFocus();
     }
-    onBlur () {
+    onBlur = () => {
         const component = this;
         const {
             onBlur
@@ -497,7 +523,7 @@ export default class SearchHeader extends Component {
         });
         onBlur();
     }
-    onEditting (event) {
+    onEditting = (event) => {
         const component = this;
         const {
             onGetAutocompletions,
@@ -507,7 +533,7 @@ export default class SearchHeader extends Component {
 
         const fetchSearchAutocompletions = async function () {
             const autocompleteTexts = await onGetAutocompletions(value);
-            if (Hf.isNonEmptyArray(autocompleteTexts)) {
+            if (Array.isArray(autocompleteTexts) && autocompleteTexts.length) {
                 component.setState((prevState) => {
                     return {
                         input: {
@@ -520,7 +546,7 @@ export default class SearchHeader extends Component {
                             ...prevState.suggestion,
                             visible: true,
                             autocompletes: [
-                                ...new Set(autocompleteTexts.filter((text) => Hf.isString(text)).map((text) => text.replace(/\s/g, ``)))
+                                ...new Set(autocompleteTexts.filter((text) => typeof text === `string`).map((text) => text.replace(/\s/g, ``)))
                             ].map((text) => {
                                 return {
                                     historyType: false,
@@ -538,13 +564,17 @@ export default class SearchHeader extends Component {
                             value,
                             valueChanged: value !== prevState.input.value,
                             focused: true
+                        },
+                        suggestion: {
+                            ...prevState.suggestion,
+                            visible: false
                         }
                     };
                 });
             }
         };
 
-        if (!Hf.isEmpty(value)) {
+        if (value !== ``) {
             fetchSearchAutocompletions();
         } else {
             component.setState((prevState) => {
@@ -554,6 +584,10 @@ export default class SearchHeader extends Component {
                         value: ``,
                         valueChanged: value !== prevState.input.value,
                         focused: true
+                    },
+                    suggestion: {
+                        ...prevState.suggestion,
+                        visible: true
                     }
                 };
             });
@@ -565,7 +599,7 @@ export default class SearchHeader extends Component {
             }
         });
     }
-    onSubmitEditing (event) {
+    onSubmitEditing = (event) => {
         const component = this;
         const {
             onSearch
@@ -575,7 +609,7 @@ export default class SearchHeader extends Component {
         } = component.state;
         const value = event.nativeEvent.text;
 
-        if (!Hf.isEmpty(value)) {
+        if (value !== ``) {
             if (!suggestion.histories.some((entry) => entry.value === value)) {
                 component.setState((prevState) => {
                     let {
@@ -770,7 +804,7 @@ export default class SearchHeader extends Component {
                     returnKeyType = 'search'
                     underlineColorAndroid = 'transparent'
                     placeholder = { placeholder }
-                    placeholderColor = { Hf.isEmpty(placeholderColor) ? `#bdbdbd` : placeholderColor }
+                    placeholderColor = { placeholderColor === `` ? `#bdbdbd` : placeholderColor }
                     style = { adjustedStyle.input }
                     onFocus = { component.onFocus }
                     onBlur = { component.onBlur }
@@ -778,7 +812,7 @@ export default class SearchHeader extends Component {
                     onSubmitEditing = { component.onSubmitEditing }
                 />
                 {
-                    Hf.isEmpty(input.value) ? null : <View style = { adjustedStyle.action }>
+                    input.value === `` ? null : <View style = { adjustedStyle.action }>
                         <TouchableOpacity onPress = {() => {
                             component.clear();
                         }}>
@@ -806,7 +840,7 @@ export default class SearchHeader extends Component {
         let suggestionEntries = suggestion.histories.concat(suggestion.autocompletes);
 
         suggestionEntries = suggestionEntries.filter((entry) => {
-            return !Hf.isEmpty(entry.value) && !Hf.isEmpty(input.value) && entry.value.toLowerCase().includes(input.value.toLowerCase());
+            return entry.value !== `` && input.value !== `` && entry.value.toLowerCase().includes(input.value.toLowerCase());
         }).map((entry, index) => {
             return {
                 key: index,
