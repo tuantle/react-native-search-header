@@ -200,6 +200,15 @@ SearchHeader component default style can be override. Below are examples of how 
 ```
 
 ## Change Log
+**Release Version 0.2.3 (11/26/2017)**
+```
+Notes:
+New Features:
+Breaking Changes:
+Improvements:
+Bug fixes:
+    - Drop custom deepMerge in favor of lodash.merge
+```
 **Release Version 0.2.2 (11/25/2017)**
 ```
 Notes:
