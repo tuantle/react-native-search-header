@@ -30,6 +30,8 @@ import ReactNative from 'react-native'; // eslint-disable-line
 
 import PropTypes from 'prop-types';
 
+import merge from 'lodash.merge';
+
 import { View as AnimatedView } from 'react-native-animatable';
 
 import dismissKeyboard from 'react-native/Libraries/Utilities/dismissKeyboard';
@@ -136,46 +138,6 @@ const DEFAULT_SEARCH_HEADER_VIEW_STYLE = {
         tintColor: `#5d5d5d`,
         backgroundColor: `transparent`
     }
-};
-
-const deepMerge = function deepMerge (source, target) {
-    let result;
-
-    if (!(typeof source === `object`) || (Array.isArray(source)) && !(typeof target === `object`) || (Array.isArray(target))) {
-        throw new Error(`ERROR: deepMerge - Input source or mutation is invalid.`);
-    }
-
-    if (Array.isArray(source) && (Array.isArray(target))) {
-        result = source.slice(0);
-        target.forEach((item, key) => {
-            if (result[key] !== undefined) {
-                result[key] = item;
-            } else if (typeof item === `object`) {
-                result[key] = deepMerge(source[key], item);
-            } else {
-                if (!source.includes(item)) {
-                    result.push(item);
-                }
-            }
-        });
-    } else {
-        if (typeof source === `object`) {
-            result = Object.assign({}, source);
-        }
-
-        Object.entries(target).forEach((key, targetValue) => {
-            if (typeof targetValue === `object` || Array.isArray(targetValue)) {
-                if (source[key] !== undefined) {
-                    result[key] = targetValue;
-                } else {
-                    result[key] = deepMerge(source[key], targetValue);
-                }
-            } else {
-                result[key] = targetValue;
-            }
-        });
-    }
-    return result;
 };
 
 export default class SearchHeader extends Component {
@@ -365,7 +327,7 @@ export default class SearchHeader extends Component {
         const {
             adjustedStyle: prevAdjustedStyle
         } = component.state;
-        const adjustedStyle = deepMerge(prevAdjustedStyle, {
+        const adjustedStyle = merge(prevAdjustedStyle, {
             container: {
                 top: topOffet,
                 shadowOpacity: dropShadowed ? DEFAULT_DROP_SHADOW_STYLE.shadowOpacity : 0,
@@ -395,7 +357,7 @@ export default class SearchHeader extends Component {
             }
         });
 
-        return typeof style === `object` ? deepMerge(adjustedStyle, style) : adjustedStyle;
+        return typeof style === `object` ? merge(style, adjustedStyle) : adjustedStyle;
     }
     isHidden = () => {
         const component = this;
