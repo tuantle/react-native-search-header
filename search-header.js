@@ -116,8 +116,9 @@ const DEFAULT_SEARCH_HEADER_VIEW_STYLE = {
         fontSize: PixelRatio.get() >= 3 ? 20 : 18,
         fontWeight: `400`,
         textAlign: `left`,
-        marginVertical: 3,
-        paddingVertical: 3,
+        marginVertical: 1,
+        padding: 5,
+        borderRadius: 5,
         color: `#5d5d5d`,
         backgroundColor: `transparent`
     },
@@ -314,9 +315,13 @@ export default class SearchHeader extends Component {
     readjustStyle = () => {
         const component = this;
         const {
+            headerHeight,
+            headerBgColor,
             iconColor,
             inputColor,
+            inputBgColor,
             suggestionEntryColor,
+            suggestionIconColor,
             topOffet,
             dropShadowed,
             visibleInitially,
@@ -343,10 +348,15 @@ export default class SearchHeader extends Component {
                     })()
                 }]
             },
+            header: {
+                height: headerHeight === `` ? DEFAULT_SEARCH_HEADER_VIEW_STYLE.header.height : headerHeight,
+                backgroundColor: headerBgColor === `` ? DEFAULT_SEARCH_HEADER_VIEW_STYLE.header.backgroundColor : headerBgColor,
+            },
             suggestion: {
                 shadowOpacity: dropShadowed ? DEFAULT_DROP_SHADOW_STYLE.shadowOpacity : 0
             },
             input: {
+                backgroundColor: inputBgColor === `` ? DEFAULT_SEARCH_HEADER_VIEW_STYLE.searchInputText.backgroundColor : inputBgColor,
                 color: inputColor === `` ? DEFAULT_SEARCH_HEADER_VIEW_STYLE.searchInputText.color : inputColor
             },
             suggestionEntry: {
@@ -354,6 +364,9 @@ export default class SearchHeader extends Component {
             },
             icon: {
                 tintColor: iconColor === `` ? DEFAULT_SEARCH_HEADER_VIEW_STYLE.icon.tintColor : iconColor
+            },
+            suggestionIcon: {
+                tintColor: suggestionIconColor === `` ? DEFAULT_SEARCH_HEADER_VIEW_STYLE.icon.tintColor : suggestionIconColor
             }
         });
 
@@ -774,7 +787,7 @@ export default class SearchHeader extends Component {
                     onSubmitEditing = { component.onSubmitEditing }
                 />
                 {
-                    input.value === `` ? null : <View style = { adjustedStyle.action }>
+                    input.value === `` ? <View style = { adjustedStyle.action } /> : <View style = { adjustedStyle.action }>
                         <TouchableOpacity onPress = {() => {
                             component.clear();
                         }}>
@@ -867,7 +880,7 @@ export default class SearchHeader extends Component {
                                     {
                                         iconImageComponents.filter((iconImageComponent) => {
                                             return entry.historyType ? iconImageComponent.name === `history` : iconImageComponent.name === `search`;
-                                        })[0].render(adjustedStyle.icon)
+                                        })[0].render([adjustedStyle.icon, adjustedStyle.suggestionIcon])
                                     }
                                     <Text style = { adjustedStyle.suggestionEntry }>{ entry.value }</Text>
                                     <View style = {{
@@ -895,7 +908,7 @@ export default class SearchHeader extends Component {
                                             });
                                         }}>
                                             {
-                                                iconImageComponents.filter((iconImageComponent) => iconImageComponent.name === `recall`)[0].render(adjustedStyle.icon)
+                                                iconImageComponents.filter((iconImageComponent) => iconImageComponent.name === `recall`)[0].render([adjustedStyle.icon, adjustedStyle.suggestionIcon])
                                             }
                                         </TouchableOpacity>
                                     </View>
