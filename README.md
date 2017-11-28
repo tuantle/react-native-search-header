@@ -3,7 +3,6 @@
 [![npm downloads](https://img.shields.io/npm/dm/react-native-search-header.svg?style=flat-square)](https://www.npmjs.com/package/react-native-search-header)
 
 Easy to use React Native search header component based on material design patterns.
-This react native component was built with [hyperflow](http://github.com/tuantle/hyperflow) (a state management and mutation tool).
 
 ![demo](/demo.gif)
 
