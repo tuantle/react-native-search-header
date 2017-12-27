@@ -350,7 +350,7 @@ export default class SearchHeader extends Component {
             },
             header: {
                 height: headerHeight === `` ? DEFAULT_SEARCH_HEADER_VIEW_STYLE.header.height : headerHeight,
-                backgroundColor: headerBgColor === `` ? DEFAULT_SEARCH_HEADER_VIEW_STYLE.header.backgroundColor : headerBgColor,
+                backgroundColor: headerBgColor === `` ? DEFAULT_SEARCH_HEADER_VIEW_STYLE.header.backgroundColor : headerBgColor
             },
             suggestion: {
                 shadowOpacity: dropShadowed ? DEFAULT_DROP_SHADOW_STYLE.shadowOpacity : 0
@@ -880,7 +880,7 @@ export default class SearchHeader extends Component {
                                     {
                                         iconImageComponents.filter((iconImageComponent) => {
                                             return entry.historyType ? iconImageComponent.name === `history` : iconImageComponent.name === `search`;
-                                        })[0].render([adjustedStyle.icon, adjustedStyle.suggestionIcon])
+                                        })[0].render([ adjustedStyle.icon, adjustedStyle.suggestionIcon ])
                                     }
                                     <Text style = { adjustedStyle.suggestionEntry }>{ entry.value }</Text>
                                     <View style = {{
@@ -908,7 +908,7 @@ export default class SearchHeader extends Component {
                                             });
                                         }}>
                                             {
-                                                iconImageComponents.filter((iconImageComponent) => iconImageComponent.name === `recall`)[0].render([adjustedStyle.icon, adjustedStyle.suggestionIcon])
+                                                iconImageComponents.filter((iconImageComponent) => iconImageComponent.name === `recall`)[0].render([ adjustedStyle.icon, adjustedStyle.suggestionIcon ])
                                             }
                                         </TouchableOpacity>
                                     </View>
