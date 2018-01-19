@@ -101,7 +101,7 @@ export default class Demo extends Component {
                     ref = {(searchHeader) => {
                         this.searchHeader = searchHeader;
                     }}
-                    onGetSearchAutocompletions = {async (text) => {
+                    onGetAutocompletions = {async (text) => {
                         if (text) {
                             const response = await fetch(`http://suggestqueries.google.com/complete/search?client=firefox&q=${text}`, {
                                 method: `get`
@@ -166,8 +166,8 @@ onSearch | function | None | This function is called after return/done key is pr
 onEnteringSearch | function | None | This function is called after text is entered/changed in text input. Return text input event.
 onFocus | function | None | This function is called when text input in focused.
 onBlur | function | None | This function is called when text input in blurred.
-onHidden | function | None | This function is called right after hide animation is completed.
-onVisible | function | None | This function is called right after show animation is completed.
+onHide | function | None | This function is called right after hide animation is completed.
+onShow | function | None | This function is called right after show animation is completed.
 
 ### Style Overrides
 
