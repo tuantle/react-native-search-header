@@ -101,7 +101,7 @@ export default class Demo extends Component {
                     ref = {(searchHeader) => {
                         this.searchHeader = searchHeader;
                     }}
-                    onGetSearchAutocompletions = {async (text) => {
+                    onGetAutocompletions = {async (text) => {
                         if (text) {
                             const response = await fetch(`http://suggestqueries.google.com/complete/search?client=firefox&q=${text}`, {
                                 method: `get`
