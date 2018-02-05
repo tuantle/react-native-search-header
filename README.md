@@ -211,6 +211,7 @@ New Features:
 Breaking Changes:
 Improvements:
 Bug fixes:
+    - Dixed topOffset spelling error.
     - Fixed key index warning in FlatList.
 ```
 **Release Version 0.2.4 (12/27/2017)**
