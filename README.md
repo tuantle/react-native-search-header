@@ -146,11 +146,13 @@ Below are the props you can pass to the React Component to customize the SearchH
 
 Prop | Type | Default | description
 -----|------|---------|------------
+headerHeight | string | #5d5d5d | Search text input color.
+headerBgColor | string | #5d5d5d | Search text input color.
 inputColor | string | #5d5d5d | Search text input color.
 placeholderColor | string | #bdbdbd | Text input placeholder color.
 suggestionEntryColor | string | #bdbdbd | Search suggestion text color.
 iconColor | string | #5d5d5d | SearchHeader component icon button color.
-topOffet | number | 21 | The offset above the SearchHeader component. Usually where the phone status is.
+topOffset | number | 21 | The offset above the SearchHeader component. Usually where the phone status is.
 dropShadowed | boolean | true | Enable drop shadow styling.
 visibleInitially | boolean | false | Set to false to hide and to true to show the SearchHeader component.
 autoFocus | boolean | true | Enable text input auto focus when open.
@@ -162,6 +164,7 @@ placeholder | string | "Search..." | A string placeholder when there is no text 
 entryAnimation | string | "from-left-side" | Set the direction of SearchHeader entry animation. Possible values are [ "from-left-side", "from-right-side" ]
 iconImageComponents: | function | Internal | An array of custom icon image components for the buttons.
 onGetAutocompletions | function | None | This function is called during search change (componenWillUpdate) to get a string array of search autocompletions.
+onClearSuggesstion | function | None | If the function returns true, all suggestion history entries will be clear .
 onSearch | function | None | This function is called after return/done key is pressed. Return text input event.
 onEnteringSearch | function | None | This function is called after text is entered/changed in text input. Return text input event.
 onFocus | function | None | This function is called when text input in focused.
@@ -199,6 +202,27 @@ SearchHeader component default style can be override. Below are examples of how 
 ```
 
 ## Change Log
+**Release Version 0.2.5 (02/05/2018)**
+```
+Notes:
+    Updated compability to latest react native version 0.53.0
+New Features:
+    Added onClearSuggesstion callback prop to clear suggestion history
+Breaking Changes:
+Improvements:
+Bug fixes:
+    - Fixed key index warning in FlatList.
+```
+**Release Version 0.2.4 (12/27/2017)**
+```
+Notes:
+New Features:
+    Added  headerHeight prop
+    Added  headerBgColor prop
+Breaking Changes:
+Improvements:
+Bug fixes:
+```
 **Release Version 0.2.3 (11/26/2017)**
 ```
 Notes:

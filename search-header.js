@@ -147,7 +147,9 @@ export default class SearchHeader extends Component {
         placeholderColor: PropTypes.string,
         suggestionEntryColor: PropTypes.string,
         iconColor: PropTypes.string,
-        topOffet: PropTypes.number,
+        topOffset: PropTypes.number,
+        headerHeight: PropTypes.number,
+        headerBgColor: PropTypes.string,
         dropShadowed: PropTypes.bool,
         visibleInitially: PropTypes.bool,
         autoFocus: PropTypes.bool,
@@ -158,6 +160,7 @@ export default class SearchHeader extends Component {
         placeholder: PropTypes.string,
         entryAnimation: PropTypes.oneOf([ `from-left-side`, `from-right-side` ]),
         iconImageComponents: PropTypes.array,
+        onClearSuggesstion: PropTypes.func,
         onGetAutocompletions: PropTypes.func,
         onSearch: PropTypes.func,
         onEnteringSearch: PropTypes.func,
@@ -167,11 +170,13 @@ export default class SearchHeader extends Component {
         onShow: PropTypes.func
     }
     static defaultProps = {
-        inputColor: `#5d5d5d`,
+        inputColor: DEFAULT_SEARCH_HEADER_VIEW_STYLE.input.color,
         placeholderColor: `#bdbdbd`,
-        suggestionEntryColor: `#5d5d5d`,
-        iconColor: `#5d5d5d`,
-        topOffet: 24,
+        suggestionEntryColor: DEFAULT_SEARCH_HEADER_VIEW_STYLE.suggestionEntry.color,
+        iconColor: DEFAULT_SEARCH_HEADER_VIEW_STYLE.icon.tintColor,
+        topOffset: 24,
+        headerHeight: DEFAULT_SEARCH_HEADER_VIEW_STYLE.header.height,
+        headerBgColor: `#fdfdfd`,
         dropShadowed: true,
         visibleInitially: false,
         autoFocus: true,
@@ -237,6 +242,7 @@ export default class SearchHeader extends Component {
                 );
             }
         }],
+        onClearSuggesstion: () => false,
         onGetAutocompletions: () => [],
         onSearch: () => null,
         onEnteringSearch: () => null,
@@ -312,7 +318,21 @@ export default class SearchHeader extends Component {
 
         return componentRefs;
     }
-    readjustStyle = () => {
+    _readjustStyle = (newStyle = {
+        inputColor: DEFAULT_SEARCH_HEADER_VIEW_STYLE.input.color,
+        placeholderColor: `#bdbdbd`,
+        suggestionEntryColor: DEFAULT_SEARCH_HEADER_VIEW_STYLE.suggestionEntry.color,
+        iconColor: DEFAULT_SEARCH_HEADER_VIEW_STYLE.icon.tintColor,
+        topOffset: 24,
+        headerHeight: DEFAULT_SEARCH_HEADER_VIEW_STYLE.header.height,
+        headerBgColor: `#fdfdfd`,
+        dropShadowed: true,
+        visibleInitially: false,
+        autoFocus: true,
+        autoCorrect: true,
+        persistent: false,
+        entryAnimation: `from-left-side`
+    }) => {
         const component = this;
         const {
             headerHeight,
@@ -322,19 +342,19 @@ export default class SearchHeader extends Component {
             inputBgColor,
             suggestionEntryColor,
             suggestionIconColor,
-            topOffet,
+            topOffset,
             dropShadowed,
             visibleInitially,
             persistent,
             entryAnimation,
             style
-        } = component.props;
+        } = newStyle;
         const {
             adjustedStyle: prevAdjustedStyle
         } = component.state;
         const adjustedStyle = merge(prevAdjustedStyle, {
             container: {
-                top: topOffet,
+                top: topOffset,
                 shadowOpacity: dropShadowed ? DEFAULT_DROP_SHADOW_STYLE.shadowOpacity : 0,
                 transform: [{
                     translateX: (() => {
@@ -349,24 +369,24 @@ export default class SearchHeader extends Component {
                 }]
             },
             header: {
-                height: headerHeight === `` ? DEFAULT_SEARCH_HEADER_VIEW_STYLE.header.height : headerHeight,
-                backgroundColor: headerBgColor === `` ? DEFAULT_SEARCH_HEADER_VIEW_STYLE.header.backgroundColor : headerBgColor
+                height: headerHeight,
+                backgroundColor: headerBgColor
             },
             suggestion: {
                 shadowOpacity: dropShadowed ? DEFAULT_DROP_SHADOW_STYLE.shadowOpacity : 0
             },
             input: {
-                backgroundColor: inputBgColor === `` ? DEFAULT_SEARCH_HEADER_VIEW_STYLE.searchInputText.backgroundColor : inputBgColor,
-                color: inputColor === `` ? DEFAULT_SEARCH_HEADER_VIEW_STYLE.searchInputText.color : inputColor
+                backgroundColor: inputBgColor,
+                color: inputColor
             },
             suggestionEntry: {
-                color: suggestionEntryColor === `` ? DEFAULT_SEARCH_HEADER_VIEW_STYLE.searchSuggestionText.color : suggestionEntryColor
+                color: suggestionEntryColor
             },
             icon: {
-                tintColor: iconColor === `` ? DEFAULT_SEARCH_HEADER_VIEW_STYLE.icon.tintColor : iconColor
+                tintColor: iconColor
             },
             suggestionIcon: {
-                tintColor: suggestionIconColor === `` ? DEFAULT_SEARCH_HEADER_VIEW_STYLE.icon.tintColor : suggestionIconColor
+                tintColor: suggestionIconColor
             }
         });
 
@@ -404,13 +424,12 @@ export default class SearchHeader extends Component {
                         autocompletes: []
                     }
                 };
+            }, () => {
+                textInput.clear();
+                onHide();
             });
 
-            textInput.clear();
-
             dismissKeyboard();
-
-            onHide();
         }
     }
     show = () => {
@@ -429,9 +448,9 @@ export default class SearchHeader extends Component {
                         focused: false
                     }
                 };
+            }, () => {
+                onShow();
             });
-
-            onShow();
         }
     }
     clear = () => {
@@ -446,9 +465,9 @@ export default class SearchHeader extends Component {
                     valueChanged: false
                 }
             };
+        }, () => {
+            textInput.clear();
         });
-
-        textInput.clear();
     }
     clearSuggestion = () => {
         const component = this;
@@ -478,8 +497,9 @@ export default class SearchHeader extends Component {
                     focused: true
                 }
             };
+        }, () => {
+            onFocus();
         });
-        onFocus();
     }
     onBlur = () => {
         const component = this;
@@ -495,8 +515,9 @@ export default class SearchHeader extends Component {
                     valueChanged: false
                 }
             };
+        }, () => {
+            onBlur();
         });
-        onBlur();
     }
     onEditting = (event) => {
         const component = this;
@@ -650,14 +671,41 @@ export default class SearchHeader extends Component {
     componentWillMount () {
         const component = this;
         const {
+            inputColor,
+            placeholderColor,
+            suggestionEntryColor,
+            iconColor,
+            topOffset,
+            headerHeight,
+            headerBgColor,
+            dropShadowed,
             visibleInitially,
+            autoFocus,
+            autoCorrect,
             persistent,
+            entryAnimation,
+            style,
             suggestionHistoryEntryRollOverCount
         } = component.props;
 
         component.setState((prevState) => {
             return {
-                adjustedStyle: component.readjustStyle(),
+                adjustedStyle: component._readjustStyle({
+                    inputColor,
+                    placeholderColor,
+                    suggestionEntryColor,
+                    iconColor,
+                    topOffset,
+                    headerHeight,
+                    headerBgColor,
+                    dropShadowed,
+                    visibleInitially,
+                    autoFocus,
+                    autoCorrect,
+                    persistent,
+                    entryAnimation,
+                    style
+                }),
                 visible: visibleInitially || persistent,
                 suggestion: {
                     ...prevState.suggestion,
@@ -725,12 +773,54 @@ export default class SearchHeader extends Component {
     }
     componentWillReceiveProps () {
         const component = this;
+        const {
+            inputColor,
+            placeholderColor,
+            suggestionEntryColor,
+            iconColor,
+            topOffset,
+            headerHeight,
+            headerBgColor,
+            dropShadowed,
+            autoFocus,
+            autoCorrect,
+            entryAnimation,
+            style,
+            onClearSuggesstion
+        } = component.props;
 
         component.setState(() => {
             return {
-                adjustedStyle: component.readjustStyle()
+                adjustedStyle: component._readjustStyle({
+                    inputColor,
+                    placeholderColor,
+                    suggestionEntryColor,
+                    iconColor,
+                    topOffset,
+                    headerHeight,
+                    headerBgColor,
+                    dropShadowed,
+                    autoFocus,
+                    autoCorrect,
+                    entryAnimation,
+                    style
+                })
             };
         });
+
+        if (onClearSuggesstion()) {
+            component.setState(() => {
+                return {
+                    suggestion: {
+                        visible: false,
+                        historyEntryIndex: 0,
+                        historyEntryRollOverCount: 0,
+                        histories: [],
+                        autocompletes: []
+                    }
+                };
+            });
+        }
     }
     renderInput () {
         const component = this;
@@ -812,13 +902,24 @@ export default class SearchHeader extends Component {
             input,
             suggestion
         } = component.state;
-        let suggestionEntries = suggestion.histories.concat(suggestion.autocompletes);
+        // let suggestionEntries = suggestion.histories.concat(suggestion.autocompletes);
+        //
+        // suggestionEntries = suggestionEntries.filter((entry) => {
+        //     return entry.value !== `` && input.value !== `` && entry.value.toLowerCase().includes(input.value.toLowerCase());
+        // }).map((entry, index) => {
+        //     return {
+        //         key: `${index}`,
+        //         ...entry
+        //     };
+        // });
 
-        suggestionEntries = suggestionEntries.filter((entry) => {
-            return entry.value !== `` && input.value !== `` && entry.value.toLowerCase().includes(input.value.toLowerCase());
-        }).map((entry, index) => {
+        let suggestionEntries = suggestion.histories.filter((entry) => {
+            return entry.value.toLowerCase().charAt(0) === input.value.toLowerCase().charAt(0);
+        }).concat(suggestion.autocompletes);
+
+        suggestionEntries = suggestionEntries.map((entry, index) => {
             return {
-                key: index,
+                key: `${index}`,
                 ...entry
             };
         });
