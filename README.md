@@ -146,8 +146,8 @@ Below are the props you can pass to the React Component to customize the SearchH
 
 Prop | Type | Default | description
 -----|------|---------|------------
-headerHeight | string | #5d5d5d | Search text input color.
-headerBgColor | string | #5d5d5d | Search text input color.
+headerHeight | string | #5d5d5d | Custom header bar height.
+headerBgColor | string | #5d5d5d | Custom header background color.
 inputColor | string | #5d5d5d | Search text input color.
 placeholderColor | string | #bdbdbd | Text input placeholder color.
 suggestionEntryColor | string | #bdbdbd | Search suggestion text color.
