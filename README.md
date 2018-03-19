@@ -10,15 +10,7 @@ Easy to use React Native search header component based on material design patter
 
 `$ npm install react-native-search-header --save`
 
-## Usage
-
-To use search header you simply import the component factory function to create a renderable component:
-
-```js
-import SearchHeaderComponent from 'react-native-search-header';
-```
-
-### Examples
+### Example
 
 To use search header you simply import the component factory function to create a renderable component:
 
@@ -146,12 +138,12 @@ Below are the props you can pass to the React Component to customize the SearchH
 
 Prop | Type | Default | description
 -----|------|---------|------------
-headerHeight | string | #5d5d5d | Custom header bar height.
-headerBgColor | string | #5d5d5d | Custom header background color.
-inputColor | string | #5d5d5d | Search text input color.
-placeholderColor | string | #bdbdbd | Text input placeholder color.
-suggestionEntryColor | string | #bdbdbd | Search suggestion text color.
-iconColor | string | #5d5d5d | SearchHeader component icon button color.
+headerHeight | string | `#5d5d5d` | Custom header bar height.
+headerBgColor | string | `#5d5d5d` | Custom header background color.
+inputColor | string | `#5d5d5d` | Search text input color.
+placeholderColor | string | `#bdbdbd` | Text input placeholder color.
+suggestionEntryColor | string | `#bdbdbd` | Search suggestion text color.
+iconColor | string | `#5d5d5d` | SearchHeader component icon button color.
 topOffset | number | 21 | The offset above the SearchHeader component. Usually where the phone status is.
 dropShadowed | boolean | true | Enable drop shadow styling.
 visibleInitially | boolean | false | Set to false to hide and to true to show the SearchHeader component.
@@ -160,11 +152,10 @@ autoCorrect | boolean | true | Enable text input autocorrect.
 persistent | boolean | false | Enable persistent search.
 enableSuggestion | boolean | true | When enabled, search suggestion list will be display accordingly.
 suggestionHistoryEntryRollOverCount | number | 16 | The max number of search suggestion history items.
-placeholder | string | "Search..." | A string placeholder when there is no text in text input.
-entryAnimation | string | "from-left-side" | Set the direction of SearchHeader entry animation. Possible values are [ "from-left-side", "from-right-side" ]
+placeholder | string | `Search...` | A string placeholder when there is no text in text input.
+entryAnimation | string | `from-left-side` | Set the direction of SearchHeader entry animation. Possible values are `from-left-side`, `from-right-side`
 iconImageComponents: | function | Internal | An array of custom icon image components for the buttons.
 onGetAutocompletions | function | None | This function is called during search change (componenWillUpdate) to get a string array of search autocompletions.
-onClearSuggesstion | function | None | If the function returns true, all suggestion history entries will be clear .
 onSearch | function | None | This function is called after return/done key is pressed. Return text input event.
 onEnteringSearch | function | None | This function is called after text is entered/changed in text input. Return text input event.
 onFocus | function | None | This function is called when text input in focused.
@@ -414,10 +405,6 @@ Breaking Changes:
 Improvements:
 Bug fixes:
 ```
-
-## TODO
-
--   Fix RCTView shadow warning message.
 
 ## License
 
