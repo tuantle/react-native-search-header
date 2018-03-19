@@ -463,6 +463,10 @@ export default class SearchHeader extends Component {
                     ...prevState.input,
                     value: ``,
                     valueChanged: false
+                },
+                suggestion: {
+                    ...prevState.suggestion,
+                    visible: false
                 }
             };
         }, () => {
@@ -511,8 +515,7 @@ export default class SearchHeader extends Component {
             return {
                 input: {
                     ...prevState.input,
-                    focused: false,
-                    valueChanged: false
+                    focused: false
                 }
             };
         }, () => {
@@ -583,7 +586,7 @@ export default class SearchHeader extends Component {
                     },
                     suggestion: {
                         ...prevState.suggestion,
-                        visible: true
+                        visible: false
                     }
                 };
             });
