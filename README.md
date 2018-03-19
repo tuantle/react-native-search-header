@@ -169,8 +169,8 @@ onSearch | function | None | This function is called after return/done key is pr
 onEnteringSearch | function | None | This function is called after text is entered/changed in text input. Return text input event.
 onFocus | function | None | This function is called when text input in focused.
 onBlur | function | None | This function is called when text input in blurred.
-onHidden | function | None | This function is called right after hide animation is completed.
-onVisible | function | None | This function is called right after show animation is completed.
+onHide | function | None | This function is called right after hide animation is completed.
+onShow | function | None | This function is called right after show animation is completed.
 
 ### Style Overrides
 
@@ -202,6 +202,19 @@ SearchHeader component default style can be override. Below are examples of how 
 ```
 
 ## Change Log
+**Release Version 0.2.6 (03/19/2018)**
+```
+Notes:
+    Updated compability to latest react native version 0.54.2
+New Features:
+Breaking Changes:
+Improvements:
+Bug fixes:
+    - Fixed bug where clearing text input or if text input is empty will not close the suggestion view
+    - Fixed documentation in README
+        onHidden -> onHide
+        onVisible -> onShow
+```
 **Release Version 0.2.5 (02/05/2018)**
 ```
 Notes:
@@ -211,7 +224,7 @@ New Features:
 Breaking Changes:
 Improvements:
 Bug fixes:
-    - Dixed topOffset spelling error.
+    - Fixed topOffset spelling error.
     - Fixed key index warning in FlatList.
 ```
 **Release Version 0.2.4 (12/27/2017)**
