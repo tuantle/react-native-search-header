@@ -196,7 +196,7 @@ SearchHeader component default style can be override. Below are examples of how 
 **Release Version 0.2.6 (03/19/2018)**
 ```
 Notes:
-    Updated compability to latest react native version 0.54.2
+    Updated compatibility to latest react native version 0.54.2
 New Features:
 Breaking Changes:
 Improvements:
@@ -209,7 +209,7 @@ Bug fixes:
 **Release Version 0.2.5 (02/05/2018)**
 ```
 Notes:
-    Updated compability to latest react native version 0.53.0
+    Updated compatibility to latest react native version 0.53.0
 New Features:
     Added onClearSuggesstion callback prop to clear suggestion history
 Breaking Changes:
