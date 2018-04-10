@@ -108,7 +108,18 @@ export default class Demo extends Component {
                     <Button
                         title = 'Clear Suggestion'
                         color = '#f5fcff'
-                        onPress = {() => this.searchHeader.clearSuggestion()}
+                        onPress = {() => {
+                            this.searchHeader.clearSuggestion()
+                        }}
+                    />
+                </View>
+                <View style = { styles.button }>
+                    <Button
+                        title = 'Clear'
+                        color = '#f5fcff'
+                        onPress = {() => {
+                            this.searchHeader.clear()
+                        }}
                     />
                 </View>
             </View>

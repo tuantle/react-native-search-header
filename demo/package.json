@@ -7,22 +7,22 @@
 		"test": "jest"
 	},
 	"dependencies": {
-		"prop-types": "^15.6.1",
-		"react": "^16.2.0",
-		"react-native": "^0.53.3",
-		"react-native-animatable": "^1.2.4",
-		"react-native-search-header": "latest"
+		"prop-types": "latest",
+		"react": "latest",
+		"react-native": "latest",
+		"react-native-animatable": "latest",
+		"react-native-search-header": "file:../react-native-search-header-0.2.7.tgz"
 	},
 	"devDependencies": {
-		"babel-eslint": "^8.2.2",
-		"babel-jest": "22.1.0",
-		"babel-preset-react": "^6.22.0",
-		"babel-preset-react-native": "4.0.0",
-		"eslint": "^4.19.0",
-		"eslint-plugin-react": "^7.7.0",
-		"eslint-plugin-react-native": "^3.2.1",
-		"jest": "22.1.4",
-		"react-test-renderer": "16.2.0"
+		"babel-eslint": "latest",
+		"babel-jest": "latest",
+		"babel-preset-react": "latest",
+		"babel-preset-react-native": "latest",
+		"eslint": "latest",
+		"eslint-plugin-react": "latest",
+		"eslint-plugin-react-native": "latest",
+		"jest": "latest",
+		"react-test-renderer": "latest"
 	},
 	"jest": {
 		"preset": "react-native"
