@@ -162,6 +162,7 @@ export default class SearchHeader extends Component {
         iconImageComponents: PropTypes.array,
         onClearSuggesstion: PropTypes.func,
         onGetAutocompletions: PropTypes.func,
+        onClear: PropTypes.func,
         onSearch: PropTypes.func,
         onEnteringSearch: PropTypes.func,
         onFocus: PropTypes.func,
@@ -244,6 +245,7 @@ export default class SearchHeader extends Component {
         }],
         onClearSuggesstion: () => false,
         onGetAutocompletions: () => [],
+        onClear: () => null,
         onSearch: () => null,
         onEnteringSearch: () => null,
         onFocus: () => null,
@@ -259,8 +261,8 @@ export default class SearchHeader extends Component {
             visible: false,
             input: {
                 focused: false,
-                valueChanged: false,
-                value: ``
+                value: ``,
+                valueChanged: false
             },
             suggestion: {
                 visible: false,
@@ -307,7 +309,7 @@ export default class SearchHeader extends Component {
                 if (typeof refName !== `string`) {
                     throw new Error(`ERROR: SearchHeader.lookupComponentRefs - Input component reference name is invalid.`);
                 } else if (!component.refCache.hasOwnProperty(refName)) {
-                    throw new Error(`ERROR: SearchHeader.lookupComponentRefs - Component reference ${refName} is not found.`);
+                    return null;
                 } else {
                     return component.refCache[refName];
                 }
@@ -415,8 +417,8 @@ export default class SearchHeader extends Component {
                     visible: false,
                     input: {
                         ...prevState.input,
-                        valueChanged: false,
-                        focused: false
+                        focused: false,
+                        valueChanged: false
                     },
                     suggestion: {
                         ...prevState.suggestion,
@@ -455,23 +457,30 @@ export default class SearchHeader extends Component {
     }
     clear = () => {
         const component = this;
+        const {
+            onClear
+        } = component.props;
         const [ textInput ] = component.lookupComponentRefs(`text-input`);
 
-        component.setState((prevState) => {
-            return {
-                input: {
-                    ...prevState.input,
-                    value: ``,
-                    valueChanged: false
-                },
-                suggestion: {
-                    ...prevState.suggestion,
-                    visible: false
-                }
-            };
-        }, () => {
+        if (textInput !== null) {
             textInput.clear();
-        });
+            component.setState((prevState) => {
+                return {
+                    input: {
+                        ...prevState.input,
+                        value: ``,
+                        valueChanged: true
+                    },
+                    suggestion: {
+                        ...prevState.suggestion,
+                        visible: false
+                    }
+                };
+            }, () => {
+                textInput.clear();
+                onClear();
+            });
+        }
     }
     clearSuggestion = () => {
         const component = this;
@@ -746,12 +755,14 @@ export default class SearchHeader extends Component {
                 if (suggestion.visible) {
                     animatedSuggestionView.transitionTo({
                         opacity: 1,
-                        translateY: 0
+                        translateY: 0,
+                        height: DEVICE_HEIGHT / 2
                     });
                 } else {
                     animatedSuggestionView.transitionTo({
                         opacity: 0,
-                        translateY: DEVICE_HEIGHT
+                        translateY: DEVICE_HEIGHT,
+                        height: 0
                     });
                 }
             }
@@ -931,7 +942,7 @@ export default class SearchHeader extends Component {
             <AnimatedView
                 ref = { component.assignComponentRef(`animated-suggestion-view`) }
                 duration = { 300 }
-                useNativeDriver = { true }
+                useNativeDriver = { false }
                 style = { adjustedStyle.suggestion }
             >
                 <FlatList
