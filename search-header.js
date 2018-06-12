@@ -550,11 +550,23 @@ export default class SearchHeader extends Component {
                             valueChanged: value !== prevState.input.value,
                             focused: true
                         },
+                        // suggestion: {
+                        //     ...prevState.suggestion,
+                        //     visible: true,
+                        //     autocompletes: [
+                        //         ...new Set(autocompleteTexts.filter((text) => typeof text === `string`).map((text) => text.replace(/\s/g, ``)))
+                        //     ].map((text) => {
+                        //         return {
+                        //             historyType: false,
+                        //             value: text
+                        //         };
+                        //     })
+                        // }
                         suggestion: {
                             ...prevState.suggestion,
                             visible: true,
                             autocompletes: [
-                                ...new Set(autocompleteTexts.filter((text) => typeof text === `string`).map((text) => text.replace(/\s/g, ``)))
+                                ...new Set(autocompleteTexts.filter((text) => typeof text === `string`))
                             ].map((text) => {
                                 return {
                                     historyType: false,

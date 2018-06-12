@@ -10,6 +10,9 @@ Easy to use React Native search header component based on material design patter
 
 `$ npm install react-native-search-header --save`
 
+## NOTE
+To get TextInput clear to work with current react native version 55.4. Please apply this [patch](https://github.com/facebook/react-native/pull/18363/files).
+
 ### Example
 
 To use search header you simply import the component factory function to create a renderable component:
@@ -93,6 +96,9 @@ export default class Demo extends Component {
                     ref = {(searchHeader) => {
                         this.searchHeader = searchHeader;
                     }}
+                    onClear = {() => {
+                        console.log(`Clearing input!`);
+                    }}
                     onGetAutocompletions = {async (text) => {
                         if (text) {
                             const response = await fetch(`http://suggestqueries.google.com/complete/search?client=firefox&q=${text}`, {
@@ -110,6 +116,15 @@ export default class Demo extends Component {
                         title = 'Open Search'
                         color = '#f5fcff'
                         onPress = {() => this.searchHeader.show()}
+                    />
+                </View>
+                <View style = { styles.button }>
+                    <Button
+                        title = 'Clear'
+                        color = '#f5fcff'
+                        onPress = {() => {
+                            this.searchHeader.clear();
+                        }}
                     />
                 </View>
             </View>
@@ -156,6 +171,7 @@ placeholder | string | `Search...` | A string placeholder when there is no text 
 entryAnimation | string | `from-left-side` | Set the direction of SearchHeader entry animation. Possible values are `from-left-side`, `from-right-side`
 iconImageComponents: | function | Internal | An array of custom icon image components for the buttons.
 onGetAutocompletions | function | None | This function is called during search change (componenWillUpdate) to get a string array of search autocompletions.
+onClear | function | None | This function is called when text input is cleared.
 onSearch | function | None | This function is called after return/done key is pressed. Return text input event.
 onEnteringSearch | function | None | This function is called after text is entered/changed in text input. Return text input event.
 onFocus | function | None | This function is called when text input in focused.
@@ -193,6 +209,18 @@ SearchHeader component default style can be override. Below are examples of how 
 ```
 
 ## Change Log
+**Release Version 0.2.7 (04/09/2018)**
+```
+Notes:
+    Updated compatibility to latest react native version 0.55.4
+New Features:
+    - Added onClear callback when text input is cleared
+Breaking Changes:
+Improvements:
+Bug fixes:
+    - Add note to get clear method to work with react native 55.4.
+    - Fixed no spacing for text entry in search suggestion box view.
+```
 **Release Version 0.2.6 (03/19/2018)**
 ```
 Notes:
