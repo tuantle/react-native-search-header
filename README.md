@@ -209,7 +209,7 @@ SearchHeader component default style can be override. Below are examples of how 
 ```
 
 ## Change Log
-**Release Version 0.2.7 (04/09/2018)**
+**Release Version 0.2.7 (06/11/2018)**
 ```
 Notes:
     Updated compatibility to latest react native version 0.55.4
