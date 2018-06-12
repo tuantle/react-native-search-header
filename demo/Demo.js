@@ -85,7 +85,9 @@ export default class Demo extends Component {
                     enableSuggestion = { true }
                     entryAnimation = 'from-right-side'
                     topOffset = { 21 }
-                    onClearSuggesstion = {() => true }
+                    onClear = {() => {
+                        console.log(`CLEAR`);
+                    }}
                     onGetAutocompletions = {async (text) => {
                         if (text) {
                             const response = await fetch(`http://suggestqueries.google.com/complete/search?client=firefox&q=${text}`, {
@@ -109,7 +111,7 @@ export default class Demo extends Component {
                         title = 'Clear Suggestion'
                         color = '#f5fcff'
                         onPress = {() => {
-                            this.searchHeader.clearSuggestion()
+                            this.searchHeader.clearSuggestion();
                         }}
                     />
                 </View>
@@ -118,7 +120,7 @@ export default class Demo extends Component {
                         title = 'Clear'
                         color = '#f5fcff'
                         onPress = {() => {
-                            this.searchHeader.clear()
+                            this.searchHeader.clear();
                         }}
                     />
                 </View>
