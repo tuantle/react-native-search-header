@@ -218,7 +218,7 @@ Breaking Changes:
 Improvements:
 Bug fixes:
     - Fixed suggestion text display to have tail ellipsize if there are too many words in one line.
-    - Fixed text input clearing issue. 
+    - Fixed text input clearing issue.
 ```
 **Release Version 0.2.7 (04/09/2018)**
 ```
