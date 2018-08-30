@@ -79,8 +79,8 @@ const DEFAULT_SEARCH_HEADER_VIEW_STYLE = {
         zIndex: 10,
         elevation: 2,
         top: 0,
-        width: DEVICE_WIDTH,
         marginBottom: 6,
+        width: DEVICE_WIDTH,
         backgroundColor: `transparent`,
         overflow: `hidden`
     },
@@ -106,9 +106,9 @@ const DEFAULT_SEARCH_HEADER_VIEW_STYLE = {
         flexDirection: `column`,
         alignItems: `stretch`,
         justifyContent: `center`,
-        maxHeight: DEVICE_HEIGHT / 2,
         paddingLeft: 12,
         marginVertical: 6,
+        maxHeight: DEVICE_HEIGHT / 2,
         backgroundColor: `#fdfdfd`
     },
     input: {
@@ -131,6 +131,7 @@ const DEFAULT_SEARCH_HEADER_VIEW_STYLE = {
         paddingVertical: 3,
         marginLeft: 8,
         color: `#5d5d5d`,
+        maxWidth: DEVICE_WIDTH - 92,
         backgroundColor: `transparent`
     },
     icon: {
@@ -412,25 +413,26 @@ export default class SearchHeader extends Component {
         if (!persistent) {
             const [ textInput ] = component.lookupComponentRefs(`text-input`);
 
-            component.setState((prevState) => {
-                return {
-                    visible: false,
-                    input: {
-                        ...prevState.input,
-                        focused: false,
-                        valueChanged: false
-                    },
-                    suggestion: {
-                        ...prevState.suggestion,
-                        visible: false,
-                        autocompletes: []
-                    }
-                };
-            }, () => {
+            if (textInput !== null) {
                 textInput.clear();
-                onHide();
-            });
-
+                component.setState((prevState) => {
+                    return {
+                        visible: false,
+                        input: {
+                            ...prevState.input,
+                            focused: false,
+                            valueChanged: false
+                        },
+                        suggestion: {
+                            ...prevState.suggestion,
+                            visible: false,
+                            autocompletes: []
+                        }
+                    };
+                }, () => {
+                    onHide();
+                });
+            }
             dismissKeyboard();
         }
     }
@@ -477,7 +479,6 @@ export default class SearchHeader extends Component {
                     }
                 };
             }, () => {
-                textInput.clear();
                 onClear();
             });
         }
@@ -896,6 +897,7 @@ export default class SearchHeader extends Component {
                     underlineColorAndroid = 'transparent'
                     placeholder = { placeholder }
                     placeholderColor = { placeholderColor === `` ? `#bdbdbd` : placeholderColor }
+                    value = { input.value }
                     style = { adjustedStyle.input }
                     onFocus = { component.onFocus }
                     onBlur = { component.onBlur }
@@ -1009,7 +1011,11 @@ export default class SearchHeader extends Component {
                                             return entry.historyType ? iconImageComponent.name === `history` : iconImageComponent.name === `search`;
                                         })[0].render([ adjustedStyle.icon, adjustedStyle.suggestionIcon ])
                                     }
-                                    <Text style = { adjustedStyle.suggestionEntry }>{ entry.value }</Text>
+                                    <Text
+                                        numberOfLines = { 1 }
+                                        ellipsizeMode = 'tail'
+                                        style = { adjustedStyle.suggestionEntry }
+                                    >{ entry.value }</Text>
                                     <View style = {{
                                         flexDirection: `row`,
                                         alignItems: `center`,
