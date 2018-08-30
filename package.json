@@ -1,6 +1,6 @@
 {
     "name": "react-native-search-header",
-    "version": "0.2.7",
+    "version": "0.2.8",
     "registry": "github",
     "description": "A react native search header component based on material design patterns.",
     "authors": [
@@ -40,27 +40,27 @@
         "preset": "react-native"
     },
     "dependencies": {
-        "lodash.merge": "^4.6.1",
-        "react-native-animatable": "^1.3.0"
+        "lodash.merge": ">=4.6.x",
+        "react-native-animatable": ">=1.3.x"
     },
     "peerDependencies": {
-        "react": ">=16.3.x",
-        "react-native": ">=0.55.x",
-        "prop-types": "^15.5.10"
+        "react": ">=16.4.x",
+        "react-native": ">=0.56.x",
+        "prop-types": ">=15.6.x"
     },
     "devDependencies": {
-        "babel-eslint": "^8.2.3",
-        "babel-jest": "^22.4.4",
-        "babel-plugin-module-resolver": "^3.0.0",
-        "babel-preset-react": "^6.22.0",
-        "babel-preset-react-native": "^4.0.0",
-        "eslint": "^4.19.1",
-        "eslint-plugin-react": "^7.9.1",
-        "eslint-plugin-react-native": "^3.2.1",
-        "jest": "^22.4.4",
-        "prop-types": "^15.6.1",
-        "react": "^16.4.0",
-        "react-native": "^0.55.4",
-        "react-test-renderer": "^16.4.0"
+        "babel-eslint": ">=9.0.x",
+        "babel-jest": ">=23.4.x",
+        "babel-plugin-module-resolver": ">=3.0.x",
+        "babel-preset-react": ">=6.22.x",
+        "babel-preset-react-native": ">=5.0.x",
+        "eslint": ">=5.4.x",
+        "eslint-plugin-react": ">=7.11.x",
+        "eslint-plugin-react-native": ">=3.2.x",
+        "jest": ">=23.x",
+        "prop-types": "^15.6.2",
+        "react": ">=16.4.x",
+        "react-native": ">=0.56.x",
+        "react-test-renderer": ">=16.4.x"
     }
 }

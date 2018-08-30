@@ -209,6 +209,17 @@ SearchHeader component default style can be override. Below are examples of how 
 ```
 
 ## Change Log
+**Release Version 0.2.8 (08/30/2018)**
+```
+Notes:
+    Updated compatibility to latest react native version 0.56
+New Features:
+Breaking Changes:
+Improvements:
+Bug fixes:
+    - Fixed suggestion text display to have tail ellipsize if there are too many words in one line.
+    - Fixed text input clearing issue. 
+```
 **Release Version 0.2.7 (04/09/2018)**
 ```
 Notes:
