@@ -7,22 +7,25 @@
 		"test": "jest"
 	},
 	"dependencies": {
-		"prop-types": "latest",
-		"react": "^16.4.0",
-		"react-native": "^0.55.4",
-		"react-native-animatable": "^1.3.0",
-		"react-native-search-header": "file:../react-native-search-header-0.2.7.tgz"
+		"prop-types": ">=15.6.x",
+		"react": ">=16.3.x",
+		"react-native": ">=0.56.x",
+		"react-native-search-header": "file:../react-native-search-header-0.2.8.tgz"
 	},
 	"devDependencies": {
-		"babel-eslint": "^8.2.3",
-		"babel-jest": "^23.0.1",
-		"babel-preset-react": "latest",
-		"babel-preset-react-native": "latest",
-		"eslint": "latest",
-		"eslint-plugin-react": "^7.9.1",
-		"eslint-plugin-react-native": "latest",
-		"jest": "^23.1.0",
-		"react-test-renderer": "^16.4.0"
+		"babel-eslint": ">=9.0.x",
+		"babel-jest": ">=23.4.x",
+		"babel-plugin-module-resolver": ">=3.0.x",
+		"babel-preset-react": ">=6.22.x",
+		"babel-preset-react-native": ">=5.0.x",
+		"eslint": ">=5.4.x",
+		"eslint-plugin-react": ">=7.11.x",
+		"eslint-plugin-react-native": ">=3.2.x",
+		"jest": ">=23.x",
+		"prop-types": ">=15.6.x",
+		"react": ">=16.4.x",
+		"react-native": ">=0.56.x",
+		"react-test-renderer": ">=16.4.x"
 	},
 	"jest": {
 		"preset": "react-native"
