@@ -209,6 +209,16 @@ SearchHeader component default style can be override. Below are examples of how 
 ```
 
 ## Change Log
+**Release Version 0.2.9 (09/10/2018)**
+```
+Notes:
+New Features:
+Breaking Changes:
+Improvements:
+    - Updated lifecycle methods called to match latest react recommendations.
+Bug fixes:
+    - Fixed TextInput lag issue.
+```
 **Release Version 0.2.8 (08/30/2018)**
 ```
 Notes:
