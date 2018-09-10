@@ -254,6 +254,69 @@ export default class SearchHeader extends Component {
         onHide: () => null,
         onShow: () => null
     }
+    static getDerivedStateFromProps(props, state) {
+        if (props.id !== state.prevId) {
+            const {
+                inputColor,
+                placeholderColor,
+                suggestionEntryColor,
+                iconColor,
+                topOffset,
+                headerHeight,
+                headerBgColor,
+                dropShadowed,
+                autoFocus,
+                autoCorrect,
+                entryAnimation,
+                style,
+                onClearSuggesstion
+            } = props;
+
+            if (onClearSuggesstion()) {
+                return {
+                    adjustedStyle: component._readjustStyle({
+                        inputColor,
+                        placeholderColor,
+                        suggestionEntryColor,
+                        iconColor,
+                        topOffset,
+                        headerHeight,
+                        headerBgColor,
+                        dropShadowed,
+                        autoFocus,
+                        autoCorrect,
+                        entryAnimation,
+                        style
+                    }),
+                    suggestion: {
+                        visible: false,
+                        historyEntryIndex: 0,
+                        historyEntryRollOverCount: 0,
+                        histories: [],
+                        autocompletes: []
+                    }
+                };
+            } else {
+                return {
+                    adjustedStyle: component._readjustStyle({
+                        inputColor,
+                        placeholderColor,
+                        suggestionEntryColor,
+                        iconColor,
+                        topOffset,
+                        headerHeight,
+                        headerBgColor,
+                        dropShadowed,
+                        autoFocus,
+                        autoCorrect,
+                        entryAnimation,
+                        style
+                    })
+                };
+            }
+        }
+        return null;
+    }
     constructor (property) {
         super(property);
         this.refCache = {};
@@ -532,25 +595,18 @@ export default class SearchHeader extends Component {
             onBlur();
         });
     }
-    onEditting = (event) => {
+    onEditting = (value) => {
         const component = this;
         const {
             onGetAutocompletions,
             onEnteringSearch
         } = component.props;
-        const value = event.nativeEvent.text;
 
         const fetchSearchAutocompletions = async function () {
             const autocompleteTexts = await onGetAutocompletions(value);
             if (Array.isArray(autocompleteTexts) && autocompleteTexts.length) {
                 component.setState((prevState) => {
                     return {
-                        input: {
-                            ...prevState.input,
-                            value,
-                            valueChanged: value !== prevState.input.value,
-                            focused: true
-                        },
                         // suggestion: {
                         //     ...prevState.suggestion,
                         //     visible: true,
@@ -580,12 +636,6 @@ export default class SearchHeader extends Component {
             } else {
                 component.setState((prevState) => {
                     return {
-                        input: {
-                            ...prevState.input,
-                            value,
-                            valueChanged: value !== prevState.input.value,
-                            focused: true
-                        },
                         suggestion: {
                             ...prevState.suggestion,
                             visible: false
@@ -597,6 +647,16 @@ export default class SearchHeader extends Component {
 
         if (value !== ``) {
             fetchSearchAutocompletions();
+            component.setState((prevState) => {
+                return {
+                    input: {
+                        ...prevState.input,
+                        value,
+                        valueChanged: value !== prevState.input.value,
+                        focused: true
+                    }
+                };
+            });
         } else {
             component.setState((prevState) => {
                 return {
@@ -693,7 +753,7 @@ export default class SearchHeader extends Component {
             });
         }
     }
-    componentWillMount () {
+    componentDidMount () {
         const component = this;
         const {
             inputColor,
@@ -793,61 +853,10 @@ export default class SearchHeader extends Component {
             }
         }
     }
-    componentWillUnMount () {
+    componentDidUnMount () {
         const component = this;
 
         component.refCache = {};
-    }
-    componentWillReceiveProps () {
-        const component = this;
-        const {
-            inputColor,
-            placeholderColor,
-            suggestionEntryColor,
-            iconColor,
-            topOffset,
-            headerHeight,
-            headerBgColor,
-            dropShadowed,
-            autoFocus,
-            autoCorrect,
-            entryAnimation,
-            style,
-            onClearSuggesstion
-        } = component.props;
-
-        component.setState(() => {
-            return {
-                adjustedStyle: component._readjustStyle({
-                    inputColor,
-                    placeholderColor,
-                    suggestionEntryColor,
-                    iconColor,
-                    topOffset,
-                    headerHeight,
-                    headerBgColor,
-                    dropShadowed,
-                    autoFocus,
-                    autoCorrect,
-                    entryAnimation,
-                    style
-                })
-            };
-        });
-
-        if (onClearSuggesstion()) {
-            component.setState(() => {
-                return {
-                    suggestion: {
-                        visible: false,
-                        historyEntryIndex: 0,
-                        historyEntryRollOverCount: 0,
-                        histories: [],
-                        autocompletes: []
-                    }
-                };
-            });
-        }
     }
     renderInput () {
         const component = this;
@@ -901,7 +910,7 @@ export default class SearchHeader extends Component {
                     style = { adjustedStyle.input }
                     onFocus = { component.onFocus }
                     onBlur = { component.onBlur }
-                    onChange = { component.onEditting }
+                    onChangeText = { component.onEditting }
                     onSubmitEditing = { component.onSubmitEditing }
                 />
                 {
