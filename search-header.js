@@ -142,9 +142,72 @@ const DEFAULT_SEARCH_HEADER_VIEW_STYLE = {
     }
 };
 
+const DEFAULT_ICON_IMAGE_COMPONENTS = [{
+    name: `close`,
+    customStyle: {},
+    render: (style) => {
+        return (
+            <Image
+                resizeMode = 'cover'
+                source = { closeIcon }
+                style = { style }
+            />
+        );
+    }
+}, {
+    name: `hide`,
+    customStyle: {},
+    render: (style) => {
+        return (
+            <Image
+                resizeMode = 'cover'
+                source = { hideIcon }
+                style = { style }
+            />
+        );
+    }
+}, {
+    name: `history`,
+    customStyle: {},
+    render: (style) => {
+        return (
+            <Image
+                resizeMode = 'cover'
+                source = { historyIcon }
+                style = { style }
+            />
+        );
+    }
+}, {
+    name: `search`,
+    customStyle: {},
+    render: (style) => {
+        return (
+            <Image
+                resizeMode = 'cover'
+                source = { searchIcon }
+                style = { style }
+            />
+        );
+    }
+}, {
+    name: `recall`,
+    customStyle: {},
+    render: (style) => {
+        return (
+            <Image
+                resizeMode = 'cover'
+                source = { recallIcon }
+                style = { style }
+            />
+        );
+    }
+}];
+
 export default class SearchHeader extends Component {
     static propTypes = {
         inputColor: PropTypes.string,
+        inputBgColor: PropTypes.string,
         placeholderColor: PropTypes.string,
         suggestionEntryColor: PropTypes.string,
         iconColor: PropTypes.string,
@@ -173,12 +236,13 @@ export default class SearchHeader extends Component {
     }
     static defaultProps = {
         inputColor: DEFAULT_SEARCH_HEADER_VIEW_STYLE.input.color,
+        inputBgColor: DEFAULT_SEARCH_HEADER_VIEW_STYLE.input.backgroundColor,
         placeholderColor: `#bdbdbd`,
         suggestionEntryColor: DEFAULT_SEARCH_HEADER_VIEW_STYLE.suggestionEntry.color,
         iconColor: DEFAULT_SEARCH_HEADER_VIEW_STYLE.icon.tintColor,
         topOffset: 24,
         headerHeight: DEFAULT_SEARCH_HEADER_VIEW_STYLE.header.height,
-        headerBgColor: `#fdfdfd`,
+        headerBgColor: DEFAULT_SEARCH_HEADER_VIEW_STYLE.header.backgroundColor,
         dropShadowed: true,
         visibleInitially: false,
         autoFocus: true,
@@ -188,62 +252,7 @@ export default class SearchHeader extends Component {
         suggestionHistoryEntryRollOverCount: 16,
         placeholder: ``,
         entryAnimation: `from-left-side`,
-        iconImageComponents: [{
-            name: `close`,
-            render: (style) => {
-                return (
-                    <Image
-                        resizeMode = 'cover'
-                        source = { closeIcon }
-                        style = { style }
-                    />
-                );
-            }
-        }, {
-            name: `hide`,
-            render: (style) => {
-                return (
-                    <Image
-                        resizeMode = 'cover'
-                        source = { hideIcon }
-                        style = { style }
-                    />
-                );
-            }
-        }, {
-            name: `history`,
-            render: (style) => {
-                return (
-                    <Image
-                        resizeMode = 'cover'
-                        source = { historyIcon }
-                        style = { style }
-                    />
-                );
-            }
-        }, {
-            name: `search`,
-            render: (style) => {
-                return (
-                    <Image
-                        resizeMode = 'cover'
-                        source = { searchIcon }
-                        style = { style }
-                    />
-                );
-            }
-        }, {
-            name: `recall`,
-            render: (style) => {
-                return (
-                    <Image
-                        resizeMode = 'cover'
-                        source = { recallIcon }
-                        style = { style }
-                    />
-                );
-            }
-        }],
+        iconImageComponents: DEFAULT_ICON_IMAGE_COMPONENTS,
         onClearSuggesstion: () => false,
         onGetAutocompletions: () => [],
         onClear: () => null,
@@ -254,74 +263,12 @@ export default class SearchHeader extends Component {
         onHide: () => null,
         onShow: () => null
     }
-    static getDerivedStateFromProps(props, state) {
-        if (props.id !== state.prevId) {
-            const {
-                inputColor,
-                placeholderColor,
-                suggestionEntryColor,
-                iconColor,
-                topOffset,
-                headerHeight,
-                headerBgColor,
-                dropShadowed,
-                autoFocus,
-                autoCorrect,
-                entryAnimation,
-                style,
-                onClearSuggesstion
-            } = props;
-
-            if (onClearSuggesstion()) {
-                return {
-                    adjustedStyle: component._readjustStyle({
-                        inputColor,
-                        placeholderColor,
-                        suggestionEntryColor,
-                        iconColor,
-                        topOffset,
-                        headerHeight,
-                        headerBgColor,
-                        dropShadowed,
-                        autoFocus,
-                        autoCorrect,
-                        entryAnimation,
-                        style
-                    }),
-                    suggestion: {
-                        visible: false,
-                        historyEntryIndex: 0,
-                        historyEntryRollOverCount: 0,
-                        histories: [],
-                        autocompletes: []
-                    }
-                };
-            } else {
-                return {
-                    adjustedStyle: component._readjustStyle({
-                        inputColor,
-                        placeholderColor,
-                        suggestionEntryColor,
-                        iconColor,
-                        topOffset,
-                        headerHeight,
-                        headerBgColor,
-                        dropShadowed,
-                        autoFocus,
-                        autoCorrect,
-                        entryAnimation,
-                        style
-                    })
-                };
-            }
-        }
-        return null;
-    }
     constructor (property) {
         super(property);
         this.refCache = {};
         this.state = {
             adjustedStyle: DEFAULT_SEARCH_HEADER_VIEW_STYLE,
+            customeIconImageComponents: DEFAULT_ICON_IMAGE_COMPONENTS,
             visible: false,
             input: {
                 focused: false,
@@ -337,33 +284,18 @@ export default class SearchHeader extends Component {
             }
         };
     }
-    /**
-     * @description - Assign the registered component's reference object.
-     *
-     * @method assignComponentRef
-     * @param {string} refName
-     * @returns function
-     */
     assignComponentRef = (refName) => {
         const component = this;
 
         if (typeof refName !== `string`) {
             throw new Error(`ERROR: SearchHeader.assignComponentRef - Input component reference name is invalid.`);
         } else {
-            /* helper function to set component ref */
             const setComponentRef = function setComponentRef (componentRef) {
                 component.refCache[refName] = typeof componentRef !== undefined ? componentRef : null;
             };
             return setComponentRef;
         }
     }
-    /**
-     * @description - Lookup the registered component's reference object.
-     *
-     * @method lookupComponentRefs
-     * @param {array} refNames
-     * @returns {array}
-     */
     lookupComponentRefs = (...refNames) => {
         const component = this;
         let componentRefs = [];
@@ -386,12 +318,12 @@ export default class SearchHeader extends Component {
     }
     _readjustStyle = (newStyle = {
         inputColor: DEFAULT_SEARCH_HEADER_VIEW_STYLE.input.color,
-        placeholderColor: `#bdbdbd`,
+        inputBgColor: DEFAULT_SEARCH_HEADER_VIEW_STYLE.input.backgroundColor,
         suggestionEntryColor: DEFAULT_SEARCH_HEADER_VIEW_STYLE.suggestionEntry.color,
         iconColor: DEFAULT_SEARCH_HEADER_VIEW_STYLE.icon.tintColor,
         topOffset: 24,
         headerHeight: DEFAULT_SEARCH_HEADER_VIEW_STYLE.header.height,
-        headerBgColor: `#fdfdfd`,
+        headerBgColor: DEFAULT_SEARCH_HEADER_VIEW_STYLE.header.backgroundColor,
         dropShadowed: true,
         visibleInitially: false,
         autoFocus: true,
@@ -407,7 +339,6 @@ export default class SearchHeader extends Component {
             inputColor,
             inputBgColor,
             suggestionEntryColor,
-            suggestionIconColor,
             topOffset,
             dropShadowed,
             visibleInitially,
@@ -450,9 +381,6 @@ export default class SearchHeader extends Component {
             },
             icon: {
                 tintColor: iconColor
-            },
-            suggestionIcon: {
-                tintColor: suggestionIconColor
             }
         });
 
@@ -757,7 +685,7 @@ export default class SearchHeader extends Component {
         const component = this;
         const {
             inputColor,
-            placeholderColor,
+            inputBgColor,
             suggestionEntryColor,
             iconColor,
             topOffset,
@@ -769,6 +697,7 @@ export default class SearchHeader extends Component {
             autoCorrect,
             persistent,
             entryAnimation,
+            iconImageComponents,
             style,
             suggestionHistoryEntryRollOverCount
         } = component.props;
@@ -777,7 +706,7 @@ export default class SearchHeader extends Component {
             return {
                 adjustedStyle: component._readjustStyle({
                     inputColor,
-                    placeholderColor,
+                    inputBgColor,
                     suggestionEntryColor,
                     iconColor,
                     topOffset,
@@ -795,7 +724,14 @@ export default class SearchHeader extends Component {
                 suggestion: {
                     ...prevState.suggestion,
                     historyEntryRollOverCount: suggestionHistoryEntryRollOverCount
-                }
+                },
+                customeIconImageComponents: prevState.customeIconImageComponents.map((iconImageComponent) => {
+                    const matchedIconImageComponent = iconImageComponents.find((_iconImageComponent) => _iconImageComponent.name === iconImageComponent.name);
+                    if (matchedIconImageComponent) {
+                        return merge(matchedIconImageComponent, iconImageComponent);
+                    }
+                    return iconImageComponent;
+                })
             };
         });
     }
@@ -866,12 +802,12 @@ export default class SearchHeader extends Component {
             autoCorrect,
             persistent,
             placeholder,
-            iconImageComponents,
             onSearch
         } = component.props;
 
         const {
             adjustedStyle,
+            customeIconImageComponents,
             input
         } = component.state;
 
@@ -883,7 +819,12 @@ export default class SearchHeader extends Component {
                             component.hide();
                         }}>
                             {
-                                iconImageComponents.filter((iconImageComponent) => iconImageComponent.name === `hide`)[0].render(adjustedStyle.icon)
+                                customeIconImageComponents.filter((iconImageComponent) => iconImageComponent.name === `hide`).map((iconImageComponent) => {
+                                    return iconImageComponent.render([
+                                        adjustedStyle.icon,
+                                        iconImageComponent.customStyle
+                                    ]);
+                                })[0]
                             }
                         </TouchableOpacity> : <TouchableOpacity onPress = {() => {
                             onSearch({
@@ -893,7 +834,12 @@ export default class SearchHeader extends Component {
                             });
                         }}>
                             {
-                                iconImageComponents.filter((iconImageComponent) => iconImageComponent.name === `search`)[0].render(adjustedStyle.icon)
+                                customeIconImageComponents.filter((iconImageComponent) => iconImageComponent.name === `search`).map((iconImageComponent) => {
+                                    return iconImageComponent.render([
+                                        adjustedStyle.icon,
+                                        iconImageComponent.customStyle
+                                    ]);
+                                })[0]
                             }
                         </TouchableOpacity>
                     }
@@ -905,7 +851,7 @@ export default class SearchHeader extends Component {
                     returnKeyType = 'search'
                     underlineColorAndroid = 'transparent'
                     placeholder = { placeholder }
-                    placeholderColor = { placeholderColor === `` ? `#bdbdbd` : placeholderColor }
+                    placeholderTextColor = { placeholderColor }
                     value = { input.value }
                     style = { adjustedStyle.input }
                     onFocus = { component.onFocus }
@@ -919,7 +865,12 @@ export default class SearchHeader extends Component {
                             component.clear();
                         }}>
                             {
-                                iconImageComponents.filter((iconImageComponent) => iconImageComponent.name === `close`)[0].render(adjustedStyle.icon)
+                                customeIconImageComponents.filter((iconImageComponent) => iconImageComponent.name === `close`).map((iconImageComponent) => {
+                                    return iconImageComponent.render([
+                                        adjustedStyle.icon,
+                                        iconImageComponent.customStyle
+                                    ]);
+                                })[0]
                             }
                         </TouchableOpacity>
                     </View>
@@ -930,12 +881,12 @@ export default class SearchHeader extends Component {
     renderSuggestions () {
         const component = this;
         const {
-            iconImageComponents,
             onEnteringSearch,
             onSearch
         } = component.props;
         const {
             adjustedStyle,
+            customeIconImageComponents,
             input,
             suggestion
         } = component.state;
@@ -1016,9 +967,12 @@ export default class SearchHeader extends Component {
                                     backgroundColor: `transparent`
                                 }}>
                                     {
-                                        iconImageComponents.filter((iconImageComponent) => {
-                                            return entry.historyType ? iconImageComponent.name === `history` : iconImageComponent.name === `search`;
-                                        })[0].render([ adjustedStyle.icon, adjustedStyle.suggestionIcon ])
+                                        customeIconImageComponents.filter((iconImageComponent) => entry.historyType ? iconImageComponent.name === `history` : iconImageComponent.name === `search`).map((iconImageComponent) => {
+                                            return iconImageComponent.render([
+                                                adjustedStyle.icon,
+                                                iconImageComponent.customStyle
+                                            ]);
+                                        })[0]
                                     }
                                     <Text
                                         numberOfLines = { 1 }
@@ -1050,7 +1004,12 @@ export default class SearchHeader extends Component {
                                             });
                                         }}>
                                             {
-                                                iconImageComponents.filter((iconImageComponent) => iconImageComponent.name === `recall`)[0].render([ adjustedStyle.icon, adjustedStyle.suggestionIcon ])
+                                                customeIconImageComponents.filter((iconImageComponent) => iconImageComponent.name === `recall`).map((iconImageComponent) => {
+                                                    return iconImageComponent.render([
+                                                        adjustedStyle.icon,
+                                                        iconImageComponent.customStyle
+                                                    ]);
+                                                })[0]
                                             }
                                         </TouchableOpacity>
                                     </View>

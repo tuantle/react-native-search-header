@@ -96,6 +96,8 @@ export default class Demo extends Component {
                     ref = {(searchHeader) => {
                         this.searchHeader = searchHeader;
                     }}
+                    placeholder = 'Search...'
+                    placeholderColor = 'gray'
                     onClear = {() => {
                         console.log(`Clearing input!`);
                     }}
@@ -156,6 +158,7 @@ Prop | Type | Default | description
 headerHeight | string | `#5d5d5d` | Custom header bar height.
 headerBgColor | string | `#5d5d5d` | Custom header background color.
 inputColor | string | `#5d5d5d` | Search text input color.
+inputBgColor | string | `transparent` | Search text input background color.
 placeholderColor | string | `#bdbdbd` | Text input placeholder color.
 suggestionEntryColor | string | `#bdbdbd` | Search suggestion text color.
 iconColor | string | `#5d5d5d` | SearchHeader component icon button color.
@@ -209,6 +212,17 @@ SearchHeader component default style can be override. Below are examples of how 
 ```
 
 ## Change Log
+**Release Version 0.3.0 (11/13/2018)**
+```
+Notes:
+    Updated compatibility to latest react native version 0.57
+New Features:
+Breaking Changes:
+Improvements:
+    - Improved icon image components implementation.
+Bug fixes:
+    - Fixed minor bugs for input placeholder.
+```
 **Release Version 0.2.9 (09/10/2018)**
 ```
 Notes:
