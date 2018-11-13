@@ -8,24 +8,24 @@
 	},
 	"dependencies": {
 		"prop-types": ">=15.6.x",
-		"react": ">=16.3.x",
+		"react": ">=16.6.x",
 		"react-native": ">=0.56.x",
-		"react-native-search-header": "file:../react-native-search-header-0.2.8.tgz"
+		"react-native-search-header": "file:../react-native-search-header-0.3.0.tgz"
 	},
 	"devDependencies": {
+		"@babel/core": ">=7.1.x",
+		"@babel/preset-env": ">=7.1.x",
+		"metro-react-native-babel-preset": ">=0.49.x",
 		"babel-eslint": ">=9.0.x",
 		"babel-jest": ">=23.4.x",
-		"babel-plugin-module-resolver": ">=3.0.x",
-		"babel-preset-react": ">=6.22.x",
-		"babel-preset-react-native": ">=5.0.x",
-		"eslint": ">=5.4.x",
+		"eslint": ">=5.9.x",
 		"eslint-plugin-react": ">=7.11.x",
 		"eslint-plugin-react-native": ">=3.2.x",
 		"jest": ">=23.x",
 		"prop-types": ">=15.6.x",
-		"react": ">=16.4.x",
-		"react-native": ">=0.56.x",
-		"react-test-renderer": ">=16.4.x"
+		"react": ">=16.6.x",
+		"react-native": ">=0.57.x",
+		"react-test-renderer": ">=16.6.x"
 	},
 	"jest": {
 		"preset": "react-native"

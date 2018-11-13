@@ -79,12 +79,21 @@ export default class Demo extends Component {
                     ref = {(searchHeader) => {
                         this.searchHeader = searchHeader;
                     }}
+                    placeholder = 'Search...'
+                    placeholderColor = 'gray'
                     autoFocus = { true }
                     visibleInitially = { false }
                     persistent = { false }
                     enableSuggestion = { true }
                     entryAnimation = 'from-right-side'
                     topOffset = { 21 }
+                    iconColor = 'gray'
+                    iconImageComponents = {[{
+                        name: `hide`,
+                        customStyle: {
+                            tintColor: 'blue'
+                        }
+                    }]}
                     onClear = {() => {
                         console.log(`CLEAR`);
                     }}
