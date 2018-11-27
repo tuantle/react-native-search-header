@@ -112,7 +112,7 @@ const DEFAULT_SEARCH_HEADER_VIEW_STYLE = {
         backgroundColor: `#fdfdfd`
     },
     input: {
-        flexGrow: 1,
+        flex: 1,
         fontSize: PixelRatio.get() >= 3 ? 20 : 18,
         fontWeight: `400`,
         textAlign: `left`,
@@ -123,7 +123,7 @@ const DEFAULT_SEARCH_HEADER_VIEW_STYLE = {
         backgroundColor: `transparent`
     },
     suggestionEntry: {
-        flexGrow: 1,
+        flex: 1,
         fontSize: PixelRatio.get() >= 3 ? 20 : 18,
         fontWeight: `400`,
         textAlign: `left`,
