@@ -384,7 +384,7 @@ export default class SearchHeader extends Component {
             }
         });
 
-        return typeof style === `object` ? merge(style, adjustedStyle) : adjustedStyle;
+        return typeof style === `object` ? merge(adjustedStyle, style) : adjustedStyle;
     }
     isHidden = () => {
         const component = this;

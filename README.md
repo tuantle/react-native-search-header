@@ -212,6 +212,15 @@ SearchHeader component default style can be override. Below are examples of how 
 ```
 
 ## Change Log
+**Release Version 0.3.1 (01/28/2019)**
+```
+Notes:
+New Features:
+Breaking Changes:
+Improvements:
+Bug fixes:
+    - Fixed style not overriding bug. #28, #30
+```
 **Release Version 0.3.0 (11/13/2018)**
 ```
 Notes:
