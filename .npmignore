@@ -1,5 +1,5 @@
 #####
-# OS X temporary files that should never be packaged
+# OS X temporary files
 
 .DS_Store
 *.swp
@@ -33,7 +33,7 @@ DerivedData
 project.xcworkspace
 
 #####
-# Log files that should never be packaged
+# Log files
 
 *.log
 
@@ -53,23 +53,22 @@ jsdoc.json
 config.js
 
 #####
-# Node modules and bower components folders should never be packaged
+# Node modules folder
 
 node_modules/
-jspm_packages/
 
 ####
-# Compiled build folder
+# Compiled build folders
 
 build/
 
 ####
-# Docs folder
+# Docs folders
 
 docs/
 
 #####
-# Tests folder
+# Tests folders
 
 tests/
 __tests__/

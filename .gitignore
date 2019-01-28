@@ -1,5 +1,5 @@
 #####
-# Ignore OS X temporary files that should never be committed
+# Ignore OS X temporary files
 
 .DS_Store
 *.DS_Store
@@ -14,7 +14,7 @@ Thumbs.db
 ehthumbs.db
 
 #####
-# Ignore Log files that should never be committed
+# Ignore Log files
 
 *.log
 
@@ -51,25 +51,19 @@ local.properties
 *bundle.js
 
 #####
-# Ignore Node or jspm modules folder should never be committed
+# Ignore Node modules folder
 
 node_modules/
-jspm_packages/
-
-#####
-# Ignore ulysses files
-
-.Ulysses*
 
 ####
-# Ignore DB folder
+# Ignore DB folders
 
 db/
 
 ####
-# Ignore Compiled build folder
+# Ignore Compiled build folders
 
 build/
 
 #####
-# Ignore Misc folder
+# Ignore Misc folders
