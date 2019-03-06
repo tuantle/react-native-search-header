@@ -35,5 +35,11 @@ declare module "react-native-search-header" {
     onHide?: Function;
     onShow?: Function;
   }
-  export default class extends Component<SearchHeaderProps> {}
+  export default class extends Component<SearchHeaderProps> {
+    isHidden(): Boolean;
+    show(): void;
+    hide(): void;
+    clear(): void;
+    clearSuggestion(): void;
+  }
 }
