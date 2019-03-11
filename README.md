@@ -212,7 +212,7 @@ SearchHeader component default style can be override. Below are examples of how 
 ```
 
 ## Change Log
-**Release Version 0.3.2 (02/23/2019)**
+**Release Version 0.3.2 (03/11/2019)**
 ```
 Notes:
 New Features:
@@ -221,6 +221,7 @@ Improvements:
     - Removed lodash dependency
     - Code cleanups
     - Fixed animations
+    - Changed suggestion view style
 Bug fixes:
 ```
 **Release Version 0.3.1 (01/28/2019)**

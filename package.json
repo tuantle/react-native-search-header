@@ -48,7 +48,6 @@
         "prop-types": ">=15.6.x"
     },
     "devDependencies": {
-
         "@babel/core": ">=7.3.x",
         "@babel/preset-env": ">=7.3.x",
         "metro-react-native-babel-preset": ">=0.52.x",
