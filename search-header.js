@@ -108,7 +108,8 @@ const DEFAULT_SEARCH_HEADER_VIEW_STYLE = {
         zIndex: 10,
         elevation: 2,
         marginVertical: 6,
-        maxHeight: DEVICE_HEIGHT / 2,
+        width: DEVICE_WIDTH,
+        maxHeight: DEVICE_HEIGHT,
         backgroundColor: `#fdfdfd`
     },
     input: {
@@ -750,7 +751,7 @@ export default class SearchHeader extends Component {
                         animatedSuggestionView.transitionTo({
                             opacity: 1,
                             translateY: 0,
-                            height: DEVICE_HEIGHT / 2
+                            height: DEVICE_HEIGHT
                         }, DEFAULT_ANIMATION_DURATION_MS, `ease-in-cubic`, 0);
                     } else {
                         animatedSuggestionView.transitionTo({
