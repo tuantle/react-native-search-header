@@ -36,6 +36,7 @@ import dismissKeyboard from 'react-native/Libraries/Utilities/dismissKeyboard';
 
 import hideIcon from './assets/icons/hide-3x.png';
 import closeIcon from './assets/icons/close-3x.png';
+import starIcon from './assets/icons/star-3x.png';
 import historyIcon from './assets/icons/history-3x.png';
 import recallIcon from './assets/icons/recall-3x.png';
 import searchIcon from './assets/icons/search-3x.png';
@@ -52,7 +53,8 @@ const {
     TextInput,
     TouchableOpacity,
     Dimensions,
-    PixelRatio
+    PixelRatio,
+    Platform
 } = ReactNative;
 
 const DEFAULT_ANIMATION_DURATION_MS = 300;
@@ -109,7 +111,7 @@ const DEFAULT_SEARCH_HEADER_VIEW_STYLE = {
         elevation: 2,
         marginVertical: 6,
         width: DEVICE_WIDTH,
-        maxHeight: DEVICE_HEIGHT,
+        height: DEVICE_HEIGHT,
         backgroundColor: `#fdfdfd`
     },
     input: {
@@ -169,6 +171,18 @@ const DEFAULT_ICON_IMAGE_COMPONENTS = [{
         );
     }
 }, {
+    name: `pin`,
+    customStyle: {},
+    render: (style) => {
+        return (
+            <Image
+                resizeMode = 'cover'
+                source = { starIcon }
+                style = { style }
+            />
+        );
+    }
+}, {
     name: `history`,
     customStyle: {},
     render: (style) => {
@@ -211,7 +225,7 @@ function readjustStyle (newStyle = {
     inputBgColor: DEFAULT_SEARCH_HEADER_VIEW_STYLE.input.backgroundColor,
     suggestionEntryColor: DEFAULT_SEARCH_HEADER_VIEW_STYLE.suggestionEntry.color,
     iconColor: DEFAULT_SEARCH_HEADER_VIEW_STYLE.icon.tintColor,
-    topOffset: 24,
+    topOffset: Platform.OS === `ios` ? 24 : 0,
     headerHeight: DEFAULT_SEARCH_HEADER_VIEW_STYLE.header.height,
     headerBgColor: DEFAULT_SEARCH_HEADER_VIEW_STYLE.header.backgroundColor,
     dropShadowed: true,
@@ -302,6 +316,7 @@ export default class SearchHeader extends Component {
         persistent: PropTypes.bool,
         enableSuggestion: PropTypes.bool,
         suggestionHistoryEntryRollOverCount: PropTypes.number,
+        pinnedSuggestions: PropTypes.arrayOf(PropTypes.oneOfType([ PropTypes.number, PropTypes.string, PropTypes.object ])),
         placeholder: PropTypes.string,
         entryAnimation: PropTypes.oneOf([ `from-left-side`, `from-right-side` ]),
         iconImageComponents: PropTypes.array,
@@ -321,7 +336,7 @@ export default class SearchHeader extends Component {
         placeholderColor: `#bdbdbd`,
         suggestionEntryColor: DEFAULT_SEARCH_HEADER_VIEW_STYLE.suggestionEntry.color,
         iconColor: DEFAULT_SEARCH_HEADER_VIEW_STYLE.icon.tintColor,
-        topOffset: 24,
+        topOffset: Platform.OS === `ios` ? 24 : 0,
         headerHeight: DEFAULT_SEARCH_HEADER_VIEW_STYLE.header.height,
         headerBgColor: DEFAULT_SEARCH_HEADER_VIEW_STYLE.header.backgroundColor,
         dropShadowed: true,
@@ -331,6 +346,7 @@ export default class SearchHeader extends Component {
         persistent: false,
         enableSuggestion: true,
         suggestionHistoryEntryRollOverCount: 16,
+        pinnedSuggestions: [],
         placeholder: ``,
         entryAnimation: `from-left-side`,
         iconImageComponents: DEFAULT_ICON_IMAGE_COMPONENTS,
@@ -408,8 +424,7 @@ export default class SearchHeader extends Component {
             },
             suggestion: {
                 visible: false,
-                historyEntryIndex: 0,
-                historyEntryRollOverCount: 0,
+                historyEntryRollOverCount: 16,
                 histories: [],
                 autocompletes: []
             }
@@ -436,11 +451,6 @@ export default class SearchHeader extends Component {
         const animatedSearchHeaderView = component.refCache[`animated-search-header-view`];
 
         if (!persistent && visible && animatedSearchHeaderView !== undefined) {
-            const textInput = component.refCache[`text-input`];
-
-            if (textInput !== undefined) {
-                textInput.clear();
-            }
             if (entryAnimation === `from-right-side`) {
                 animatedSearchHeaderView.transitionTo({
                     opacity: 0,
@@ -507,26 +517,22 @@ export default class SearchHeader extends Component {
         const {
             onClear
         } = component.props;
-        const textInput = component.refCache[`text-input`];
 
-        if (textInput !== undefined) {
-            textInput.clear();
-            component.setState((prevState) => {
-                return {
-                    input: {
-                        ...prevState.input,
-                        value: ``,
-                        valueChanged: true
-                    },
-                    suggestion: {
-                        ...prevState.suggestion,
-                        visible: false
-                    }
-                };
-            }, () => {
-                onClear();
-            });
-        }
+        component.setState((prevState) => {
+            return {
+                input: {
+                    ...prevState.input,
+                    value: ``,
+                    valueChanged: true
+                },
+                suggestion: {
+                    ...prevState.suggestion,
+                    autocompletes: []
+                }
+            };
+        }, () => {
+            onClear();
+        });
     }
     clearSuggestion = () => {
         const component = this;
@@ -535,8 +541,6 @@ export default class SearchHeader extends Component {
             return {
                 suggestion: {
                     visible: false,
-                    historyEntryIndex: 0,
-                    historyEntryRollOverCount: 0,
                     histories: [],
                     autocompletes: []
                 }
@@ -554,6 +558,10 @@ export default class SearchHeader extends Component {
                 input: {
                     ...prevState.input,
                     focused: true
+                },
+                suggestion: {
+                    ...prevState.suggestion,
+                    visible: true
                 }
             };
         }, () => {
@@ -591,25 +599,15 @@ export default class SearchHeader extends Component {
                     return {
                         suggestion: {
                             ...prevState.suggestion,
-                            visible: true,
                             autocompletes: [
                                 // ...new Set(autocompleteTexts.filter((text) => typeof text === `string`).map((text) => text.replace(/\s/g, ``)))
                                 ...new Set(autocompleteTexts.filter((text) => typeof text === `string`))
                             ].map((text) => {
                                 return {
-                                    historyType: false,
+                                    suggestionType: `autocompletion`,
                                     value: text
                                 };
                             })
-                        }
-                    };
-                });
-            } else {
-                component.setState((prevState) => {
-                    return {
-                        suggestion: {
-                            ...prevState.suggestion,
-                            visible: false
                         }
                     };
                 });
@@ -623,8 +621,7 @@ export default class SearchHeader extends Component {
                     input: {
                         ...prevState.input,
                         value,
-                        valueChanged: value !== prevState.input.value,
-                        focused: true
+                        valueChanged: value !== prevState.input.value
                     }
                 };
             });
@@ -634,12 +631,11 @@ export default class SearchHeader extends Component {
                     input: {
                         ...prevState.input,
                         value: ``,
-                        valueChanged: value !== prevState.input.value,
-                        focused: true
+                        valueChanged: value !== prevState.input.value
                     },
                     suggestion: {
                         ...prevState.suggestion,
-                        visible: false
+                        autocompletes: []
                     }
                 };
             });
@@ -654,6 +650,7 @@ export default class SearchHeader extends Component {
     onSubmitEditing = (event) => {
         const component = this;
         const {
+            pinnedSuggestions,
             onSearch
         } = component.props;
         const {
@@ -662,38 +659,28 @@ export default class SearchHeader extends Component {
         const value = event.nativeEvent.text;
 
         if (value !== ``) {
-            if (!suggestion.histories.some((entry) => entry.value === value)) {
+            if (!suggestion.histories.some((entry) => entry.value === value) &&
+                !pinnedSuggestions.some((_value) => _value === value)) {
                 component.setState((prevState) => {
                     let {
-                        historyEntryIndex,
                         historyEntryRollOverCount,
                         histories
                     } = prevState.suggestion;
 
-                    if (historyEntryIndex === historyEntryRollOverCount) {
-                        historyEntryIndex = 0;
+                    if (histories.length >= historyEntryRollOverCount) {
+                        histories.pop();
                     }
-                    if (historyEntryIndex === histories.length) {
-                        histories.push({
-                            historyType: true,
-                            value,
-                            timestamp: new Date().getTime()
-                        });
-                    } else if (historyEntryIndex < histories.length) {
-                        histories[historyEntryIndex] = {
-                            historyType: true,
-                            value,
-                            timestamp: new Date().getTime()
-                        };
-                    }
-                    historyEntryIndex++;
-                    histories = histories.sort((itemA, itemB) => itemB.timestamp - itemA.timestamp);
+                    histories.push({
+                        suggestionType: `history`,
+                        value,
+                        timestamp: new Date().getTime()
+                    });
 
                     return {
                         suggestion: {
                             ...prevState.suggestion,
                             visible: false,
-                            historyEntryIndex,
+                            autocompletes: [],
                             histories
                         }
                     };
@@ -703,7 +690,8 @@ export default class SearchHeader extends Component {
                     return {
                         suggestion: {
                             ...prevState.suggestion,
-                            visible: false
+                            visible: false,
+                            autocompletes: []
                         }
                     };
                 });
@@ -718,7 +706,8 @@ export default class SearchHeader extends Component {
                 return {
                     suggestion: {
                         ...prevState.suggestion,
-                        visible: false
+                        visible: false,
+                        autocompletes: []
                     }
                 };
             });
@@ -750,14 +739,12 @@ export default class SearchHeader extends Component {
                     if (suggestion.visible) {
                         animatedSuggestionView.transitionTo({
                             opacity: 1,
-                            translateY: 0,
-                            height: DEVICE_HEIGHT
+                            translateY: 0
                         }, DEFAULT_ANIMATION_DURATION_MS, `ease-in-cubic`, 0);
                     } else {
                         animatedSuggestionView.transitionTo({
                             opacity: 0,
-                            translateY: DEVICE_HEIGHT,
-                            height: 0
+                            translateY: DEVICE_HEIGHT
                         }, DEFAULT_ANIMATION_DURATION_MS, `ease-in-cubic`, 0);
                     }
                 }
@@ -858,22 +845,23 @@ export default class SearchHeader extends Component {
     renderSuggestions () {
         const component = this;
         const {
+            pinnedSuggestions,
             onEnteringSearch,
             onSearch
         } = component.props;
         const {
             adjustedStyle,
             customIconImageComponents,
-            input,
             suggestion
         } = component.state;
-
-        let suggestionEntries = suggestion.histories.filter((entry) => {
-            // return entry.value !== `` && input.value !== `` && entry.value.toLowerCase().includes(input.value.toLowerCase());
-            return entry.value.toLowerCase().charAt(0) === input.value.toLowerCase().charAt(0);
-        }).concat(suggestion.autocompletes);
-
-        suggestionEntries = suggestionEntries.map((entry, index) => {
+        const suggestionEntries = pinnedSuggestions.map((value) => {
+            return {
+                suggestionType: `pin`,
+                value
+            };
+        }).concat(suggestion.histories.sort((itemA, itemB) => {
+            return itemB.timestamp - itemA.timestamp;
+        })).concat().concat(suggestion.autocompletes).map((entry, index) => {
             return {
                 key: `${index}`,
                 ...entry
@@ -898,29 +886,55 @@ export default class SearchHeader extends Component {
                             <TouchableOpacity
                                 key = { listData.key }
                                 onPress = {() => {
-                                    const textInput = component.refCache[`text-input`];
+                                    if (!suggestion.histories.some((_entry) => _entry.value === entry.value) &&
+                                        !pinnedSuggestions.some((value) => value === entry.value)) {
+                                        component.setState((prevState) => {
+                                            let {
+                                                historyEntryRollOverCount,
+                                                histories
+                                            } = prevState.suggestion;
 
-                                    if (textInput !== undefined) {
-                                        textInput.setNativeProps({
-                                            text: entry.value
+                                            if (histories.length >= historyEntryRollOverCount) {
+                                                histories.pop();
+                                            }
+                                            histories.push({
+                                                suggestionType: `history`,
+                                                value: entry.value,
+                                                timestamp: new Date().getTime()
+                                            });
+
+                                            return {
+                                                input: {
+                                                    ...prevState.input,
+                                                    value: entry.value,
+                                                    valueChanged: prevState.input.value !== entry.value,
+                                                    focused: false
+                                                },
+                                                suggestion: {
+                                                    ...prevState.suggestion,
+                                                    visible: false,
+                                                    autocompletes: [],
+                                                    histories
+                                                }
+                                            };
+                                        });
+                                    } else {
+                                        component.setState((prevState) => {
+                                            return {
+                                                input: {
+                                                    ...prevState.input,
+                                                    value: entry.value,
+                                                    valueChanged: prevState.input.value !== entry.value,
+                                                    focused: false
+                                                },
+                                                suggestion: {
+                                                    ...prevState.suggestion,
+                                                    visible: false,
+                                                    autocompletes: []
+                                                }
+                                            };
                                         });
                                     }
-
-                                    component.setState((prevState) => {
-                                        return {
-                                            input: {
-                                                ...prevState.input,
-                                                value: entry.value,
-                                                valueChanged: prevState.input.value !== entry.value,
-                                                focused: false
-                                            },
-                                            suggestion: {
-                                                ...prevState.suggestion,
-                                                visible: false,
-                                                autocompletes: []
-                                            }
-                                        };
-                                    });
 
                                     onEnteringSearch({
                                         nativeEvent: {
@@ -940,7 +954,14 @@ export default class SearchHeader extends Component {
                                     backgroundColor: `transparent`
                                 }}>
                                     {
-                                        customIconImageComponents.filter((iconImageComponent) => entry.historyType ? iconImageComponent.name === `history` : iconImageComponent.name === `search`).map((iconImageComponent) => {
+                                        customIconImageComponents.filter((iconImageComponent) => {
+                                            if (entry.suggestionType === `history`) {
+                                                return iconImageComponent.name === `history`;
+                                            } else if (entry.suggestionType === `pin`) {
+                                                return iconImageComponent.name === `pin`;
+                                            }
+                                            return iconImageComponent.name === `search`;
+                                        }).map((iconImageComponent) => {
                                             return iconImageComponent.render([
                                                 adjustedStyle.icon,
                                                 iconImageComponent.customStyle
@@ -961,14 +982,6 @@ export default class SearchHeader extends Component {
                                         backgroundColor: `transparent`
                                     }}>
                                         <TouchableOpacity onPress = {() => {
-                                            const textInput = component.refCache[`text-input`];
-
-                                            if (textInput !== undefined) {
-                                                textInput.setNativeProps({
-                                                    text: entry.value
-                                                });
-                                            }
-
                                             component.setState((prevState) => {
                                                 return {
                                                     input: {
