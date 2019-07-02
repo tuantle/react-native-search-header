@@ -10,7 +10,7 @@
     "react": "^16.8.6",
     "react-native": "^0.59.9",
     "react-native-gesture-handler": "^1.3.0",
-    "react-native-search-header": "file:../react-native-search-header-0.3.3.tgz",
+    "react-native-search-header": "^0.3.3",
     "react-navigation": "^3.11.0"
   },
   "devDependencies": {
