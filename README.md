@@ -11,10 +11,6 @@ Easy to use React Native search header component based on material design patter
 
 `$ npm install react-native-search-header --save`
 
-## NOTE
-
-To get TextInput clear to work with current react native version 55.4. Please apply this [patch](https://github.com/facebook/react-native/pull/18363/files).
-
 ### Example
 
 To use search header you simply import the component factory function to create a renderable component:
@@ -156,35 +152,35 @@ These are methods that are accessible via "ref":
 
 Below are the props you can pass to the React Component to customize the SearchHeader.
 
-| Prop                                | Type     | Default          | description
-| ----------------------------------- | -------- | ---------------- |
-| headerHeight                        | string   | `#5d5d5d`        | Custom header bar height
-| headerBgColor                       | string   | `#5d5d5d`        | Custom header background color
-| inputColor                          | string   | `#5d5d5d`        | Search text input color
-| inputBgColor                        | string   | `transparent`    | Search text input background color
-| placeholderColor                    | string   | `#bdbdbd`        | Text input placeholder color
-| suggestionEntryColor                | string   | `#bdbdbd`        | Search suggestion text color
-| iconColor                           | string   | `#5d5d5d`        | SearchHeader component icon button color
-| topOffset                           | number   | 24               | The offset above the SearchHeader component. Default to 24 (ios) or 0 (android)
-| dropShadowed                        | boolean  | true             | Enable drop shadow styling
-| visibleInitially                    | boolean  | false            | Set to false to hide and to true to show the SearchHeader component
-| autoFocus                           | boolean  | true             | Enable text input auto focus when open
-| autoCorrect                         | boolean  | true             | Enable text input autocorrect
-| persistent                          | boolean  | false            | Enable persistent search
-| enableSuggestion                    | boolean  | true             | When enabled, search suggestion list will be display accordingly
-| suggestionHistoryEntryRollOverCount | number   | 16               | The max number of search suggestion history items
-| pinnedSuggestions                   | array    | []               | An array of pinned search suggestions
-| placeholder                         | string   | `Search...`      | A string placeholder when there is no text in text input
-| entryAnimation                      | string   | `from-left-side` | Set the direction of SearchHeader entry animation. Possible values are `from-left-side`, `from-right-side`
-| iconImageComponents:                | function | Internal         | An array of custom icon image components for the buttons
-| onGetAutocompletions                | function | None             | This function is called during search input change to get a string array of search autocompletions
-| onClear                             | function | None             | This function is called when text input is cleared
-| onSearch                            | function | None             | This function is called after return/done key is pressed. Return text input event
-| onEnteringSearch                    | function | None             | This function is called after text is entered/changed in text input. Return text input event
-| onFocus                             | function | None             | This function is called when text input in focused
-| onBlur                              | function | None             | This function is called when text input in blurred
-| onHide                              | function | None             | This function is called right after hide animation is completed
-| onShow                              | function | None             | This function is called right after show animation is completed
+| Prop                                | Type     | Default          | description |
+| ----------------------------------- | -------- | ---------------- | ----------- |
+| headerHeight                        | string   | `#5d5d5d`        | Custom header bar height |
+| headerBgColor                       | string   | `#5d5d5d`        | Custom header background color |
+| inputColor                          | string   | `#5d5d5d`        | Search text input color |
+| inputBgColor                        | string   | `transparent`    | Search text input background color |
+| placeholderColor                    | string   | `#bdbdbd`        | Text input placeholder color |
+| suggestionEntryColor                | string   | `#bdbdbd`        | Search suggestion text color |
+| iconColor                           | string   | `#5d5d5d`        | SearchHeader component icon button color |
+| topOffset                           | number   | 24               | The offset above the SearchHeader component. Default to 24 (ios) or 0 (android) |
+| dropShadowed                        | boolean  | true             | Enable drop shadow styling |
+| visibleInitially                    | boolean  | false            | Set to false to hide and to true to show the SearchHeader component |
+| autoFocus                           | boolean  | true             | Enable text input auto focus when open |
+| autoCorrect                         | boolean  | true             | Enable text input autocorrect |
+| persistent                          | boolean  | false            | Enable persistent search |
+| enableSuggestion                    | boolean  | true             | When enabled, search suggestion list will be display accordingly |
+| suggestionHistoryEntryRollOverCount | number   | 16               | The max number of search suggestion history items |
+| pinnedSuggestions                   | array    | []               | An array of pinned search suggestions |
+| placeholder                         | string   | `Search...`      | A string placeholder when there is no text in text input |
+| entryAnimation                      | string   | `from-left-side` | Set the direction of SearchHeader entry animation. Possible values are `from-left-side`, `from-right-side` |
+| iconImageComponents:                | function | Internal         | An array of custom icon image components for the buttons |
+| onGetAutocompletions                | function | None             | This function is called during search input change to get a string array of search autocompletions |
+| onClear                             | function | None             | This function is called when text input is cleared |
+| onSearch                            | function | None             | This function is called after return/done key is pressed. Return text input event |
+| onEnteringSearch                    | function | None             | This function is called after text is entered/changed in text input. Return text input event |
+| onFocus                             | function | None             | This function is called when text input in focused |
+| onBlur                              | function | None             | This function is called when text input in blurred |
+| onHide                              | function | None             | This function is called right after hide animation is completed |
+| onShow                              | function | None             | This function is called right after show animation is completed |
 
 ### Style Overrides
 
@@ -219,294 +215,342 @@ SearchHeader component default style can be override. Below are examples of how 
 
 **Release Version 0.3.3 (07/02/2019)**
 
-Notes:
-New Features:
-    - Added pin search entry suggestions
-    - Updated dependencies to latest
-Breaking Changes:
-Improvements:
-    - Changed suggestion visibility. It is now visible when search input is focused and hidden when blurred
-    - Code cleanups
-Bug fixes:
-    - Fixed history suggestion entry rollover
-    - Fixed misc suggestion view issues
+```
+    Notes:
+    New Features:
+        - Added pin search entry suggestions
+        - Updated dependencies to latest
+    Breaking Changes:
+    Improvements:
+        - Changed suggestion visibility. It is now visible when search input is focused and hidden when blurred
+        - Code cleanups
+    Bug fixes:
+        - Fixed history suggestion entry rollover
+        - Fixed misc suggestion view issues
+```
 
 **Release Version 0.3.2 (03/11/2019)**
 
-Notes:
-New Features:
-Breaking Changes:
-Improvements:
-    - Removed lodash dependency
-    - Code cleanups
-    - Fixed animations
-    - Changed suggestion view style
-Bug fixes:
+```
+    Notes:
+    New Features:
+    Breaking Changes:
+    Improvements:
+        - Removed lodash dependency
+        - Code cleanups
+        - Fixed animations
+        - Changed suggestion view style
+    Bug fixes:
+```
 
 **Release Version 0.3.1 (01/28/2019)**
 
-Notes:
-New Features:
-Breaking Changes:
-Improvements:
-Bug fixes:
-    - Fixed style not overriding bug. #28, #30
+```
+    Notes:
+    New Features:
+    Breaking Changes:
+    Improvements:
+    Bug fixes:
+        - Fixed style not overriding bug. #28, #30
+```
 
 **Release Version 0.3.0 (11/13/2018)**
 
-Notes:
-    Updated compatibility to latest react native version 0.57
-New Features:
-Breaking Changes:
-Improvements:
-    - Improved icon image components implementation.
-Bug fixes:
-    - Fixed minor bugs for input placeholder.
+```
+    Notes:
+        Updated compatibility to latest react native version 0.57
+    New Features:
+    Breaking Changes:
+    Improvements:
+        - Improved icon image components implementation.
+    Bug fixes:
+        - Fixed minor bugs for input placeholder.
+```
 
 **Release Version 0.2.9 (09/10/2018)**
 
-Notes:
-New Features:
-Breaking Changes:
-Improvements:
-    - Updated lifecycle methods called to match latest react recommendations.
-Bug fixes:
-    - Fixed TextInput lag issue.
+```
+    Notes:
+    New Features:
+    Breaking Changes:
+    Improvements:
+        - Updated lifecycle methods called to match latest react recommendations.
+    Bug fixes:
+        - Fixed TextInput lag issue.
+```
 
 **Release Version 0.2.8 (08/30/2018)**
 
-Notes:
-    Updated compatibility to latest react native version 0.56
-New Features:
-Breaking Changes:
-Improvements:
-Bug fixes:
-    - Fixed suggestion text display to have tail ellipsize if there are too many words in one line.
-    - Fixed text input clearing issue.
+```
+    Notes:
+        Updated compatibility to latest react native version 0.56
+    New Features:
+    Breaking Changes:
+    Improvements:
+    Bug fixes:
+        - Fixed suggestion text display to have tail ellipsize if there are too many words in one line.
+        - Fixed text input clearing issue.
+```
 
 **Release Version 0.2.7 (04/09/2018)**
 
-Notes:
-    Updated compatibility to latest react native version 0.55.4
-New Features:
-    - Added onClear callback when text input is cleared
-Breaking Changes:
-Improvements:
-Bug fixes:
-    - Add note to get clear method to work with react native 55.4.
-    - Fixed no spacing for text entry in search suggestion box view.
+```
+    Notes:
+        Updated compatibility to latest react native version 0.55.4
+    New Features:
+        - Added onClear callback when text input is cleared
+    Breaking Changes:
+    Improvements:
+    Bug fixes:
+        - Add note to get clear method to work with react native 55.4.
+        - Fixed no spacing for text entry in search suggestion box view.
+```
 
 **Release Version 0.2.6 (03/19/2018)**
 
-Notes:
-    Updated compatibility to latest react native version 0.54.2
-New Features:
-Breaking Changes:
-Improvements:
-Bug fixes:
-    - Fixed bug where clearing text input or if text input is empty will not close the suggestion view
-    - Fixed documentation in README
-        onHidden -> onHide
-        onVisible -> onShow
+```
+    Notes:
+        Updated compatibility to latest react native version 0.54.2
+    New Features:
+    Breaking Changes:
+    Improvements:
+    Bug fixes:
+        - Fixed bug where clearing text input or if text input is empty will not close the suggestion view
+        - Fixed documentation in README
+            onHidden -> onHide
+            onVisible -> onShow
+```
 
 **Release Version 0.2.5 (02/05/2018)**
 
-Notes:
-    Updated compatibility to latest react native version 0.53.0
-New Features:
-    Added onClearSuggesstion callback prop to clear suggestion history
-Breaking Changes:
-Improvements:
-Bug fixes:
-    - Fixed topOffset spelling error.
-    - Fixed key index warning in FlatList.
+```
+    Notes:
+        Updated compatibility to latest react native version 0.53.0
+    New Features:
+        Added onClearSuggesstion callback prop to clear suggestion history
+    Breaking Changes:
+    Improvements:
+    Bug fixes:
+        - Fixed topOffset spelling error.
+        - Fixed key index warning in FlatList.
+```
 
 **Release Version 0.2.4 (12/27/2017)**
 
-Notes:
-New Features:
-    Added  headerHeight prop
-    Added  headerBgColor prop
-Breaking Changes:
-Improvements:
-Bug fixes:
+```
+    Notes:
+    New Features:
+        Added  headerHeight prop
+        Added  headerBgColor prop
+    Breaking Changes:
+    Improvements:
+    Bug fixes:
+```
 
 **Release Version 0.2.3 (11/26/2017)**
 
-Notes:
-New Features:
-Breaking Changes:
-Improvements:
-Bug fixes:
-    - Drop custom deepMerge in favor of lodash.merge
+```
+    Notes:
+    New Features:
+    Breaking Changes:
+    Improvements:
+    Bug fixes:
+        - Drop custom deepMerge in favor of lodash.merge
+```
 
 **Release Version 0.2.2 (11/25/2017)**
 
-Notes:
-    - Updated to latest React Native version 0.50.4
-    - Removed Hyperflow dependency as it is not needed.
-New Features:
-Breaking Changes:
-Improvements:
-Bug fixes:
-    - Resolving babel transform error. Hopefully...
+```
+    Notes:
+        - Updated to latest React Native version 0.50.4
+        - Removed Hyperflow dependency as it is not needed.
+    New Features:
+    Breaking Changes:
+    Improvements:
+    Bug fixes:
+        - Resolving babel transform error. Hopefully...
+```
 
 **Release Version 0.2.1 (10/17/2017)**
 
-Notes:
-    - Updated to latest React Native version
-New Features:
-    - Added persistent search bar
-    - iconImageComponents prop for easy custom button styling
-Breaking Changes:
-    - No longer needed to do this const SearchHeaderView = SearchHeaderComponent()
-      Just import and use as any react native component.
-    - Renaming properties:
-        searchInputTextColor -> inputColor
-        placeholderTextColor -> placeholderColor
-        searchSuggestionTextColor -> suggestionEntryColor
-        statusHeightOffet -> topOffset
-        searchSuggestionHistoryItemRollOverCount ->suggestionHistoryEntryRollOverCount
-        dropShadow -> dropShadowed
-        enableSearchSuggestion -> enableSuggestion
-        onGetSearchAutocompletions -> onGetAutocompletions
-        onSearchChange -> onEnteringSearch
-        onHidden -> onHid
-        onVisible -> onShow
-Improvements:
-Bug fixes:
+```
+    Notes:
+        - Updated to latest React Native version
+    New Features:
+        - Added persistent search bar
+        - iconImageComponents prop for easy custom button styling
+    Breaking Changes:
+        - No longer needed to do this const SearchHeaderView = SearchHeaderComponent()
+          Just import and use as any react native component.
+        - Renaming properties:
+            searchInputTextColor -> inputColor
+            placeholderTextColor -> placeholderColor
+            searchSuggestionTextColor -> suggestionEntryColor
+            statusHeightOffet -> topOffset
+            searchSuggestionHistoryItemRollOverCount ->suggestionHistoryEntryRollOverCount
+            dropShadow -> dropShadowed
+            enableSearchSuggestion -> enableSuggestion
+            onGetSearchAutocompletions -> onGetAutocompletions
+            onSearchChange -> onEnteringSearch
+            onHidden -> onHid
+            onVisible -> onShow
+    Improvements:
+    Bug fixes:
+```
 
 **Release Version 0.2.0 (09/08/2017)**
 
-Notes:
-    - Updated to latest React Native
-    - updated to latest Hyperflow
-New Features:
-Breaking Changes:
-Improvements:
-    - Added autoFocus prop
-Bug fixes:
-    - Fixed FlatList missing list item "key" warning
+```
+    Notes:
+        - Updated to latest React Native
+        - updated to latest Hyperflow
+    New Features:
+    Breaking Changes:
+    Improvements:
+        - Added autoFocus prop
+    Bug fixes:
+        - Fixed FlatList missing list item "key" warning
+```
 
 **Release Version 0.1.9 (05/27/2017)**
 
-Notes:
-    - Updated to latest React Native
-New Features:
-Breaking Changes:
-Improvements:
-    - Used FlatList instead of ScrollView to render search suggestion list
-Bug fixes:
-    - Fixed clearSearchSuggestion bug
+```
+    Notes:
+        - Updated to latest React Native
+    New Features:
+    Breaking Changes:
+    Improvements:
+        - Used FlatList instead of ScrollView to render search suggestion list
+    Bug fixes:
+        - Fixed clearSearchSuggestion bug
+```
 
 **Release Version 0.1.8 (05/17/2017)**
 
-Notes:
-New Features:
-Breaking Changes:
-    - Renamed property searchSuggestionItemRollOverCount to searchSuggestionHistoryItemRollOverCount
-    - Renamed property onGetSearchSuggestions to onGetSearchAutocompletions
-Improvements:
-    - Improved onGetSearchAutocompletions implementation
-    - Added onGetSearchAutocompletions to example
-Bug fixes:
+```
+    Notes:
+    New Features:
+    Breaking Changes:
+        - Renamed property searchSuggestionItemRollOverCount to searchSuggestionHistoryItemRollOverCount
+        - Renamed property onGetSearchSuggestions to onGetSearchAutocompletions
+    Improvements:
+        - Improved onGetSearchAutocompletions implementation
+        - Added onGetSearchAutocompletions to example
+    Bug fixes:
+```
 
 **Release Version 0.1.7 (05/10/2017)**
 
-Notes:
-    - Updated package dependencies.
-New Features:
-Breaking Changes:
-Improvements:
-Bug fixes:
+```
+    Notes:
+        - Updated package dependencies.
+    New Features:
+    Breaking Changes:
+    Improvements:
+    Bug fixes:
+```
 
 **Release Version 0.1.6 (02/16/2017)**
 
-Notes:
-New Features:
-    - Added isHidden and clear methods, accessible via "ref"
-Breaking Changes:
-Improvements:
-Bug fixes:
-    - Fixed issues with onHidden and onVisible not firing.
+```
+    Notes:
+    New Features:
+        - Added isHidden and clear methods, accessible via "ref"
+    Breaking Changes:
+    Improvements:
+    Bug fixes:
+        - Fixed issues with onHidden and onVisible not firing.
+```
 
 **Release Version 0.1.5 (01/27/2017)**
 
-Notes:
-New Features:
-Breaking Changes:
-Improvements:
-    - Improved search suggestion implementation. Matching it closer to other material design search implementations.
-Bug fixes:
+```
+    Notes:
+    New Features:
+    Breaking Changes:
+    Improvements:
+        - Improved search suggestion implementation. Matching it closer to other material design search implementations.
+    Bug fixes:
+```
 
 **Release Version 0.1.4 (01/26/2017)**
 
-Notes:
-	- Update to latest hyperflow version.
-New Features:
-    - New prop "entryAnimation" for setting SearchHeader entry animation direction.
-Breaking Changes:
-Improvements:
-    - Added public methods access via "ref"
-Bug fixes:
-    - Fixed react "refs" warning message.
+```
+    Notes:
+    	- Update to latest hyperflow version.
+    New Features:
+        - New prop "entryAnimation" for setting SearchHeader entry animation direction.
+    Breaking Changes:
+    Improvements:
+        - Added public methods access via "ref"
+    Bug fixes:
+        - Fixed react "refs" warning message.
+```
 
 **Release Version 0.1.3 (01/25/2017)**
 
+```
 Notes:
-	- Update to latest hyperflow version.
-New Features:
-Breaking Changes:
-    - Props renaming:
-        searchTextColor               -> searchInputTextColor
-        searchSuggestionItemTextColor -> searchSuggestionTextColor
-        searchVisibleInitially        -> visibleInitially
-        onSearchBlur                  -> onBlur
-        onSearchFocus                 -> onFocus
-        onMinimized                   -> onHidden
-        onMaximized                   -> onVisible
-Improvements:
-    - Added public methods access via "ref"
-Bug fixes:
-    - Fixed issue with search container covering underlining components when hidden.
+    	- Update to latest hyperflow version.
+    New Features:
+    Breaking Changes:
+        - Props renaming:
+            searchTextColor               -> searchInputTextColor
+            searchSuggestionItemTextColor -> searchSuggestionTextColor
+            searchVisibleInitially        -> visibleInitially
+            onSearchBlur                  -> onBlur
+            onSearchFocus                 -> onFocus
+            onMinimized                   -> onHidden
+            onMaximized                   -> onVisible
+    Improvements:
+        - Added public methods access via "ref"
+    Bug fixes:
+        - Fixed issue with search container covering underlining components when hidden.
+```
 
 **Release Version 0.1.2 (01/23/2017)**
 
-Notes:
-	- Update to latest hyperflow version.
-New Features:
-Breaking Changes:
-    - Props renaming:
-        statusBarHeightOffet      -> statusHeightOffet
-        textInputPlaceholderColor -> placeholderTextColor
-        minimized                 -> searchVisibleInitially
-        onBlur                    -> onSearchBlur
-        onFocus                   -> onSearchFocus
-        onMinimized               -> onSearchHidden
-        onMaximized               -> onSearchVisible
-Improvements:
-    - Added public methods access via "ref"
-Bug fixes:
+```
+    Notes:
+    	- Update to latest hyperflow version.
+    New Features:
+    Breaking Changes:
+        - Props renaming:
+            statusBarHeightOffet      -> statusHeightOffet
+            textInputPlaceholderColor -> placeholderTextColor
+            minimized                 -> searchVisibleInitially
+            onBlur                    -> onSearchBlur
+            onFocus                   -> onSearchFocus
+            onMinimized               -> onSearchHidden
+            onMaximized               -> onSearchVisible
+    Improvements:
+        - Added public methods access via "ref"
+    Bug fixes:
+```
 
 **Release Version 0.1.1 (01/23/2017)**
 
-Notes:
-	- Update to latest hyperflow version.
-New Features:
-Breaking Changes:
-Improvements:
-Bug fixes:
+```
+    Notes:
+    	- Update to latest hyperflow version.
+    New Features:
+    Breaking Changes:
+    Improvements:
+    Bug fixes:
+```
 
 **Release Version 0.1.0 (01/22/2017)**
 
-Notes:
-    - Initial commit with features
-	    Search header component based on material design.
-	    Search suggestions and history with autocomplete. patterns
-New Features:
-Breaking Changes:
-Improvements:
-Bug fixes:
+```
+    Notes:
+        - Initial commit with features
+    	    Search header component based on material design.
+    	    Search suggestions and history with autocomplete. patterns
+    New Features:
+    Breaking Changes:
+    Improvements:
+    Bug fixes:
+```
 
 ## License
 
