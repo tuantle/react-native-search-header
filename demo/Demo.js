@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-evenly',
         alignItems: 'center',
         width: DEVICE_WIDTH,
-        height: 56,
+        height: 59,
         padding: 6,
         backgroundColor: '#00bcd4'
     },
@@ -82,7 +82,7 @@ class Example1 extends Component {
                         onPress = {() => component.searchHeader.show()}
                     />
                     <Button
-                        title = 'Next'
+                        title = '>'
                         color = '#f5fcff'
                         onPress = {() => navigation.navigate(`example2`)}
                     />
@@ -98,6 +98,7 @@ class Example1 extends Component {
                     persistent = { false }
                     enableSuggestion = { true }
                     entryAnimation = 'from-right-side'
+                    pinnedSuggestions = {[ `react-native-search-header`, `react-native`, `javascript` ]}
                     topOffset = { 36 }
                     iconColor = 'gray'
                     iconImageComponents = {[{
@@ -128,7 +129,7 @@ class Example1 extends Component {
                     }}
                     style = {{
                         header: {
-                            height: 56,
+                            height: 62,
                             backgroundColor: `#fdfdfd`
                         }
                     }}
@@ -156,9 +157,9 @@ class Example1 extends Component {
                 </View>
                 <View style = { styles.button }>
                     <Button
-                        title = 'Clear'
+                        title = 'Clear Suggestion'
                         color = '#f5fcff'
-                        onPress = {() => component.searchHeader.clear()}
+                        onPress = {() => component.searchHeader.clearSuggestion()}
                     />
                 </View>
                 <View style = { styles.button }>
@@ -187,19 +188,7 @@ class Example2 extends Component {
             <View style = { styles.container }>
                 <StatusBar barStyle = 'light-content' />
                 <View style = { styles.status }/>
-                <View style = { styles.header }>
-                    <Button
-                        title = 'Prev'
-                        color = '#f5fcff'
-                        onPress = {() => navigation.goBack()}
-                    />
-                    <Text style = { styles.label } > Example 2 </Text>
-                    <Button
-                        title = 'Search'
-                        color = '#f5fcff'
-                        onPress = {() => component.searchHeader.show()}
-                    />
-                </View>
+                <View style = { styles.header }/>
                 <SearchHeader
                     ref = {(searchHeader) => {
                         component.searchHeader = searchHeader;
@@ -209,7 +198,7 @@ class Example2 extends Component {
                     dropShadowed = { false }
                     autoFocus = { true }
                     visibleInitially = { true }
-                    persistent = { false }
+                    persistent = { true }
                     enableSuggestion = { true }
                     entryAnimation = 'from-left-side'
                     topOffset = { 36 }
@@ -242,34 +231,23 @@ class Example2 extends Component {
                     }}
                     style = {{
                         header: {
-                            height: 48,
+                            height: 38,
+                            marginTop: 9,
+                            marginHorizontal: 9,
+                            borderRadius: 19,
                             backgroundColor: `#fdfdfd`
                         },
                         input: {
-                            borderRadius: 4,
-                            backgroundColor: `#b2c9d4`
+                            fontSize: 16,
+                            margin: 0,
+                            padding: 0,
+                            borderRadius: 0,
+                            backgroundColor: `transparent`
                         }
-                        // suggestion: {
-                        //     backgroundColor: `red`
-                        // }
                     }}
                 />
                 <View style = { styles.button }>
                     <Button
-                        title = 'Show'
-                        color = '#f5fcff'
-                        onPress = {() => component.searchHeader.show()}
-                    />
-                </View>
-                <View style = { styles.button }>
-                    <Button
-                        title = 'Hide'
-                        color = '#f5fcff'
-                        onPress = {() => component.searchHeader.hide()}
-                    />
-                </View>
-                <View style = { styles.button }>
-                    <Button
                         title = 'Clear'
                         color = '#f5fcff'
                         onPress = {() => component.searchHeader.clear()}
@@ -277,9 +255,9 @@ class Example2 extends Component {
                 </View>
                 <View style = { styles.button }>
                     <Button
-                        title = 'Clear'
+                        title = 'Clear Suggestion'
                         color = '#f5fcff'
-                        onPress = {() => component.searchHeader.clear()}
+                        onPress = {() => component.searchHeader.clearSuggestion()}
                     />
                 </View>
                 <View style = { styles.button }>
@@ -342,11 +320,6 @@ const AppContainer = createAppContainer(ExampleStackNavigator);
 export default class Demo extends Component {
     constructor (props) {
         super(props);
-
-        this.refCache = {
-            searchHeader1: null,
-            searchHeader2: null
-        };
     }
     render () {
         const component = this;
