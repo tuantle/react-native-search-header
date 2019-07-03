@@ -213,6 +213,17 @@ SearchHeader component default style can be override. Below are examples of how 
 
 ## Change Log
 
+**Release Version 0.3.4 (07/03/2019)**
+
+```
+    Notes:
+    New Features:
+    Breaking Changes:
+    Improvements:
+    Bug fixes:
+        - Fixed a bug where hidden suggestion view is blocking other components from receiving touch events.
+```
+
 **Release Version 0.3.3 (07/02/2019)**
 
 ```
