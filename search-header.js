@@ -32,8 +32,6 @@ import PropTypes from 'prop-types';
 
 import { View as AnimatedView } from 'react-native-animatable';
 
-import semver from 'semver';
-
 import dismissKeyboard from 'react-native/Libraries/Utilities/dismissKeyboard';
 
 import hideIcon from './assets/icons/hide-3x.png';
@@ -1695,6 +1693,4 @@ SearchHeaderWithReactHooks.propTypes = {
     onShow: PropTypes.func
 };
 
-const SearchHeader = semver.gte(React.version, `16.8.0`) ? React.forwardRef(SearchHeaderWithReactHooks) : SearchHeaderWithReactClass;
-
-export default SearchHeader;
+export { SearchHeaderWithReactHooks, SearchHeaderWithReactClass };
