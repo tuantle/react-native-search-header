@@ -23,6 +23,18 @@
 /* eslint quotes: 0 */
 
 /* load search header applet */
-const SearchHeader = require('./search-header').default;
+import React from 'react';
+
+import { SearchHeaderWithReactHooks, SearchHeaderWithReactClass } from './search-header';
+
+import semver from 'semver';
+
+let SearchHeader;
+
+if (semver.gte(React.version, `16.8.0`)) {
+    SearchHeader = React.forwardRef(SearchHeaderWithReactHooks);
+} else {
+    SearchHeader = SearchHeaderWithReactClass;
+}
 
 export default SearchHeader;
