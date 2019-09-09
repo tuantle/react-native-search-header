@@ -16,7 +16,7 @@ Easy to use React Native search header component based on material design patter
 To use search header you simply import the component factory function to create a renderable component:
 
 ```js
-import React, { Component } from 'react';
+import React from 'react';
 import {
     Dimensions,
     AppRegistry,
@@ -73,64 +73,58 @@ const styles = StyleSheet.create({
     }
 });
 
-export default class Demo extends Component {
-    constructor (props) {
-        super(props);
-    }
-    render () {
-        return (
-            <View style = { styles.container }>
-                <StatusBar barStyle = 'light-content' />
-                <View style = { styles.status }/>
-                <View style = { styles.header }>
-                    <Text style = { styles.label }> Demo </Text>
-                    <Button
-                        title = 'Search'
-                        color = '#f5fcff'
-                        onPress = {() => this.searchHeader.show()}
-                    />
-                </View>
-                <SearchHeader
-                    ref = {(searchHeader) => {
-                        this.searchHeader = searchHeader;
-                    }}
-                    placeholder = 'Search...'
-                    placeholderColor = 'gray'
-                    pinnedSuggestions = {[ `react-native-search-header`, `react-native`, `javascript` ]}
-                    onClear = {() => {
-                        console.log(`Clearing input!`);
-                    }}
-                    onGetAutocompletions = {async (text) => {
-                        if (text) {
-                            const response = await fetch(`http://suggestqueries.google.com/complete/search?client=firefox&q=${text}`, {
-                                method: `get`
-                            });
-                            const data = await response.json();
-                            return data[1];
-                        } else {
-                            return [];
-                        }
+const Demo = () => {
+    const searchHeaderRef = React.useRef(null);
+    return (
+        <View style = { styles.container }>
+            <StatusBar barStyle = 'light-content' />
+            <View style = { styles.status }/>
+            <View style = { styles.header }>
+                <Text style = { styles.label }> Demo </Text>
+                <Button
+                    title = 'Search'
+                    color = '#f5fcff'
+                    onPress = {() => searchHeaderRef.current.show()}
+                />
+            </View>
+            <SearchHeader
+                ref = { searchHeaderRef }
+                placeholder = 'Search...'
+                placeholderColor = 'gray'
+                pinnedSuggestions = {[ `react-native-search-header`, `react-native`, `javascript` ]}
+                onClear = {() => {
+                    console.log(`Clearing input!`);
+                }}
+                onGetAutocompletions = {async (text) => {
+                    if (text) {
+                        const response = await fetch(`http://suggestqueries.google.com/complete/search?client=firefox&q=${text}`, {
+                            method: `get`
+                        });
+                        const data = await response.json();
+                        return data[1];
+                    } else {
+                        return [];
+                    }
+                }}
+            />
+            <View style = { styles.button }>
+                <Button
+                    title = 'Open Search'
+                    color = '#f5fcff'
+                    onPress = {() => searchHeaderRef.current.show()}
+                />
+            </View>
+            <View style = { styles.button }>
+                <Button
+                    title = 'Clear'
+                    color = '#f5fcff'
+                    onPress = {() => {
+                        searchHeaderRef.current.clear();
                     }}
                 />
-                <View style = { styles.button }>
-                    <Button
-                        title = 'Open Search'
-                        color = '#f5fcff'
-                        onPress = {() => this.searchHeader.show()}
-                    />
-                </View>
-                <View style = { styles.button }>
-                    <Button
-                        title = 'Clear'
-                        color = '#f5fcff'
-                        onPress = {() => {
-                            this.searchHeader.clear();
-                        }}
-                    />
-                </View>
             </View>
-        );
-    }
+        </View>
+    );
 }
 
 AppRegistry.registerComponent('Demo', () => Demo);
@@ -212,6 +206,19 @@ SearchHeader component default style can be override. Below are examples of how 
 ```
 
 ## Change Log
+
+**Release Version 0.3.5 (09/09/2019)**
+
+```
+    Notes:
+    New Features:
+        - Added support for new React Hooks.
+    Breaking Changes:
+    Improvements:
+        - When enableSuggestion = true, suggestion view is visible when text input is focused and hidden when text input is blurred.
+        - Removed componentDidUpdate for SearchHeaderWithReactClass.
+    Bug fixes:
+```
 
 **Release Version 0.3.4 (07/03/2019)**
 
