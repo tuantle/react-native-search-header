@@ -1,5 +1,5 @@
 /* eslint quotes: 0 */
-import React, { Component } from 'react';
+import React from 'react';
 import {
     Dimensions,
     StyleSheet,
@@ -9,7 +9,9 @@ import {
     StatusBar
 } from 'react-native';
 
-import { createAppContainer, createStackNavigator } from 'react-navigation';
+import { createAppContainer } from 'react-navigation';
+
+import { createStackNavigator } from 'react-navigation-stack';
 
 import SearchHeader from 'react-native-search-header';
 
@@ -60,218 +62,211 @@ const styles = StyleSheet.create({
     }
 });
 
-class Example1 extends Component {
-    constructor (props) {
-        super(props);
-        this.searchHeader = null;
-    }
-    render () {
-        const component = this;
-        const {
-            navigation
-        } = component.props;
-        return (
-            <View style = { styles.container }>
-                <StatusBar barStyle = 'light-content' />
-                <View style = { styles.status }/>
-                <View style = { styles.header }>
-                    <Text style = { styles.label } > Example 1 </Text>
-                    <Button
-                        title = 'Search'
-                        color = '#f5fcff'
-                        onPress = {() => component.searchHeader.show()}
-                    />
-                    <Button
-                        title = '>'
-                        color = '#f5fcff'
-                        onPress = {() => navigation.navigate(`example2`)}
-                    />
-                </View>
-                <SearchHeader
-                    ref = {(searchHeader) => {
-                        component.searchHeader = searchHeader;
-                    }}
-                    placeholder = 'Search...'
-                    placeholderColor = 'gray'
-                    autoFocus = { true }
-                    visibleInitially = { false }
-                    persistent = { false }
-                    enableSuggestion = { true }
-                    entryAnimation = 'from-right-side'
-                    pinnedSuggestions = {[ `react-native-search-header`, `react-native`, `javascript` ]}
-                    topOffset = { 36 }
-                    iconColor = 'gray'
-                    iconImageComponents = {[{
-                        name: `hide`,
-                        customStyle: {
-                            tintColor: 'red'
-                        }
-                    }]}
-                    onClear = {() => {
-                        console.log(`CLEAR`);
-                    }}
-                    onGetAutocompletions = {async (text) => {
-                        if (text) {
-                            const response = await fetch(`http://suggestqueries.google.com/complete/search?client=firefox&q=${text}`, {
-                                method: `get`
-                            });
-                            const data = await response.json();
-                            return data[1];
-                        } else { // eslint-disable-line
-                            return [];
-                        }
-                    }}
-                    onEnteringSearch = {(event) => {
-                        console.log(event.nativeEvent.text);
-                    }}
-                    onSearch = {(event) => {
-                        console.log(event.nativeEvent.text);
-                    }}
-                    style = {{
-                        header: {
-                            height: 62,
-                            backgroundColor: `#fdfdfd`
-                        }
-                    }}
-                />
-                <View style = { styles.button }>
-                    <Button
-                        title = 'Show'
-                        color = '#f5fcff'
-                        onPress = {() => component.searchHeader.show()}
-                    />
-                </View>
-                <View style = { styles.button }>
-                    <Button
-                        title = 'Hide'
-                        color = '#f5fcff'
-                        onPress = {() => component.searchHeader.hide()}
-                    />
-                </View>
-                <View style = { styles.button }>
-                    <Button
-                        title = 'Clear'
-                        color = '#f5fcff'
-                        onPress = {() => component.searchHeader.clear()}
-                    />
-                </View>
-                <View style = { styles.button }>
-                    <Button
-                        title = 'Clear Suggestion'
-                        color = '#f5fcff'
-                        onPress = {() => component.searchHeader.clearSuggestion()}
-                    />
-                </View>
-                <View style = { styles.button }>
-                    <Button
-                        title = 'Next'
-                        color = '#f5fcff'
-                        onPress = {() => navigation.navigate(`example2`)}
-                    />
-                </View>
-            </View>
-        );
-    }
-}
+const Example1 = (props) => {
+    const searchHeaderRef = React.useRef(null);
+    const {
+        navigation
+    } = props;
 
-class Example2 extends Component {
-    constructor (props) {
-        super(props);
-        this.searchHeader = null;
-    }
-    render () {
-        const component = this;
-        const {
-            navigation
-        } = component.props;
-        return (
-            <View style = { styles.container }>
-                <StatusBar barStyle = 'light-content' />
-                <View style = { styles.status }/>
-                <View style = { styles.header }/>
-                <SearchHeader
-                    ref = {(searchHeader) => {
-                        component.searchHeader = searchHeader;
-                    }}
-                    placeholder = 'Search...'
-                    placeholderColor = 'gray'
-                    dropShadowed = { false }
-                    autoFocus = { true }
-                    visibleInitially = { true }
-                    persistent = { true }
-                    enableSuggestion = { true }
-                    entryAnimation = 'from-left-side'
-                    topOffset = { 36 }
-                    iconColor = 'gray'
-                    iconImageComponents = {[{
-                        name: `hide`,
-                        customStyle: {
-                            tintColor: 'red'
-                        }
-                    }]}
-                    onClear = {() => {
-                        console.log(`CLEAR`);
-                    }}
-                    onGetAutocompletions = {async (text) => {
-                        if (text) {
-                            const response = await fetch(`http://suggestqueries.google.com/complete/search?client=firefox&q=${text}`, {
-                                method: `get`
-                            });
-                            const data = await response.json();
-                            return data[1];
-                        } else { // eslint-disable-line
-                            return [];
-                        }
-                    }}
-                    onEnteringSearch = {(event) => {
-                        console.log(event.nativeEvent.text);
-                    }}
-                    onSearch = {(event) => {
-                        console.log(event.nativeEvent.text);
-                    }}
-                    style = {{
-                        header: {
-                            height: 38,
-                            marginTop: 9,
-                            marginHorizontal: 9,
-                            borderRadius: 19,
-                            backgroundColor: `#fdfdfd`
-                        },
-                        input: {
-                            fontSize: 16,
-                            margin: 0,
-                            padding: 0,
-                            borderRadius: 0,
-                            backgroundColor: `transparent`
-                        }
-                    }}
+    return (
+        <View style = { styles.container }>
+            <StatusBar barStyle = 'light-content' />
+            <View style = { styles.status }/>
+            <View style = { styles.header }>
+                <Text style = { styles.label } > Example 1 </Text>
+                <Button
+                    title = 'Search'
+                    color = '#f5fcff'
+                    onPress = {() => searchHeaderRef.current.show()}
                 />
-                <View style = { styles.button }>
-                    <Button
-                        title = 'Clear'
-                        color = '#f5fcff'
-                        onPress = {() => component.searchHeader.clear()}
-                    />
-                </View>
-                <View style = { styles.button }>
-                    <Button
-                        title = 'Clear Suggestion'
-                        color = '#f5fcff'
-                        onPress = {() => component.searchHeader.clearSuggestion()}
-                    />
-                </View>
-                <View style = { styles.button }>
-                    <Button
-                        title = 'Prev'
-                        color = '#f5fcff'
-                        onPress = {() => navigation.goBack()}
-                    />
-                </View>
+                <Button
+                    title = '>'
+                    color = '#f5fcff'
+                    onPress = {() => navigation.navigate(`example2`)}
+                />
             </View>
-        );
-    }
-}
+            <SearchHeader
+                ref = { searchHeaderRef }
+                placeholder = 'Search...'
+                placeholderColor = 'gray'
+                autoFocus = { true }
+                visibleInitially = { false }
+                persistent = { false }
+                enableSuggestion = { true }
+                entryAnimation = 'from-right-side'
+                pinnedSuggestions = {[ `react-native-search-header`, `react-native`, `javascript` ]}
+                topOffset = { 36 }
+                iconColor = 'gray'
+                iconImageComponents = {[{
+                    name: `hide`,
+                    customStyle: {
+                        tintColor: 'red'
+                    }
+                }, {
+                    name: `pin`,
+                    customStyle: {
+                        tintColor: 'red'
+                    }
+                }]}
+                onClear = {() => {
+                    console.log(`CLEAR`);
+                }}
+                onGetAutocompletions = {async (text) => {
+                    if (text) {
+                        const response = await fetch(`http://suggestqueries.google.com/complete/search?client=firefox&q=${text}`, {
+                            method: `get`
+                        });
+                        const data = await response.json();
+                        return data[1];
+                    }
+                    return [];
+                }}
+                onEnteringSearch = {(event) => {
+                    console.log(event.nativeEvent.text);
+                }}
+                onSearch = {(event) => {
+                    console.log(event.nativeEvent.text);
+                }}
+                style = {{
+                    header: {
+                        height: 62,
+                        backgroundColor: `#fdfdfd`
+                    }
+                }}
+            />
+            <View style = { styles.button }>
+                <Button
+                    title = 'Show'
+                    color = '#f5fcff'
+                    onPress = {() => searchHeaderRef.current.show()}
+                />
+            </View>
+            <View style = { styles.button }>
+                <Button
+                    title = 'Hide'
+                    color = '#f5fcff'
+                    onPress = {() => searchHeaderRef.current.hide()}
+                />
+            </View>
+            <View style = { styles.button }>
+                <Button
+                    title = 'Clear'
+                    color = '#f5fcff'
+                    onPress = {() => searchHeaderRef.current.clear()}
+                />
+            </View>
+            <View style = { styles.button }>
+                <Button
+                    title = 'Clear Suggestion'
+                    color = '#f5fcff'
+                    onPress = {() => searchHeaderRef.current.clearSuggestion()}
+                />
+            </View>
+            <View style = { styles.button }>
+                <Button
+                    title = 'Next'
+                    color = '#f5fcff'
+                    onPress = {() => navigation.navigate(`example2`)}
+                />
+            </View>
+        </View>
+    );
+};
 
+const Example2 = (props) => {
+    const searchHeaderRef = React.useRef(null);
+    const {
+        navigation
+    } = props;
+
+    return (
+        <View style = { styles.container }>
+            <StatusBar barStyle = 'light-content' />
+            <View style = { styles.status }/>
+            <View style = { styles.header }/>
+            <SearchHeader
+                ref = { searchHeaderRef }
+                placeholder = 'Search...'
+                placeholderColor = 'gray'
+                dropShadowed = { false }
+                autoFocus = { false }
+                visibleInitially = { true }
+                persistent = { true }
+                enableSuggestion = { true }
+                entryAnimation = 'from-left-side'
+                topOffset = { 36 }
+                iconColor = 'gray'
+                iconImageComponents = {[{
+                    name: `hide`,
+                    customStyle: {
+                        tintColor: 'red'
+                    }
+                }, {
+                    name: `pin`,
+                    customStyle: {
+                        tintColor: 'red'
+                    }
+                }]}
+                onClear = {() => {
+                    console.log(`CLEAR`);
+                }}
+                onGetAutocompletions = {async (text) => {
+                    if (text) {
+                        const response = await fetch(`http://suggestqueries.google.com/complete/search?client=firefox&q=${text}`, {
+                            method: `get`
+                        });
+                        const data = await response.json();
+                        return data[1];
+                    }
+                    return [];
+                }}
+                onEnteringSearch = {(event) => {
+                    console.log(event.nativeEvent.text);
+                }}
+                onSearch = {(event) => {
+                    console.log(event.nativeEvent.text);
+                }}
+                style = {{
+                    header: {
+                        height: 38,
+                        marginTop: 9,
+                        marginHorizontal: 9,
+                        borderRadius: 19,
+                        backgroundColor: `#fdfdfd`
+                    },
+                    input: {
+                        fontSize: 16,
+                        margin: 0,
+                        padding: 0,
+                        borderRadius: 0,
+                        backgroundColor: `transparent`
+                    }
+                }}
+            />
+            <View style = { styles.button }>
+                <Button
+                    title = 'Clear'
+                    color = '#f5fcff'
+                    onPress = {() => searchHeaderRef.current.clear()}
+                />
+            </View>
+            <View style = { styles.button }>
+                <Button
+                    title = 'Clear Suggestion'
+                    color = '#f5fcff'
+                    onPress = {() => searchHeaderRef.current.clearSuggestion()}
+                />
+            </View>
+            <View style = { styles.button }>
+                <Button
+                    title = 'Prev'
+                    color = '#f5fcff'
+                    onPress = {() => navigation.goBack()}
+                />
+            </View>
+        </View>
+    );
+};
 
 const ExampleStackNavigator = createStackNavigator({
     example1: {
@@ -316,19 +311,9 @@ const ExampleStackNavigator = createStackNavigator({
 });
 
 const AppContainer = createAppContainer(ExampleStackNavigator);
-
-export default class Demo extends Component {
-    constructor (props) {
-        super(props);
-    }
-    render () {
-        const component = this;
-        return (
-            <AppContainer
-                screenProps = {{
-                    component
-                }}
-            />
-        );
-    }
-}
+const Demo = () => {
+    return (
+        <AppContainer/>
+    );
+};
+export default Demo;

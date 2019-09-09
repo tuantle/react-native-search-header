@@ -7,18 +7,21 @@
     "test": "jest"
   },
   "dependencies": {
-    "react": "^16.8.6",
-    "react-native": "^0.59.9",
-    "react-native-gesture-handler": "^1.3.0",
-    "react-native-search-header": "^0.3.3",
-    "react-navigation": "^3.11.0"
+    "prop-types": "^15.7.2",
+    "react": "^16.9.0",
+    "react-native": "^0.60.5",
+    "react-native-gesture-handler": "^1.4.1",
+    "react-native-search-header": "github:tuantle/react-native-search-header#develop",
+    "react-navigation": "^4.0.0",
+    "react-navigation-stack": "^1.5.3",
+    "semver": "^6.3.0"
   },
   "devDependencies": {
-    "babel-core": "^6.26.3",
-    "babel-jest": "^24.8.0",
-    "jest": "^24.8.0",
+    "@babel/core": "^7.5.5",
+    "babel-jest": "^24.9.0",
+    "jest": "^24.9.0",
     "metro-react-native-babel-preset": "^0.54.1",
-    "react-test-renderer": "^16.8.6"
+    "react-test-renderer": "^16.9.0"
   },
   "jest": {
     "preset": "react-native"
