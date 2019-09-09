@@ -16,7 +16,7 @@
  *------------------------------------------------------------------------
  *
  * @module SearchHeader
- * @description - Search header component export.
+ * @description - Search header component.
  *
  * @author Tuan Le (tuan.t.lei@gmail.com)
  *
@@ -32,6 +32,8 @@ import PropTypes from 'prop-types';
 
 import { View as AnimatedView } from 'react-native-animatable';
 
+import semver from 'semver';
+
 import dismissKeyboard from 'react-native/Libraries/Utilities/dismissKeyboard';
 
 import hideIcon from './assets/icons/hide-3x.png';
@@ -40,10 +42,6 @@ import starIcon from './assets/icons/star-3x.png';
 import historyIcon from './assets/icons/history-3x.png';
 import recallIcon from './assets/icons/recall-3x.png';
 import searchIcon from './assets/icons/search-3x.png';
-
-const {
-    Component
-} = React;
 
 const {
     Text,
@@ -223,7 +221,7 @@ const DEFAULT_ICON_IMAGE_COMPONENTS = [{
     }
 }];
 
-function readjustStyle (newStyle = {
+const readjustStyle = (newStyle = {
     inputColor: DEFAULT_SEARCH_HEADER_VIEW_STYLE.input.color,
     inputBgColor: DEFAULT_SEARCH_HEADER_VIEW_STYLE.input.backgroundColor,
     suggestionEntryColor: DEFAULT_SEARCH_HEADER_VIEW_STYLE.suggestionEntry.color,
@@ -237,7 +235,7 @@ function readjustStyle (newStyle = {
     autoCorrect: true,
     persistent: false,
     entryAnimation: `from-left-side`
-}, prevAdjustedStyle = DEFAULT_SEARCH_HEADER_VIEW_STYLE) {
+}, prevAdjustedStyle = DEFAULT_SEARCH_HEADER_VIEW_STYLE) => {
     const {
         headerHeight,
         headerBgColor,
@@ -300,9 +298,9 @@ function readjustStyle (newStyle = {
     };
 
     return adjustedStyle;
-}
+};
 
-export default class SearchHeader extends Component {
+class SearchHeaderWithReactClass extends React.Component {
     static propTypes = {
         inputColor: PropTypes.string,
         inputBgColor: PropTypes.string,
@@ -539,6 +537,9 @@ export default class SearchHeader extends Component {
     }
     clearSuggestion = () => {
         const component = this;
+        const {
+            onClearSuggesstion
+        } = component.props;
 
         component.setState(() => {
             return {
@@ -549,12 +550,18 @@ export default class SearchHeader extends Component {
                 }
             };
         });
+
+        onClearSuggesstion();
     }
     onFocus = () => {
         const component = this;
         const {
+            enableSuggestion,
             onFocus
         } = component.props;
+        const {
+            visible
+        } = component.state;
 
         component.setState((prevState) => {
             return {
@@ -568,14 +575,32 @@ export default class SearchHeader extends Component {
                 }
             };
         }, () => {
+            // const textInput = component.refCache[`text-input`];
+            // if (textInput !== undefined) {
+            //     textInput.focus();
+            // }
+            if (visible && enableSuggestion) {
+                const animatedSuggestionView = component.refCache[`animated-suggestion-view`];
+                if (animatedSuggestionView !== undefined) {
+                    animatedSuggestionView.transitionTo({
+                        opacity: 1,
+                        translateY: 0,
+                        height: DEVICE_HEIGHT
+                    }, DEFAULT_ANIMATION_DURATION_MS, `ease-in-cubic`);
+                }
+            }
             onFocus();
         });
     }
     onBlur = () => {
         const component = this;
         const {
+            enableSuggestion,
             onBlur
         } = component.props;
+        const {
+            visible
+        } = component.state;
 
         component.setState((prevState) => {
             return {
@@ -585,6 +610,20 @@ export default class SearchHeader extends Component {
                 }
             };
         }, () => {
+            // const textInput = component.refCache[`text-input`];
+            // if (textInput !== undefined) {
+            //     textInput.blur();
+            // }
+            if (visible && enableSuggestion) {
+                const animatedSuggestionView = component.refCache[`animated-suggestion-view`];
+                if (animatedSuggestionView !== undefined) {
+                    animatedSuggestionView.transitionTo({
+                        opacity: 0,
+                        translateY: DEVICE_HEIGHT,
+                        height: 0
+                    }, DEFAULT_ANIMATION_DURATION_MS, `ease-out-cubic`);
+                }
+            }
             onBlur();
         });
     }
@@ -748,46 +787,6 @@ export default class SearchHeader extends Component {
                     text: value
                 }
             });
-        }
-    }
-    componentDidUpdate () {
-        const component = this;
-        const {
-            enableSuggestion
-        } = component.props;
-        const {
-            visible,
-            input,
-            suggestion
-        } = component.state;
-
-        if (visible) {
-            const textInput = component.refCache[`text-input`];
-            if (textInput !== undefined) {
-                if (input.focused) {
-                    textInput.focus();
-                } else {
-                    textInput.blur();
-                }
-            }
-            if (enableSuggestion) {
-                const animatedSuggestionView = component.refCache[`animated-suggestion-view`];
-                if (animatedSuggestionView !== undefined) {
-                    if (suggestion.visible) {
-                        animatedSuggestionView.transitionTo({
-                            opacity: 1,
-                            translateY: 0,
-                            height: DEVICE_HEIGHT
-                        }, DEFAULT_ANIMATION_DURATION_MS, `ease-in-cubic`);
-                    } else {
-                        animatedSuggestionView.transitionTo({
-                            opacity: 0,
-                            translateY: DEVICE_HEIGHT,
-                            height: 0
-                        }, DEFAULT_ANIMATION_DURATION_MS, `ease-out-cubic`);
-                    }
-                }
-            }
         }
     }
     componentDidUnMount () {
@@ -1090,3 +1089,612 @@ export default class SearchHeader extends Component {
         );
     }
 }
+
+const SearchHeaderWithReactHooks = ({
+    inputColor = DEFAULT_SEARCH_HEADER_VIEW_STYLE.input.color,
+    inputBgColor = DEFAULT_SEARCH_HEADER_VIEW_STYLE.input.backgroundColor,
+    placeholderColor = `#bdbdbd`,
+    suggestionEntryColor = DEFAULT_SEARCH_HEADER_VIEW_STYLE.suggestionEntry.color,
+    iconColor = DEFAULT_SEARCH_HEADER_VIEW_STYLE.icon.tintColor,
+    topOffset = Platform.OS === `ios` ? 24 : 0,
+    headerHeight = DEFAULT_SEARCH_HEADER_VIEW_STYLE.header.height,
+    headerBgColor = DEFAULT_SEARCH_HEADER_VIEW_STYLE.header.backgroundColor,
+    dropShadowed = true,
+    visibleInitially = false,
+    autoFocus = true,
+    autoCorrect = true,
+    persistent = false,
+    enableSuggestion = true,
+    suggestionHistoryEntryRollOverCount = 16,
+    pinnedSuggestions = [],
+    placeholder = ``,
+    entryAnimation = `from-left-side`,
+    iconImageComponents = DEFAULT_ICON_IMAGE_COMPONENTS,
+    onClearSuggesstion = () => false,
+    onGetAutocompletions = () => [],
+    onClear = () => null,
+    onSearch = () => null,
+    onEnteringSearch = () => null,
+    onFocus = () => null,
+    onBlur = () => null,
+    onHide = () => null,
+    onShow = () => null,
+    style
+}, ref) => {
+    const animatedSearchHeaderViewRef = React.useRef(null);
+    const animatedSuggestionViewRef = React.useRef(null);
+    const textInputRef = React.useRef(null);
+
+    const [ adjustedStyle, setAdjustedStyle ] = React.useState(DEFAULT_SEARCH_HEADER_VIEW_STYLE);
+    const [ customIconImageComponents, setCustomIconImageComponents ] = React.useState(DEFAULT_ICON_IMAGE_COMPONENTS);
+    const [ visible, setVisibility ] = React.useState(visibleInitially || persistent);
+    const [ input, setInput ] = React.useState({
+        focused: false,
+        value: ``,
+        valueChanged: false
+    });
+    const [ suggestion, setSuggestion ] = React.useState({
+        visible: false,
+        historyEntryRollOverCount: 16,
+        histories: [],
+        autocompletes: []
+    });
+
+    const _onFocus = () => {
+        setInput({
+            ...input,
+            focused: true
+        });
+
+        setSuggestion({
+            ...suggestion,
+            visible: true
+        });
+
+        if (visible && enableSuggestion) {
+            animatedSuggestionViewRef.current.transitionTo({
+                opacity: 1,
+                translateY: 0,
+                height: DEVICE_HEIGHT
+            }, DEFAULT_ANIMATION_DURATION_MS, `ease-in-cubic`);
+        }
+
+        onFocus();
+    };
+    const _onBlur = () => {
+        setInput({
+            ...input,
+            focused: false
+        });
+
+        if (visible && enableSuggestion) {
+            animatedSuggestionViewRef.current.transitionTo({
+                opacity: 0,
+                translateY: DEVICE_HEIGHT,
+                height: 0
+            }, DEFAULT_ANIMATION_DURATION_MS, `ease-out-cubic`);
+        }
+
+        onBlur();
+    };
+    const _onEditting = (value) => {
+        if (enableSuggestion) {
+            const fetchSearchAutocompletions = async function () {
+                const autocompleteTexts = await onGetAutocompletions(value);
+                if (Array.isArray(autocompleteTexts) && autocompleteTexts.length) {
+                    setSuggestion({
+                        ...suggestion,
+                        autocompletes: [
+                            // ...new Set(autocompleteTexts.filter((text) => typeof text === `string`).map((text) => text.replace(/\s/g, ``)))
+                            ...new Set(autocompleteTexts.filter((text) => typeof text === `string`))
+                        ].map((text) => {
+                            return {
+                                suggestionType: `autocompletion`,
+                                value: text
+                            };
+                        })
+                    });
+                }
+            };
+
+            if (value !== ``) {
+                fetchSearchAutocompletions();
+                setInput({
+                    ...input,
+                    value,
+                    valueChanged: value !== input.value
+                });
+            } else {
+                setInput({
+                    ...input,
+                    value: ``,
+                    valueChanged: value !== input.value
+                });
+                setSuggestion({
+                    ...suggestion,
+                    autocompletes: []
+                });
+            }
+        } else {
+            if (value !== ``) {
+                setInput({
+                    ...input,
+                    value,
+                    valueChanged: value !== input.value
+                });
+            } else {
+                setInput({
+                    ...input,
+                    value: ``,
+                    valueChanged: value !== input.value
+                });
+            }
+        }
+
+        onEnteringSearch({
+            nativeEvent: {
+                text: value
+            }
+        });
+    };
+    const _onSubmitEditing = (event) => {
+        const value = event.nativeEvent.text;
+
+        if (enableSuggestion) {
+            if (value !== ``) {
+                if (!suggestion.histories.some((entry) => entry.value === value) &&
+                    !pinnedSuggestions.some((_value) => _value === value)) {
+                    let {
+                        historyEntryRollOverCount,
+                        histories
+                    } = suggestion;
+
+                    if (histories.length >= historyEntryRollOverCount) {
+                        histories.pop();
+                    }
+                    histories.push({
+                        suggestionType: `history`,
+                        value,
+                        timestamp: new Date().getTime()
+                    });
+
+                    setSuggestion({
+                        ...suggestion,
+                        visible: false,
+                        autocompletes: [],
+                        histories
+                    });
+                } else {
+                    setSuggestion({
+                        ...suggestion,
+                        visible: false,
+                        autocompletes: []
+                    });
+                }
+                onSearch({
+                    nativeEvent: {
+                        text: value
+                    }
+                });
+            } else {
+                setSuggestion({
+                    ...suggestion,
+                    visible: false,
+                    autocompletes: []
+                });
+            }
+        } else {
+            onSearch({
+                nativeEvent: {
+                    text: value
+                }
+            });
+        }
+    };
+    const isHidden = () => !visible;
+    const hide = () => {
+        if (!persistent && visible) {
+            if (entryAnimation === `from-right-side`) {
+                animatedSearchHeaderViewRef.current.transitionTo({
+                    opacity: 0,
+                    translateX: DEVICE_WIDTH
+                }, DEFAULT_ANIMATION_DURATION_MS, `ease-in-cubic`, 0);
+            } else if (entryAnimation === `from-left-side`) {
+                animatedSearchHeaderViewRef.current.transitionTo({
+                    opacity: 0,
+                    translateX: -DEVICE_WIDTH
+                }, DEFAULT_ANIMATION_DURATION_MS, `ease-in-cubic`, 0);
+            }
+
+            setVisibility(false);
+            setInput({
+                ...input,
+                focused: false,
+                valueChanged: false
+            });
+            setSuggestion({
+                ...suggestion,
+                visible: false,
+                autocompletes: []
+            });
+
+            onHide();
+            dismissKeyboard();
+        }
+    };
+    const show = () => {
+        if (!persistent && !visible) {
+            setVisibility(true);
+            setInput({
+                ...input,
+                focused: false
+            });
+
+            onShow();
+
+            animatedSearchHeaderViewRef.current.transitionTo({
+                opacity: 1,
+                translateX: 0
+            }, DEFAULT_ANIMATION_DURATION_MS, `ease-in-cubic`, 0);
+        }
+    };
+    const clear = () => {
+        setInput({
+            ...input,
+            value: ``,
+            valueChanged: true
+        });
+        setSuggestion({
+            ...suggestion,
+            autocompletes: []
+        });
+
+        onClear();
+    };
+    const clearSuggestion = () => {
+        setSuggestion({
+            visible: false,
+            histories: [],
+            autocompletes: []
+        });
+
+        onClearSuggesstion();
+    };
+
+    React.useImperativeHandle(ref, () => ({
+        isHidden,
+        hide,
+        show,
+        clear,
+        clearSuggestion
+    }));
+
+    React.useEffect(() => {
+        setAdjustedStyle(readjustStyle({
+            inputColor,
+            inputBgColor,
+            suggestionEntryColor,
+            iconColor,
+            topOffset,
+            headerHeight,
+            headerBgColor,
+            dropShadowed,
+            visibleInitially,
+            autoFocus,
+            autoCorrect,
+            persistent,
+            entryAnimation,
+            style
+        }, adjustedStyle));
+
+        setCustomIconImageComponents(customIconImageComponents.map((customIconImageComponent) => {
+            const matchedIconImageComponent = iconImageComponents.find((_iconImageComponent) => _iconImageComponent.name === customIconImageComponent.name);
+            return typeof matchedIconImageComponent === `object` ? {
+                ...customIconImageComponent,
+                ...matchedIconImageComponent
+            } : customIconImageComponent;
+        }));
+
+        if (suggestion.historyEntryRollOverCount !== suggestionHistoryEntryRollOverCount) {
+            setSuggestion({
+                ...suggestion,
+                historyEntryRollOverCount: suggestionHistoryEntryRollOverCount
+            });
+        }
+    }, [
+        inputColor,
+        inputBgColor,
+        suggestionEntryColor,
+        iconColor,
+        topOffset,
+        headerHeight,
+        headerBgColor,
+        dropShadowed,
+        visibleInitially,
+        autoFocus,
+        autoCorrect,
+        persistent,
+        entryAnimation,
+        iconImageComponents,
+        style,
+        enableSuggestion,
+        suggestionHistoryEntryRollOverCount
+    ]);
+
+    const renderInput = () => {
+        if (visible) {
+            return (
+                <View style = { adjustedStyle.header }>
+                    <View style = { adjustedStyle.action }>
+                        {
+                            !persistent ? <TouchableOpacity onPress = {() => {
+                                hide();
+                            }}>
+                                {
+                                    customIconImageComponents.filter((iconImageComponent) => iconImageComponent.name === `hide`).map((iconImageComponent) => {
+                                        return iconImageComponent.render([
+                                            adjustedStyle.icon,
+                                            iconImageComponent.customStyle
+                                        ]);
+                                    })[0]
+                                }
+                            </TouchableOpacity> : <TouchableOpacity onPress = {() => {
+                                onSearch({
+                                    nativeEvent: {
+                                        text: input.value
+                                    }
+                                });
+                            }}>
+                                {
+                                    customIconImageComponents.filter((iconImageComponent) => iconImageComponent.name === `search`).map((iconImageComponent) => {
+                                        return iconImageComponent.render([
+                                            adjustedStyle.icon,
+                                            iconImageComponent.customStyle
+                                        ]);
+                                    })[0]
+                                }
+                            </TouchableOpacity>
+                        }
+                    </View>
+                    <TextInput
+                        ref = { textInputRef }
+                        autoFocus = { autoFocus }
+                        autoCorrect = { autoCorrect }
+                        returnKeyType = 'search'
+                        underlineColorAndroid = 'transparent'
+                        placeholder = { placeholder }
+                        placeholderTextColor = { placeholderColor }
+                        value = { input.value }
+                        style = { adjustedStyle.input }
+                        onFocus = { _onFocus }
+                        onBlur = { _onBlur }
+                        onChangeText = { _onEditting }
+                        onSubmitEditing = { _onSubmitEditing }
+                    />
+                    {
+                        input.value === `` ? <View style = { adjustedStyle.action } /> : <View style = { adjustedStyle.action }>
+                            <TouchableOpacity onPress = {() => {
+                                clear();
+                            }}>
+                                {
+                                    customIconImageComponents.filter((iconImageComponent) => iconImageComponent.name === `close`).map((iconImageComponent) => {
+                                        return iconImageComponent.render([
+                                            adjustedStyle.icon,
+                                            iconImageComponent.customStyle
+                                        ]);
+                                    })[0]
+                                }
+                            </TouchableOpacity>
+                        </View>
+                    }
+                </View>
+            );
+        }
+        return null;
+    };
+    const renderSuggestions = () => {
+        if (enableSuggestion) {
+            const suggestionEntries = pinnedSuggestions.map((value) => {
+                return {
+                    suggestionType: `pin`,
+                    value
+                };
+            }).concat(suggestion.histories.sort((itemA, itemB) => {
+                return itemB.timestamp - itemA.timestamp;
+            })).concat().concat(suggestion.autocompletes).map((entry, index) => {
+                return {
+                    key: `${index}`,
+                    ...entry
+                };
+            });
+
+            return (
+                <AnimatedView
+                    ref = { animatedSuggestionViewRef }
+                    duration = { 300 }
+                    pointerEvents = 'box-none'
+                    useNativeDriver = { false }
+                    style = { adjustedStyle.suggestion }
+                >
+                    <FlatList
+                        data = { suggestionEntries }
+                        renderItem = {(listData) => {
+                            const entry = listData.item;
+
+                            return (
+                                <TouchableOpacity
+                                    key = { listData.key }
+                                    onPress = {() => {
+                                        if (!suggestion.histories.some((_entry) => _entry.value === entry.value) &&
+                                            !pinnedSuggestions.some((value) => value === entry.value)) {
+                                            let {
+                                                historyEntryRollOverCount,
+                                                histories
+                                            } = suggestion;
+
+                                            if (histories.length >= historyEntryRollOverCount) {
+                                                histories.pop();
+                                            }
+                                            histories.push({
+                                                suggestionType: `history`,
+                                                value: entry.value,
+                                                timestamp: new Date().getTime()
+                                            });
+
+                                            setInput({
+                                                ...input,
+                                                value: entry.value,
+                                                valueChanged: input.value !== entry.value,
+                                                focused: false
+                                            });
+                                            setSuggestion({
+                                                ...suggestion,
+                                                visible: false,
+                                                autocompletes: [],
+                                                histories
+                                            });
+                                        } else {
+                                            setInput({
+                                                ...input,
+                                                value: entry.value,
+                                                valueChanged: input.value !== entry.value,
+                                                focused: false
+                                            });
+                                            setSuggestion({
+                                                ...suggestion,
+                                                visible: false,
+                                                autocompletes: []
+                                            });
+                                        }
+
+                                        onEnteringSearch({
+                                            nativeEvent: {
+                                                text: entry.value
+                                            }
+                                        });
+                                        onSearch({
+                                            nativeEvent: {
+                                                text: entry.value
+                                            }
+                                        });
+                                    }}>
+                                    <View style = {{
+                                        flexDirection: `row`,
+                                        justifyContent: `center`,
+                                        alignItems: `center`,
+                                        backgroundColor: `transparent`
+                                    }}>
+                                        {
+                                            customIconImageComponents.filter((iconImageComponent) => {
+                                                if (entry.suggestionType === `history`) {
+                                                    return iconImageComponent.name === `history`;
+                                                } else if (entry.suggestionType === `pin`) {
+                                                    return iconImageComponent.name === `pin`;
+                                                }
+                                                return iconImageComponent.name === `search`;
+                                            }).map((iconImageComponent) => {
+                                                return iconImageComponent.render([
+                                                    adjustedStyle.icon,
+                                                    iconImageComponent.customStyle
+                                                ]);
+                                            })[0]
+                                        }
+                                        <Text
+                                            numberOfLines = { 1 }
+                                            ellipsizeMode = 'tail'
+                                            style = { adjustedStyle.suggestionEntry }
+                                        >{ entry.value }</Text>
+                                        <View style = {{
+                                            flexDirection: `row`,
+                                            alignItems: `center`,
+                                            justifyContent: `center`,
+                                            minWidth: 46,
+                                            minHeight: 46,
+                                            backgroundColor: `transparent`
+                                        }}>
+                                            <TouchableOpacity onPress = {() => {
+                                                setInput({
+                                                    ...input,
+                                                    value: entry.value,
+                                                    valueChanged: input.value !== entry.value
+                                                });
+                                            }}>
+                                                {
+                                                    customIconImageComponents.filter((iconImageComponent) => iconImageComponent.name === `recall`).map((iconImageComponent) => {
+                                                        return iconImageComponent.render([
+                                                            adjustedStyle.icon,
+                                                            iconImageComponent.customStyle
+                                                        ]);
+                                                    })[0]
+                                                }
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
+                                </TouchableOpacity>
+                            );
+                        }}
+                        style = {{
+                            flexDirection: `column`,
+                            backgroundColor: `transparent`
+                        }}
+                    />
+                </AnimatedView>
+            );
+        }
+        return null;
+    };
+
+    return (
+        <AnimatedView
+            ref = { animatedSearchHeaderViewRef }
+            style = { adjustedStyle.container }
+            duration = { 300 }
+            useNativeDriver = { true }
+            onStartShouldSetResponder = {() => {
+                dismissKeyboard();
+            }}
+        >
+            {
+                renderInput()
+            }
+            {
+                renderSuggestions()
+            }
+        </AnimatedView>
+    );
+};
+
+SearchHeaderWithReactHooks.propTypes = {
+    inputColor: PropTypes.string,
+    inputBgColor: PropTypes.string,
+    placeholderColor: PropTypes.string,
+    suggestionEntryColor: PropTypes.string,
+    iconColor: PropTypes.string,
+    topOffset: PropTypes.number,
+    headerHeight: PropTypes.number,
+    headerBgColor: PropTypes.string,
+    dropShadowed: PropTypes.bool,
+    visibleInitially: PropTypes.bool,
+    autoFocus: PropTypes.bool,
+    autoCorrect: PropTypes.bool,
+    persistent: PropTypes.bool,
+    enableSuggestion: PropTypes.bool,
+    suggestionHistoryEntryRollOverCount: PropTypes.number,
+    pinnedSuggestions: PropTypes.arrayOf(PropTypes.oneOfType([ PropTypes.number, PropTypes.string, PropTypes.object ])),
+    placeholder: PropTypes.string,
+    entryAnimation: PropTypes.oneOf([ `from-left-side`, `from-right-side` ]),
+    iconImageComponents: PropTypes.arrayOf(PropTypes.object),
+    onClearSuggesstion: PropTypes.func,
+    onGetAutocompletions: PropTypes.func,
+    onClear: PropTypes.func,
+    onSearch: PropTypes.func,
+    onEnteringSearch: PropTypes.func,
+    onFocus: PropTypes.func,
+    onBlur: PropTypes.func,
+    onHide: PropTypes.func,
+    onShow: PropTypes.func
+};
+
+const SearchHeader = semver.gte(React.version, `16.8.0`) ? React.forwardRef(SearchHeaderWithReactHooks) : SearchHeaderWithReactClass;
+
+export default SearchHeader;
